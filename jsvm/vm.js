@@ -28,6 +28,12 @@ Array.prototype.triTopologique = function() {
     return tri;
 };
 
+/* */
+
+function log(str) {
+    $('log').insert("<div>" + str + "</div>");
+}
+
 /* **************************************** */
 
 op = {
@@ -51,6 +57,18 @@ op = {
             vm.stack.push(a + b);
         }
     },
+    jump: function(instr) {
+        this.display = "jump " + instr;
+        this.eval = function(vm) {
+            vm.ip = instr - 1;
+        }
+    },
+    pushIp: function() {
+        this.display = "push Ip";
+        this.eval = function(vm) {
+            vm.stack.push(vm.ip);
+        }
+    },
     ret: function(nbval, nbdrop) {
         this.display = "return " + nbval + " drop " + nbdrop;
         this.eval = function(vm) {
@@ -58,17 +76,33 @@ op = {
             temp = [];
             while (nbval-- > 0) { temp.push(vm.stack.pop()); }
             while (nbdrop-- > 0) { vm.stack.pop(); }
+            retIp = vm.stack.pop();
             for(i = 0; i < temp.length; i++) { vm.stack.push(temp[i]); }
+            vm.ip = retIp - 1;
+        }
+    },
+    exit: function() {
+        this.display = "exit";
+        this.eval = function(vm) {
+            vm.exit = true;
         }
     }
 };
 
 function vm() {
-    this.stack = $A();
-    this.eval = function(instructions) {
-        instructions.invoke("eval", this);
-        console.log(this.stack);
+    this.clean = function() {
+        this.stack = $A(); // Stack
+        this.ip = 0;       // Instruction pointer.
+        this.exit = false; // Halt
     };
+    this.eval = function(instructions) {
+        this.stack.push(-1);
+        for (this.ip = 0; (!this.exit) && (this.ip >= 0); this.ip++) {
+            instructions[this.ip].eval(this);
+        }
+        return this.stack;
+    };
+    this.clean();
 };
 
 function bloc(name, nbEntrees, nbSorties) {
@@ -99,10 +133,12 @@ function bloc(name, nbEntrees, nbSorties) {
         stackpos = [];
         curpos = 0;
         comp = [];
+        debug = [];
         tri.each(function(n) {
             stackpos[n] = curpos;
 
             b = this.blocs[n];
+            debug.push(b);
 
             // On empile les paramètres de chaque bloc à appeller
             for (entree = 0; entree < b.nbEntrees; entree++) {
@@ -119,6 +155,7 @@ function bloc(name, nbEntrees, nbSorties) {
         }, this);
         
         comp.push(new op.ret(this.nbSorties, curpos));
+        comp.push(new op.exit());
         
         return comp;
     };
@@ -148,15 +185,18 @@ function init() {
     plus.compile = function() { return [ new op.add() ]; };
 
     var bloc3 = new bloc("bloc3", 0, 1);
-    bplus = bloc3.addBloc(plus);
-    bone  = bloc3.addBloc(one);
-    btwo  = bloc3.addBloc(two);
-    bloc3.connect(bone, 0, bplus, 0);
-    bloc3.connect(btwo, 0, bplus, 1);
-    bloc3.connect(bplus, 0, 1, 0);
+    bplus1 = bloc3.addBloc(plus);
+    bplus2 = bloc3.addBloc(plus);
+    bone   = bloc3.addBloc(one);
+    btwo   = bloc3.addBloc(two);
+    bloc3.connect(bone, 0, bplus1, 0);
+    bloc3.connect(btwo, 0, bplus1, 1);
+    bloc3.connect(bplus2, 0, 1, 0);
+    bloc3.connect(bplus1, 0, bplus2, 0);
+    bloc3.connect(btwo, 0, bplus2, 1);
     
     comp3 = bloc3.compile();
-    console.log(comp3.pluck("display").join("\n"));
+    log("<code><pre>" + comp3.map(function (e, i) { return i + "&gt " + e.display; }).join("\n") + "</pre></code>");
     
     /* var comp3 = new Array();
     
@@ -167,6 +207,5 @@ function init() {
     // debug = comp3;
 
     var test = new vm();
-    test.eval(comp3);
-    debug = test;
+    log(test.eval(comp3).join(", "));
 }
