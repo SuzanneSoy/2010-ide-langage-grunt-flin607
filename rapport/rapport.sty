@@ -1,0 +1,388 @@
+\tikzset{
+  bloc/.style={
+    rectangle,
+    rounded corners,
+    draw=black,
+    very thick,
+  },
+ bloc-line/.style={
+    minimum height=0.9em,
+  },
+  bloc-label/.style={
+    bloc-label-pos,
+  },
+  bloc-label-pos/.style={
+    color=blue,
+    inner sep=0,
+  },
+  ports/.style={
+  },
+  in-ports/.style={
+    ports,
+    anchor=east,
+  },
+  out-ports/.style={
+    ports,
+    anchor=west,
+  },
+  dot/.style={
+    coordinate,
+    circle,
+    inner sep=0pt,
+    outer sep=0pt,% Pour que les liaisons aillent jusque dans les cercles.
+    minimum size=2pt,
+    fill=black,
+    anchor=center,
+  },
+  port-dot/.style={
+    dot,
+  },
+  port-label/.style={
+    port-label-pos,
+  },
+  port-label-pos/.style={
+    color=black!66!white,
+  },
+  in-port-dot/.style={
+    port-dot,
+  },
+  in-port-label/.style={
+    port-label,
+  },
+  in-port-label-pos/.style={
+    port-label-pos,
+  },
+  out-port-dot/.style={
+    port-dot,
+  },
+  out-port-label/.style={
+    port-label,
+  },
+  out-port-label-pos/.style={
+    port-label-pos,
+  },
+}
+
+
+
+\newcount\bloc@counter
+
+\let\bloc@false\@nil
+\def\bloc@true{t}
+
+\def\bloc@cell@split#1#2#3#4{%
+  \def\bloc@cell@present{#1}%
+  \def\bloc@cell@iotype{#2}%
+  \def\bloc@cell@name{#3}%
+  \def\bloc@cell@value{$#4$}%
+}
+
+\def\bloc@cell@getvalues#1{%
+  \advance\bloc@counter by #1%
+  \getlistelement{\the\bloc@counter}{\bloc@elements}%
+  \expandafter\bloc@cell@split\listelement%
+}
+
+\def\@bloc@makecells@dolabel{%
+  \ifx\bloc@cell@present\bloc@true%
+    \node[\bloc@cell@iotype-label] (\bloc@cell@name-label) at (\bloc@cell@name-label-pos) {\bloc@cell@value};%
+  \fi%
+}
+
+% Columns : <Vertical-space><left-dot><in-port><label><out-port><right-dot>
+\def\bloc@cell{%
+  \ifnum\pgfmatrixcurrentcolumn=1%
+    \node[bloc-line,inner xsep=0pt]{};%
+  \fi%
+  %
+  \bloc@counter=\pgfmatrixcurrentrow%
+  \multiply\bloc@counter by 3%
+  %
+  \ifnum\pgfmatrixcurrentcolumn=2%
+    \bloc@cell@getvalues{-2}%
+    \ifx\bloc@cell@present\bloc@true%
+      \node[in-port-dot,alias=\bloc@cell@name-dot] (\bloc@cell@name) {};%
+    \fi%
+  \fi%
+  \ifnum\pgfmatrixcurrentcolumn=3%
+    \bloc@cell@getvalues{-2}%
+    \ifx\bloc@cell@present\bloc@true%
+      \node[in-port-label-pos] (\bloc@cell@name-label-pos) {\hphantom{\bloc@cell@value}};%
+    \fi%
+  \fi%
+  \ifnum\pgfmatrixcurrentcolumn=4%
+    \bloc@cell@getvalues{-1}%
+    \ifx\bloc@cell@present\bloc@true%
+      \node[bloc-label-pos] (\bloc@cell@name-label-pos) {\hphantom{\bloc@cell@value}};%
+    \fi%
+  \fi%
+  \ifnum\pgfmatrixcurrentcolumn=5%
+    \bloc@cell@getvalues{0}%
+    \ifx\bloc@cell@present\bloc@true%
+      \node[out-port-label-pos] (\bloc@cell@name-label-pos) {\hphantom{\bloc@cell@value}};%
+    \fi%
+  \fi%
+  \ifnum\pgfmatrixcurrentcolumn=6%
+    \bloc@cell@getvalues{0}%
+    \ifx\bloc@cell@present\bloc@true%
+      \node[out-port-dot,alias=\bloc@cell@name-dot] (\bloc@cell@name) {};%
+    \fi%
+  \fi%
+}
+
+\def\bloc@@makecells{%
+  \ifnum\bloc@count@column<6%
+    \bloc@counter=\bloc@count@column%
+    \advance\bloc@counter by 1%
+    \xdef\bloc@count@column{\the\bloc@counter}%
+    \expandafter\pgfmatrixnextcell\expandafter\bloc@@makecells%
+  \else%
+    \ifnum\bloc@count@row<\bloc@maxlines%
+      \xdef\bloc@count@column{0}%
+      \bloc@counter=\bloc@count@row%
+      \advance\bloc@counter by 1%
+      \xdef\bloc@count@row{\the\bloc@counter}%
+      \expandafter\expandafter\pgfmatrixendrow\expandafter\expandafter\bloc@@makecells%
+    \else%
+      \relax% Last cell, relax guy !
+    \fi%
+  \fi%
+}
+
+\def\bloc@makecells{%
+  \xdef\bloc@count@row{2}%
+  \xdef\bloc@count@column{0}%
+  \bloc@@makecells%
+}
+
+\def\@bloc@makecells@labels{%
+ \ifx\getlistlength@list\empty%
+ \else%
+ %
+ \xdef\listelement{\expandafter\@car\getlistlength@list\@nil}%
+ \expandafter\bloc@cell@split\listelement%
+ \@bloc@makecells@dolabel%
+ \relax\relax%
+ %
+ \xdef\getlistlength@list{\expandafter\@cdr\getlistlength@list\@nil}%
+ \expandafter\@bloc@makecells@labels%
+ \fi%
+}
+
+\def\bloc@makecells@labels#1{%
+ \bloc@counter=1%
+ \edef\getlistlength@list{#1{\relax}}%
+ \@bloc@makecells@labels%
+}
+
+\def\@getlistelement{%
+  \ifx\getlistlength@list\empty%
+  \else%
+  %
+  \ifnum\bloc@counter=\getlistlength@index%
+    \xdef\listelement{\expandafter\@car\getlistlength@list\@nil}%
+  \fi%
+  \advance\bloc@counter by 1%
+  %
+  \xdef\getlistlength@list{\expandafter\@cdr\getlistlength@list\@nil}%
+  \expandafter\@getlistelement%
+  \fi%
+}
+
+\def\getlistelement#1#2{%
+  \xdef\getlistlength@index{#1}%
+  \bloc@counter=1%
+  \edef\getlistlength@list{#2{\relax}}%
+  \@getlistelement%
+}
+
+%\newcount\bloc@counter%
+\def\@getlistlength{%
+  \ifx\getlistlength@list\empty%
+  \let\listlength\bloc@counter%
+  \else%
+  %
+  \advance\bloc@counter by 1%
+  %
+  \xdef\getlistlength@list{\expandafter\@cdr\getlistlength@list\@nil}%
+  \expandafter\@getlistlength%
+  \fi%
+}
+
+\def\getlistlength#1{%
+  \bloc@counter=-1%
+  \def\getlistlength@list{#1{\relax}}%
+  \@getlistlength%
+}
+
+\def\@@bloc@scanelement@split#1/#2/{%
+  \def\bloc@cell@name{#1}%
+  \ifx\bloc@scanelement@split@same\bloc@true%
+    \def\bloc@cell@value{#1}%
+  \else
+    \def\bloc@cell@value{#2}%
+    \expandafter\@gobble%
+  \fi
+}
+\def\@bloc@scanelement@split#1/#2/{%
+  \def\bloc@cell@name{#1}%
+  \def\bloc@cell@value{#2}%
+  \ifx\bloc@cell@value\empty%
+    \let\bloc@scanelement@split@same\bloc@true%
+  \else%
+    \let\bloc@scanelement@split@same\bloc@false%
+    \expandafter\@gobble%
+  \fi%
+}
+
+\def\bloc@scanelement@split#1{%
+  \expandafter\@bloc@scanelement@split#1{\relax}//
+  \expandafter\@@bloc@scanelement@split#1//
+}
+
+\def\bloc@makeelements{%
+  % A-t-on fait la dernière ligne ?
+  \bloc@counter=\bloc@backupcounter%
+  \ifnum\bloc@backupcounter<\bloc@maxlines%
+    \let\bloc@exitloop\bloc@fale
+  \else
+    \let\bloc@exitloop\bloc@true
+  \fi
+  %
+  % S'il reste des lignes à faire, on les fait :
+  \ifx\bloc@exitloop\bloc@false%
+    % Est-on sur un rang où on affiche les ports d'entrée ?
+    \ifx\bloc@inports@print\bloc@true%
+      \let\bloc@inports@print\bloc@false%
+      % Est-ce qu'on est entre le startline et le endline pour les ports d'entrée ?
+      \ifnum\bloc@counter>\bloc@inports@startline%
+        \ifnum\bloc@counter<\bloc@inports@endline%
+          % Si oui, on ajoute le port, dans les autres cas, on ajoute une cellule vide
+          \xdef\bloc@scan@inport{\expandafter\@car\bloc@inports\@nil}%
+          \expandafter\bloc@scanelement@split{\bloc@scan@inport}%
+          \xdef\bloc@elements{\bloc@elements{{t}{in-port}{\bloc@label@name-in-\bloc@cell@name}{\bloc@cell@value}}}%
+          \xdef\bloc@inports{\expandafter\@cdr\bloc@inports\@nil}%
+        \else%
+          \g@addto@macro\bloc@elements{{{f}{}{}{}}}%
+        \fi%
+      \else%
+        \g@addto@macro\bloc@elements{{{f}{}{}{}}}%
+      \fi%
+    \else%
+      \let\bloc@inports@print\bloc@true%
+      \g@addto@macro\bloc@elements{{{f}{}{}{}}}%
+    \fi%
+    % Fin port entrée
+    %
+    % Est-on sur le rang où on doit afficher le nom du bloc ?
+    \ifnum\bloc@counter=\bloc@labelline%
+      \xdef\bloc@elements{\bloc@elements{{t}{bloc}{\bloc@label@name}{\bloc@label@value}}}%
+    \else%
+      \g@addto@macro\bloc@elements{{{f}{}{}{}}}%
+    \fi%
+    % Fin nom du bloc
+    %
+    % Est-on sur un rang où on affiche les ports de sortie ?
+    \ifx\bloc@outports@print\bloc@true%
+      \let\bloc@outports@print\bloc@false%
+      % Est-ce qu'on est entre le startline et le endline pour les ports de sortie ?
+      \ifnum\bloc@counter>\bloc@outports@startline%
+        \ifnum\bloc@counter<\bloc@outports@endline%
+          % Si oui, on ajoute le port, dans les autres cas, on ajoute une cellule vide
+          \xdef\bloc@scan@outport{\expandafter\@car\bloc@outports\@nil}%
+          \expandafter\bloc@scanelement@split{\bloc@scan@outport}%
+          \xdef\bloc@elements{\bloc@elements{{t}{out-port}{\bloc@label@name-out-\bloc@cell@name}{\bloc@cell@value}}}%
+          \xdef\bloc@outports{\expandafter\@cdr\bloc@outports\@nil}%
+        \else%
+          \g@addto@macro\bloc@elements{{{f}{}{}{}}}%
+        \fi%
+      \else%
+        \g@addto@macro\bloc@elements{{{f}{}{}{}}}%
+      \fi%
+    \else%
+      \let\bloc@outports@print\bloc@true%
+      \g@addto@macro\bloc@elements{{{f}{}{}{}}}%
+    \fi%
+    % Fin port sortie
+    %
+    % On passe à la ligne suivante
+    \advance\bloc@counter by 1%
+    \xdef\bloc@backupcounter{\the\bloc@counter}
+    % Et on boucle
+    \expandafter\bloc@makeelements%
+  \fi%
+}
+
+\def\@bloc#1#2#3{%
+  \expandafter\bloc@scanelement@split{#1}%
+  \let\bloc@label@name\bloc@cell@name%
+  \let\bloc@label@value\bloc@cell@value%
+  \def\bloc@inports{#2{}{}{}}%
+  \def\bloc@outports{#3{}{}{}}%
+  \getlistlength{#2}\edef\bloc@nbinports{\the\listlength}%
+  \getlistlength{#3}\edef\bloc@nboutports{\the\listlength}%
+  %
+  \ifnum\bloc@nbinports>\bloc@nboutports%
+    \bloc@counter=\bloc@nbinports%
+    \edef\bloc@labelline{\the\bloc@counter}%
+    \multiply\bloc@counter by 2%
+    \edef\bloc@maxlines{\the\bloc@counter}%
+    %
+    \bloc@counter=\bloc@nbinports%
+    \advance\bloc@counter by -\bloc@nboutports%
+    \edef\bloc@outports@startline{\the\bloc@counter}%
+    \advance\bloc@counter by \bloc@nboutports%
+    \advance\bloc@counter by \bloc@nboutports%
+    \edef\bloc@outports@endline{\the\bloc@counter}%
+    %
+    \edef\bloc@inports@startline{0}%
+    \edef\bloc@inports@endline{\bloc@maxlines}%
+    %
+    \def\bloc@inports@print{t}% 
+    \ifodd\bloc@nboutports%
+      \ifodd\bloc@nbinports \let\bloc@outports@print\bloc@true \else \let\bloc@outports@print\bloc@false \fi%
+    \else%
+      \ifodd\bloc@nbinports \let\bloc@outports@print\bloc@false \else \let\bloc@outports@print\bloc@true \fi%
+    \fi%
+  \else%
+    \bloc@counter=\bloc@nboutports%
+    \edef\bloc@labelline{\the\bloc@counter}%
+    \multiply\bloc@counter by 2%
+    \edef\bloc@maxlines{\the\bloc@counter}%
+    %
+    \bloc@counter=\bloc@nboutports%
+    \advance\bloc@counter by -\bloc@nbinports%
+    \edef\bloc@inports@startline{\the\bloc@counter}%
+    \advance\bloc@counter by \bloc@nbinports%
+    \advance\bloc@counter by \bloc@nbinports%
+    \edef\bloc@inports@endline{\the\bloc@counter}%
+    %
+    \edef\bloc@outports@startline{0}%
+    \edef\bloc@outports@endline{\bloc@maxlines}%
+    %
+    \def\bloc@outports@print{t}%
+    \ifodd\bloc@nbinports%
+      \ifodd\bloc@nboutports \let\bloc@inports@print\bloc@true \else \let\bloc@inports@print\bloc@false \fi%
+    \else%
+      \ifodd\bloc@nboutports \let\bloc@inports@print\bloc@false \else \let\bloc@inports@print\bloc@true \fi%
+    \fi%
+  \fi%
+  %
+  \bloc@counter=1 % numéro de ligne
+  \xdef\bloc@backupcounter{\the\bloc@counter}%
+  %
+  \gdef\bloc@elements{}%
+  \bloc@makeelements%
+  %
+  \tikzset{\bloc@label@name/.append style={}}%
+  \matrix[bloc,execute at begin cell=\bloc@cell,\bloc@label@name] (\bloc@label@name) {%
+    \bloc@makecells\\%
+  };%
+  %
+  \bloc@makecells@labels\bloc@elements%
+}
+
+\newcommand{\bloc}[1][f]{
+  \def\bloc@mathnodes{#1}
+  \@bloc
+}
