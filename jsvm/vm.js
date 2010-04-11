@@ -105,7 +105,16 @@ function vm() {
     this.clean();
 };
 
-function bloc(name, nbEntrees, nbSorties) {
+function world(name) {
+    this.blocs = [];
+    this.newBloc = function(name, nbEntrees, nbSorties) {
+        uid = this.blocs.length;
+        this.blocs[uid] = new bloc(uid, name, nbEntrees, nbSorties);
+        return this.blocs[uid];
+    }
+}
+
+function bloc(uid, name, nbEntrees, nbSorties) {
     this.name = name;
     this.nbEntrees = nbEntrees;
     this.nbSorties = nbSorties;
@@ -115,7 +124,7 @@ function bloc(name, nbEntrees, nbSorties) {
     this.addBloc = function(bloc) {
         this.blocs.push(bloc);
         this.blocdeps.push($A());
-        this.portdeps.push($A());
+        this.portdeps.push($A()); // TODO : détecter quand il n'y a pas le bon nombre de connexions...
         return this.blocs.length - 1;
     };
     this.connect = function(blocSortie, portSortie, blocEntree, portEntree) {
@@ -126,24 +135,22 @@ function bloc(name, nbEntrees, nbSorties) {
         this.blocdeps[blocEntree].push(blocSortie);
     };
     this.compile = function() {
-        tri = this.blocdeps.triTopologique();
+        var tri = this.blocdeps.triTopologique();
         
         if (tri[0] != 0) { error(); }
         
-        stackpos = [];
-        curpos = 0;
-        comp = [];
-        debug = [];
+        var stackpos = [];
+        var curpos = 0;
+        var comp = [];
         tri.each(function(n) {
             stackpos[n] = curpos;
 
-            b = this.blocs[n];
-            debug.push(b);
+            var b = this.blocs[n];
 
             // On empile les paramètres de chaque bloc à appeller
             for (entree = 0; entree < b.nbEntrees; entree++) {
-                dep = this.portdeps[n][entree];
-                pos = stackpos[dep.blocSortie] + dep.portSortie;
+                var dep = this.portdeps[n][entree];
+                var pos = stackpos[dep.blocSortie] + dep.portSortie;
                 comp.push(new op.peek(curpos - pos - 1));
                 curpos++;
             }
@@ -176,15 +183,15 @@ function bloc(name, nbEntrees, nbSorties) {
 }
 
 function init() {
-    var plus = new bloc("+", 2, 1);
-    var one  = new bloc("1", 0, 1);
-    var two  = new bloc("2", 0, 1);
+/*    plus = new bloc(0, "+", 2, 1);
+    one  = new bloc(1, "1", 0, 1);
+    two  = new bloc(2, "2", 0, 1);
 
     one.compile  = function() { return [ new op.push(1) ]; };
     two.compile  = function() { return [ new op.push(2) ]; };
     plus.compile = function() { return [ new op.add() ]; };
 
-    var bloc3 = new bloc("bloc3", 0, 1);
+    var bloc3 = new bloc(3, "bloc3", 0, 1);
     bplus1 = bloc3.addBloc(plus);
     bplus2 = bloc3.addBloc(plus);
     bone   = bloc3.addBloc(one);
@@ -195,17 +202,33 @@ function init() {
     bloc3.connect(bplus1, 0, bplus2, 0);
     bloc3.connect(btwo, 0, bplus2, 1);
     
-    comp3 = bloc3.compile();
-    log("<code><pre>" + comp3.map(function (e, i) { return i + "&gt " + e.display; }).join("\n") + "</pre></code>");
+    comp3 = bloc3.compile(); */
     
-    /* var comp3 = new Array();
+    w = new world("Brave");
+    wPlus   = w.newBloc("+", 2, 1);
+    wOne    = w.newBloc("1", 0, 1);
+    wTwo    = w.newBloc("2", 0, 1);
+    wThesum = w.newBloc("Une somme", 0, 1);
     
-    comp3.append(one.compile());
-    comp3.append(two.compile());
-    comp3.append(plus.compile()); */
+    wOne.compile  = function() { return [ new op.push(1) ]; };
+    wTwo.compile  = function() { return [ new op.push(2) ]; };
+    wPlus.compile = function() { return [ new op.add() ]; };
     
-    // debug = comp3;
-
-    var test = new vm();
-    log(test.eval(comp3).join(", "));
+    wiPlus1 = wThesum.addBloc(wPlus);
+    wiPlus2 = wThesum.addBloc(wPlus);
+    wiOne   = wThesum.addBloc(wOne);
+    wiTwo   = wThesum.addBloc(wTwo);
+    
+    wThesum.connect(wiOne,   0, wiPlus1, 0);
+    wThesum.connect(wiTwo,   0, wiPlus1, 1);
+    wThesum.connect(wiPlus2, 0, 1,       0);
+    wThesum.connect(wiPlus1, 0, wiPlus2, 0);
+    wThesum.connect(wiTwo,   0, wiPlus2, 1);
+    
+    compThesum = wThesum.compile();
+    
+    log("<code><pre>" + compThesum.map(function (e, i) { return i + "&gt " + e.display; }).join("\n") + "</pre></code>");
+    
+    var testVm = new vm();
+    log(testVm.eval(compThesum).join(", "));
 }
