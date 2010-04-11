@@ -136,4 +136,34 @@ Le lambda-calcul et la machine de Turing sont équivalents\footnote{\url{http://
 
 L'équivalence $\lambda$-calcul vs. Turing nous laisse le choix pour l'implémentation de notre première machine à partir de laquelle les autres seront définies, directement ou indirectement. Explorons donc la suite du problème avant de prendre une décision. À terme, le meilleur sera probablement d'implémenter les deux, comme base, et de les définir mutuellement l'une à partir de l'autre, pour avoir une vérification.
 
+\section{Notes pour la suite\dots}
+
+% Suite
+%Partir d'un plus haut niveau pour se faciliter la tâche : une VM simple en JahvaScript
+%Définir une api de base (?), c'est une machine virtuelle sur laquelle s'exécuteront les programmes
+%  - Structures de données
+%  - Dataflow
+
+
+%%%
+%X Définir le langage grunt par rapport à une VM simple (et cette VM à partir d'une machine de Turing)
+%  Prendre un programme grunt, et l'expanser au maximum (FORTH). Descendre jusqu'au niveau des transistors ou au moins des bascules.
+
+Nous allons prendre un programme en dataflow, et le déconstruire le plus possible, afin de voir quelles sont les «primitives» sémantiques nécessaires à notre langage. Bien que FORTH n'ait pas à proprement parler de primitives, il a lui aussi une sémantique (chaque mot est expansé en la suite de mots le définissant, jusqu'à arriver au code machine).
+  
+
+Il faut définir un bloc eager-evaluation, qui prend en paramètre un graphe, et
+\begin{itemize}
+\item Soit le réécrit (compilation)
+\item Soit l'évalue (interprétation)
+\end{itemize}
+Dans le cas où on compile, on aura une "instruction" call-bloc
+
+call-bloc prend en paramètre des fonctions permettant de calculer ses paramètres, ainsi que les paramètres eux-mêmes.
+\begin{itemize}
+\item En évaluation paresseuse, on n'évalue les paramètres que s'ils sont nécessaires.
+\item En évaluation «eager», on évalue les paramètres au début de l'appel du bloc, et on stocke leur valeur pour une future utilisation (ou non).
+\item Pour une macro, on stocke juste les paramètres eux-mêmes (avec leur fonction d'évaluation, s'il y en a une).
+\end{itemize}
+
 \end{document}
