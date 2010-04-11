@@ -5,7 +5,7 @@
     draw=black,
     very thick,
   },
- bloc-line/.style={
+  bloc-line/.style={
     minimum height=0.9em,
   },
   bloc-label/.style={
@@ -14,6 +14,12 @@
   bloc-label-pos/.style={
     color=blue,
     inner sep=0,
+    inner xsep=1em,
+  },
+  input-bloc/.style={
+    bloc-label-pos/.append style={
+      inner xsep=0.3333em,
+    }
   },
   ports/.style={
   },

@@ -3,11 +3,22 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[frenchb]{babel}
+
+\usepackage{hyperref}
+\hypersetup{%
+  colorlinks,%
+  citecolor=black,%
+  filecolor=black,%
+  linkcolor=black,%
+  urlcolor=black%
+}
+
 \usepackage{pgffor}
 \usepackage{ifthen}
-
 \usepackage{tikz}
 \usetikzlibrary{matrix,fit,calc}
+
+\usepackage{amsmath}
 
 \usepackage{rapport}
 
@@ -20,7 +31,7 @@
 
 \section{Objectif}
 
-Le but de ce projet est de mettre au point un langage de programmation utilisant le paradigme du dataflow\footnote{http://en.wikipedia.org/wiki/Dataflow}, n'ayant pas de primitives fixes. 
+Le but de ce projet est de mettre au point un langage de programmation utilisant le paradigme du dataflow\footnote{\url{http://en.wikipedia.org/wiki/Dataflow}}, n'ayant pas de primitives fixes.
 \section{Recherche}
 
 \subsection{Programme en dataflow}
@@ -30,31 +41,99 @@ Examinons un programme simple exprimé dans le paradigme du dataflow~:
 \begin{figure}[h]
   \centering
   \begin{tikzpicture}
-    \bloc[t]{b1/+}{{a}{b}{c}}{{d}{e}}
-    \tikzset{b2/.style={right of=b1-out-d,matrix anchor=b2-in-x.center}}
-    \bloc[t]{b2/\frac{x\times y}{z}}{{x}{y}{z}}{{t}}
-    \draw (b1-out-d) -- (b2-in-x);
-    \draw (b1-out-e) -- (b2-in-y);
-    \draw ($ .5*(b1-out-e)+.5*(intersection of b1-out-e--b2-in-y and b2-in-y--b2-in-z) $) node[dot] {} |- (b2-in-z);
+    \bloc[t]{+1/a+b}{ab}{c}
+    \tikzset{+2/.style={below of=+1,matrix anchor=north}}
+    \bloc[t]{+2/a+b}{ab}{c}
+% \tikzset{b2/.style={right of=b1-out-d,matrix anchor=b2-in-x.center}}
+%    \bloc[t]{b2/\frac{x\times y}{z}}{{x}{y}{z}}{{t}}
     
-    \tikzset{e1/.style={left of=b1-in-a,matrix anchor=e1-out-val.center}}
-    \bloc[t]{e1/1}{}{{val/}}
-    \draw (e1-out-val) -- (b1-in-a);
+    \tikzset{e1/.style={left of=+1-in-a,matrix anchor=e1-out-val.center,input-bloc}}
+    \bloc[t]{e1/e_1}{}{{val/}}
+    \draw (e1-out-val) -- (+1-in-a);
     
-    \tikzset{e2/.style={left of=b1-in-b,matrix anchor=e2-out-val.center}}
-    \bloc[t]{e2/2}{}{{val/}}
-    \draw (e2-out-val) -- (b1-in-b);
+    \tikzset{e3/.style={left of=+2-in-b,matrix anchor=e3-out-val.center,input-bloc}}
+    \bloc[t]{e3/e_3}{}{{val/}}
+    \draw (e3-out-val) -- (+2-in-b);
     
-    \tikzset{e3/.style={left of=b1-in-c,matrix anchor=e3-out-val.center}}
-    \bloc[t]{e3/3}{}{{val/}}
-    \draw (e3-out-val) -- (b1-in-c);
+    \tikzset{e2/.style={at=($ .5*(e1-out-val) + .5*(e3-out-val) $),matrix anchor=e2-out-val.center,input-bloc}}
+    \bloc[t]{e2/e_2}{}{{val/}}
     
-    \draw[thick,->] (b2-out-t) -- ++(1,0);
+    \node[coordinate] (between-+1-+2) at ($ .5*(+1-in-b) + .5*(+2-in-a) $) {};
+    \node[coordinate] (connect-e2-+1-+2) at ($ .5*(between-+1-+2) + .5*(e2-out-val) $) {};
+    
+    \draw (e2-out-val) -- (connect-e2-+1-+2);
+    \draw (connect-e2-+1-+2) |- (+1-in-b);
+    \draw (connect-e2-+1-+2) |- (+2-in-a);
+    
+    
+    \shorthandoff{:}
+    \draw[->] (+1-out-c) -- ++(1,0) node[coordinate,label=above:\tiny$e_1+e_2$] {};
+    \draw[->] (+2-out-c) -- ++(1,0) node[coordinate,label=below:\tiny$e_2+e_3$] {};
+    \shorthandon{:}
   \end{tikzpicture}
   \caption{Un programme simple en dataflow.}
 \label{fig:simple-dataflow}
 \end{figure}
 
+Ce programme a trois entrées ($e_1$, $e_2$, $e_3$), et deux sorties ($e_1+e_2$ et $e_2+e_3$).
+
+\subsection{Caractéristiques du programme}
+La question à se poser maintenant est ~:
+\begin{figure}[h!]
+  \centering
+  Qu'est-ce qui définit ce programme ?
+\end{figure}
+
+Ou, comme l'aurait dit TODO, «What are your inputs ? What are your outputs ? What is the functional relation between them ?».
+
+Ce programme est constitué
+\begin{itemize}
+\item d'entrées,
+\item de sorties,
+\item d'un graphe étiqueté exprimant la relation entre les sorties et les entrées grâce à des fonctions ($+$) qu'on suppose déjà définies,
+\item d'une sémantique d'évaluation, qui donne une signification au graphe,
+\item d'une représentation graphique,
+\item Et pour l'exécuter pour de bon, il faut une machine réelle vers laquelle on peut compiler le programme (ou un interpréteur fonctionnant sur cette machine).
+\end{itemize}
+
+\subsection{Généralisation}
+Si on généralise ce résultat, on peut dire qu'un programme est défini par une structure de données abstraite (on n'a pas besoin de connaître la représentation en mémoire de cette structure), qui peut contenir des entrées, des sorties, un arbre (ou graphe) syntaxique, etc.
+
+La représentation graphique ou textuelle du programme peut être assurée par un autre programme.
+
+Sa sémantique d'évaluation peut être définie par une machine abstraite, dont les (méta-)entrées sont le programme, ainsi que des entrées pour le programme, et dont les (méta-)sorties sont les sorties que le programme devrait avoir. Tiens ? Entrées, sorties, une relation fonctionnelle (les sorties sont celles du programme pour ses entrées), \dots Eh oui, notre machine abstraite, c'est-à-dire notre sémantique d'évaluation est bel et bien un programme elle aussi.
+
+De même, la machine réelle vers laquelle on éspère pouvoir compiler le programme, peut être modélisée par un programme. Pendant que nous y sommes, rien ne justifie la présence de la machine réelle, car la machine abstraite pourrait très bien être la même que celle qui exécute le programme. C'est le cas par exemple si notre langage est le code machine d'un certain processeur : L'octet 0x12345678 a pour signification «diviser l'accumulateur par 2», c'est une définition de la sémantique du langage, et à la fois une définition de la machine qui exécute le programme.
+
+La machine abstraite n'a donc pas besoin d'être si abstraite que ça, et pourrait être n'importe quelle machine, et il pourrait même y avoir plusieurs machines qui spécifient la sémantique du langage (de manière redondante, pour avoir le choix, et pour que ces définitions se vérifient mutuellement).
+
+Et, pour continuer sur cette voie, il peut aussi y avoir plusieurs représentations syntaxiques (textuelle, avec ou sans coloration, graphique, \dots).
+
+On a donc les équations suivantes dans le cas simple (une seule machine, une seule représentation) :
+
+\begin{align}
+  \text{Programme} &= \left\lbrace
+      \begin{array}{rl}
+          &\text{Type de données abstrait (ADT)}\\
+        + &\text{Machine abstraite (sémantique)}\\
+        + &\text{Représentation}
+      \end{array}
+      \right\rbrace\\
+  \text{Programme} &= \text{Programme} + \mathrm{Programme} + \mathrm{Programme}\\
+  \text{Programme} &= 3 \times \text{Programme}
+\end{align}
+
+\subsection{Base}
+
+Nous voilà bien avancés\dots Un programme est un programme. C'est donc une définition récursive. Et toute définition récursive doit avoir une base, et une règle pour générer de nouveaux éléments. Nous venons de définir la règle, cherchons les bases possibles~:
+\begin{itemize}
+\item Machine de Turing
+\item Lambda-calcul
+\item Langage mathémathique
+\end{itemize}
+
+Le lambda-calcul et la machine de Turing sont équivalents\footnote{\url{http://en.wikipedia.org/wiki/Lambda_calculus\#Computable_functions_and_lambda_calculus}}, par contre le langage mathémathique permet d'exprimer des fonctions non-calculables, des ensembles infinis, et tout un tas de choses obscures. Comme nos machines physiques actuelles sont une version bâtarde des machines de Turing (qui n'ont pas de limite sur la quantité de mémoire disponible, contrairement aux notres), il semble sage de laisser de côté le langage mathémathique (pour l'instant, dans quelques années, peut-être qu'il sera temps de l'ajouter).
+
+L'équivalence $\lambda$-calcul vs. Turing nous laisse le choix pour l'implémentation de notre première machine à partir de laquelle les autres seront définies, directement ou indirectement. Explorons donc la suite du problème avant de prendre une décision. À terme, le meilleur sera probablement d'implémenter les deux, comme base, et de les définir mutuellement l'une à partir de l'autre, pour avoir une vérification.
 
 \end{document}
-
