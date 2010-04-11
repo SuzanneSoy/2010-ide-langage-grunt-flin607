@@ -7,7 +7,7 @@
 \usepackage{ifthen}
 
 \usepackage{tikz}
-\usetikzlibrary{matrix,fit}
+\usetikzlibrary{matrix,fit,calc}
 
 \usepackage{rapport}
 
@@ -27,90 +27,33 @@ Le but de ce projet est de mettre au point un langage de programmation utilisant
 
 Examinons un programme simple exprimé dans le paradigme du dataflow~:
 
-\tikzset{
-  bloc/.style={
-    rectangle,
-    rounded corners,
-    draw=black,
-    very thick,
-  },
-  bloc-label/.style={
-    bloc-label-pos,
-  },
-  bloc-label-pos/.style={
-    color=blue,
-    inner sep=0,
-  },
-  ports/.style={
-  },
-  in-ports/.style={
-    ports,
-    anchor=east,
-  },
-  out-ports/.style={
-    ports,
-    anchor=west,
-  },
-  dot/.style={
-    coordinate,
-    circle,
-    inner sep=0pt,
-    minimum size=2pt,
-    fill=black,
-  },
-  port-dot/.style={
-    dot,
-  },
-  port-label/.style={
-    port-label-pos,
-  },
-  port-label-pos/.style={
-    color=black!66!white,
-  },
-  in-port-dot/.style={
-    port-dot,
-  },
-  in-port-label/.style={
-    port-label,
-  },
-  in-port-label-pos/.style={
-    port-label-pos,
-  },
-  out-port-dot/.style={
-    port-dot,
-  },
-  out-port-label/.style={
-    port-label,
-  },
-  out-port-label-pos/.style={
-    port-label-pos,
-  },
-}
-\shorthandoff{:} 
-\begin{tikzpicture}
-  \node[bloc-label] (+1) {$+$};
-  \matrix[in-ports] at (+1.west) (+1In) {
-    \node[in-port-label,in-port-dot] (+1A) [label=right:$A$] {};\\
-    \node[in-port-label,in-port-dot] (+1B) [label=right:$B$] {};\\
-    \node[in-port-label,in-port-dot] (+1C) [label=right:$C$] {};\\
-  };
-  \matrix[out-ports] at (+1.east) (+1Out) {
-    \node[out-port-label,out-port-dot] (+1A) [label=left:$D$] {};\\
-    \node[out-port-label,out-port-dot] (+1B) [label=left:$E$] {};\\
-  };
- \node[bloc, fit = (+1) (+1In) (+1Out)] {};
-\end{tikzpicture}
-\shorthandon{:}
-
-\begin{tikzpicture}
-  \bloc[t]{b1/+}{{a}{b}{c}}{{d}{e}}
-  \tikzset{b2/.style={right of=b1-out-d,matrix anchor=b2-in-x.west}}
-  \bloc[t]{b2/\frac{x\times y}{z}}{{x}{y}{z}}{{t}}
-  \draw (b1-out-d) -- (b2-in-x);
-  \draw (b1-out-e) -- (b2-in-y);
-  \draw (b1-out-e) ++(0.5,0) node[dot] {} |- (b2-in-z);
-\end{tikzpicture}
-
+\begin{figure}[h]
+  \centering
+  \begin{tikzpicture}
+    \bloc[t]{b1/+}{{a}{b}{c}}{{d}{e}}
+    \tikzset{b2/.style={right of=b1-out-d,matrix anchor=b2-in-x.center}}
+    \bloc[t]{b2/\frac{x\times y}{z}}{{x}{y}{z}}{{t}}
+    \draw (b1-out-d) -- (b2-in-x);
+    \draw (b1-out-e) -- (b2-in-y);
+    \draw ($ .5*(b1-out-e)+.5*(intersection of b1-out-e--b2-in-y and b2-in-y--b2-in-z) $) node[dot] {} |- (b2-in-z);
+    
+    \tikzset{e1/.style={left of=b1-in-a,matrix anchor=e1-out-val.center}}
+    \bloc[t]{e1/1}{}{{val/}}
+    \draw (e1-out-val) -- (b1-in-a);
+    
+    \tikzset{e2/.style={left of=b1-in-b,matrix anchor=e2-out-val.center}}
+    \bloc[t]{e2/2}{}{{val/}}
+    \draw (e2-out-val) -- (b1-in-b);
+    
+    \tikzset{e3/.style={left of=b1-in-c,matrix anchor=e3-out-val.center}}
+    \bloc[t]{e3/3}{}{{val/}}
+    \draw (e3-out-val) -- (b1-in-c);
+    
+    \draw[thick,->] (b2-out-t) -- ++(1,0);
+  \end{tikzpicture}
+  \caption{Un programme simple en dataflow.}
+\label{fig:simple-dataflow}
+\end{figure}
 
 
 \end{document}
