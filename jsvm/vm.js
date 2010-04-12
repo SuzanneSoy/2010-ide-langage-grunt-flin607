@@ -36,60 +36,23 @@ function log(str) {
 
 /* **************************************** */
 
-op = {
-    push: function(val) {
-        this.display = "push " + val;
-        this.eval = function(vm) {
-            vm.stack.push(val);
-        };
-    },
-    peek: function(val) {
-        this.display = "peek " + val;
-        this.eval = function(vm) {
-            vm.stack.push(vm.stack.peek(val));
-        };
-    },
-    add: function() {
-        this.display = "add";
-        this.eval = function(vm) {
-            a = vm.stack.pop();
-            b = vm.stack.pop();
-            vm.stack.push(a + b);
-        }
-    },
-    jump: function(instr) {
-        this.display = "jump " + instr;
-        this.eval = function(vm) {
-            vm.ip = instr - 1;
-        }
-    },
-    pushIp: function() {
-        this.display = "push Ip";
-        this.eval = function(vm) {
-            vm.stack.push(vm.ip);
-        }
-    },
-    ret: function(nbval, nbdrop) {
-        this.display = "return " + nbval + " drop " + nbdrop;
-        this.eval = function(vm) {
-            // This is a dirty way of doing it...
-            temp = [];
-            while (nbval-- > 0) { temp.push(vm.stack.pop()); }
-            while (nbdrop-- > 0) { vm.stack.pop(); }
-            retIp = vm.stack.pop();
-            for(i = 0; i < temp.length; i++) { vm.stack.push(temp[i]); }
-            vm.ip = retIp - 1;
-        }
-    },
-    exit: function() {
-        this.display = "exit";
-        this.eval = function(vm) {
-            vm.exit = true;
-        }
-    }
-};
-
 function vm() {
+    /* The stack (grows up) :
+     *
+     *     top
+     *
+     * return value
+     * return value
+     *.junk
+     *.junk
+     *.junk
+     * return address
+     * param
+     * param
+     *
+     *   bottom
+     */
+    
     this.clean = function() {
         this.stack = $A(); // Stack
         this.ip = 0;       // Instruction pointer.
@@ -98,11 +61,90 @@ function vm() {
     this.eval = function(instructions) {
         this.stack.push(-1);
         for (this.ip = 0; (!this.exit) && (this.ip >= 0); this.ip++) {
-            instructions[this.ip].eval(this);
+            var instr = instructions[this.ip];
+            var op    = this.operations[instr.operation];
+            var args  = instr.arguments;
+            op.eval.apply(this, args);
         }
         return this.stack;
     };
+
+    // Initialize to a clean state.
     this.clean();
+
+    vm = this;
+    // I can't manage to create a constructor from witin vm's constuctor. So I use an anonymous object in place.
+    this.op = function() {
+        this.operation = arguments[0];
+        this.arguments = [];
+        
+        for (i = 1; i < arguments.length; i++) {
+            this.arguments.push(arguments[i]);
+        }
+        
+        this.display = function() {
+            return vm.operations[this.operation].display.apply(this, this.arguments);
+        }
+    };
+    
+    this.operations = {
+        comment: {
+            display : function(text) { return "# " + text; },
+            eval    : function(text) { }
+        },
+        pop: {
+            display : function() { return "pop"; },
+            eval    : function() { this.stack.pop(); }
+        },
+        push: {
+            display : function(val) { return "push " + val; },
+            eval    : function(val) { this.stack.push(val); }
+        },
+        // Aller chercher un élément plus bas dans la pile
+        peek: {
+            display : function(shift) { return "peek " + shift; },
+            eval    : function(shift) { this.stack.push(this.stack.peek(shift)); }
+        },
+        // Remplacer un élément plus bas dans la pile (contraire de peek)
+        // "peek 10; poke 10" est équivalent à ne rien faire du tout.
+        poke: {
+            display : function(shift) { return "poke " + shift; },
+            eval    : function(shift) {
+                e = this.stack.pop();
+                this.stack[this.stack.length - 1 - shift] = e;
+            }
+        },
+        // somme des 2 éléments en haut de la pile
+        add: {
+            display : function() { return "add"; },
+            eval    : function() {
+                a = this.stack.pop();
+                b = this.stack.pop();
+                this.stack.push(a + b);
+            }
+        },
+        // Saut inconditionnel vers une instruction
+        jump: {
+            display : function(instr) { return "jump " + instr; },
+            eval    : function(instr) { this.ip = instr - 1; }
+        },
+        // Appeller la fonction instr, avec nbparam paramètres.
+        call: {
+            display : function(instr, nbparam) { return "call " + instr; },
+            eval    : function(instr, nbparam) {
+                this.stack.push(this.ip);
+                this.ip = instr - 1;
+            }
+        },
+        ret: {
+            display : function() { return "return"; },
+            eval    : function() { this.ip = this.stack.pop() - 1; }
+        },
+        exit: {
+            display : function() { return "exit"; },
+            eval    : function() { this.exit = true; }
+        }
+    };
 };
 
 function world(name) {
@@ -112,12 +154,35 @@ function world(name) {
         this.blocs[uid] = new bloc(uid, name, nbEntrees, nbSorties);
         return this.blocs[uid];
     }
+    this.compile = function(vm) {
+        var comp = [];
+        var pos = [];
+        var curpos  = 0;
+        var complist = this.blocs.invoke("compile", vm);
+        complist.each(function (bc) {
+            pos[bc.uid] = curpos;
+            curpos += bc.length;
+        });
+        
+        complist.each(function (bc) {
+            bc.each(function (instr) {
+//                if (instr instanceof op.jump) { // TODO : this is ugly.
+//                    comp.push(new vm.op.comment("-----"));
+//                } else {
+                    comp.push(instr);
+//                }
+            });
+        });
+
+        return comp;
+    }
 }
 
 function bloc(uid, name, nbEntrees, nbSorties) {
+    this.uid = uid;
     this.name = name;
-    this.nbEntrees = nbEntrees;
-    this.nbSorties = nbSorties;
+    this.nbEntrees = nbEntrees + 1; // +1 pour l'adresse de retour (call)
+    this.nbSorties = nbSorties + 1; // +1 pour l'adresse de retour (call)
     this.blocs = new Array();
     this.blocdeps = new Array();
     this.portdeps = new Array();
@@ -134,7 +199,7 @@ function bloc(uid, name, nbEntrees, nbSorties) {
         };
         this.blocdeps[blocEntree].push(blocSortie);
     };
-    this.compile = function() {
+    this.compile = function(vm) {
         var tri = this.blocdeps.triTopologique();
         
         if (tri[0] != 0) { error(); }
@@ -142,27 +207,39 @@ function bloc(uid, name, nbEntrees, nbSorties) {
         var stackpos = [];
         var curpos = 0;
         var comp = [];
+        comp.push(new vm.op("comment", "Bloc " + this.uid + " " + this.name));
         tri.each(function(n) {
             stackpos[n] = curpos;
-
+            
             var b = this.blocs[n];
-
-            // On empile les paramètres de chaque bloc à appeller
-            for (entree = 0; entree < b.nbEntrees; entree++) {
+            
+            // On empile chaque paramètre du bloc à appeller
+            for (entree = 0; entree < b.nbEntrees - 1; entree++) { // -1 car l'adresse de retour est pushée par "call"
                 var dep = this.portdeps[n][entree];
                 var pos = stackpos[dep.blocSortie] + dep.portSortie;
-                comp.push(new op.peek(curpos - pos - 1));
+                comp.push(new vm.op("peek", curpos - pos - 1));
                 curpos++;
             }
-            
-            comp.append(b.compile());
+
+            if (n > 1) { // 0 & 1 are inputs & outputs
+                comp.push(new vm.op("call", b.uid));
+            }
             
             curpos -= b.nbEntrees; // le bloc appelé a empilé tous ses paramètres
             curpos += b.nbSorties; // et a dépilé ses résultats
         }, this);
         
-        comp.push(new op.ret(this.nbSorties, curpos));
-        comp.push(new op.exit());
+        console.log(curpos, this.nbEntrees);
+        comp.push(new vm.op("peek", curpos - this.nbEntrees));
+        curpos++;
+        for (s = 0; s < this.nbSorties; s++) {
+            comp.push(new vm.op("poke", curpos - this.nbSorties));
+        }
+        for (j = 0; j < curpos - this.nbSorties + 1; j++) {
+            comp.push(new vm.op("pop"));
+        }
+        
+        comp.push(new vm.op("ret"));
         
         return comp;
     };
@@ -183,36 +260,15 @@ function bloc(uid, name, nbEntrees, nbSorties) {
 }
 
 function init() {
-/*    plus = new bloc(0, "+", 2, 1);
-    one  = new bloc(1, "1", 0, 1);
-    two  = new bloc(2, "2", 0, 1);
-
-    one.compile  = function() { return [ new op.push(1) ]; };
-    two.compile  = function() { return [ new op.push(2) ]; };
-    plus.compile = function() { return [ new op.add() ]; };
-
-    var bloc3 = new bloc(3, "bloc3", 0, 1);
-    bplus1 = bloc3.addBloc(plus);
-    bplus2 = bloc3.addBloc(plus);
-    bone   = bloc3.addBloc(one);
-    btwo   = bloc3.addBloc(two);
-    bloc3.connect(bone, 0, bplus1, 0);
-    bloc3.connect(btwo, 0, bplus1, 1);
-    bloc3.connect(bplus2, 0, 1, 0);
-    bloc3.connect(bplus1, 0, bplus2, 0);
-    bloc3.connect(btwo, 0, bplus2, 1);
-    
-    comp3 = bloc3.compile(); */
-    
     w = new world("Brave");
     wPlus   = w.newBloc("+", 2, 1);
     wOne    = w.newBloc("1", 0, 1);
     wTwo    = w.newBloc("2", 0, 1);
     wThesum = w.newBloc("Une somme", 0, 1);
     
-    wOne.compile  = function() { return [ new op.push(1) ]; };
-    wTwo.compile  = function() { return [ new op.push(2) ]; };
-    wPlus.compile = function() { return [ new op.add() ]; };
+    wOne.compile  = function(vm) { return [ new vm.op("push", 1) ]; };
+    wTwo.compile  = function(vm) { return [ new vm.op("push", 2) ]; };
+    wPlus.compile = function(vm) { return [ new vm.op("add") ]; };
     
     wiPlus1 = wThesum.addBloc(wPlus);
     wiPlus2 = wThesum.addBloc(wPlus);
@@ -225,10 +281,16 @@ function init() {
     wThesum.connect(wiPlus1, 0, wiPlus2, 0);
     wThesum.connect(wiTwo,   0, wiPlus2, 1);
     
-    compThesum = wThesum.compile();
+    // compThesum = wThesum.compile();
+    var testVM = new vm();
+    compThesum = w.compile(vm);
+
+    debug = compThesum;
     
-    log("<code><pre>" + compThesum.map(function (e, i) { return i + "&gt " + e.display; }).join("\n") + "</pre></code>");
+    log("<code><pre>" + compThesum.map(function (e, i) { return i + "&gt " + e.display(); }).join("\n") + "</pre></code>");
     
-    var testVm = new vm();
+/*    var testVm = new vm();
     log(testVm.eval(compThesum).join(", "));
+
+    testdisplay();*/
 }
