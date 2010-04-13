@@ -1,0 +1,4 @@
+.error:before {
+    content: "Erreur : ";
+    color: red;
+}

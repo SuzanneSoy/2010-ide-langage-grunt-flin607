@@ -34,8 +34,12 @@ function log(str) {
     $('log').insert("<div>" + str + "</div>");
 }
 
-/* **************************************** */
+function error(str) {
+    $('log').insert("<div class=\"error\">" + str + "</div>");
+    _error();
+}
 
+/* **************************************** */
 function vm() {
     /* The stack (grows up) :
      *
@@ -43,9 +47,9 @@ function vm() {
      *
      * return value
      * return value
-     *.junk
-     *.junk
-     *.junk
+     * junk
+     * junk
+     * junk
      * return address
      * param
      * param
@@ -59,11 +63,11 @@ function vm() {
         this.exit = false; // Halt
     };
     this.eval = function(instructions) {
-        this.stack.push(-1);
-        for (this.ip = 0; (!this.exit) && (this.ip >= 0); this.ip++) {
+        for (this.ip = 0; (!this.exit); this.ip++) {
             var instr = instructions[this.ip];
             var op    = this.operations[instr.operation];
             var args  = instr.arguments;
+            console.log(this.ip + " : [" + this.stack.join(",") + "]            (" + instr.display() + ")");
             op.eval.apply(this, args);
         }
         return this.stack;
@@ -90,7 +94,11 @@ function vm() {
     this.operations = {
         comment: {
             display : function(text) { return "# " + text; },
-            eval    : function(text) { }
+            eval    : function(text) {}
+        },
+        lineskip: {
+            display : function() { return ""; },
+            eval    : function() {}
         },
         pop: {
             display : function() { return "pop"; },
@@ -138,7 +146,7 @@ function vm() {
         },
         ret: {
             display : function() { return "return"; },
-            eval    : function() { this.ip = this.stack.pop() - 1; }
+            eval    : function() { this.ip = this.stack.pop(); }
         },
         exit: {
             display : function() { return "exit"; },
@@ -154,26 +162,39 @@ function world(name) {
         this.blocs[uid] = new bloc(uid, name, nbEntrees, nbSorties);
         return this.blocs[uid];
     }
-    this.compile = function(vm) {
+    this.compile = function(vm, entryPoint) {
         var comp = [];
         var pos = [];
         var curpos  = 0;
-        var complist = this.blocs.invoke("compile", vm);
-        complist.each(function (bc) {
-            pos[bc.uid] = curpos;
+        var comp = [];
+        
+        comp.push(new vm.op("comment", "Point d'entrée du programme :"));
+        comp.push(new vm.op("lineskip"));
+        comp.push(new vm.op("call", entryPoint.uid));
+        comp.push(new vm.op("exit"));
+        curpos += 4;
+        
+        this.blocs.each(function (b) {
+            bc = b.compile(vm);
+            
+            comp.push(new vm.op("lineskip"));
+            curpos++;
+            
+            pos[b.uid] = curpos;
+            comp.append(bc);
             curpos += bc.length;
         });
-        
-        complist.each(function (bc) {
-            bc.each(function (instr) {
-//                if (instr instanceof op.jump) { // TODO : this is ugly.
-//                    comp.push(new vm.op.comment("-----"));
-//                } else {
-                    comp.push(instr);
-//                }
-            });
-        });
 
+        for (instr = 0; instr < comp.length; instr++) {
+            if (comp[instr].operation == "call") {
+                comp[instr] = new vm.op("call", pos[comp[instr].arguments[0]]);
+            }
+        }
+        
+        comp.display = function () {
+            return this.map(function (e, i) { return i + "&gt " + e.display(); }).join("\n") + "</pre></code>"
+        }
+        
         return comp;
     }
 }
@@ -181,8 +202,8 @@ function world(name) {
 function bloc(uid, name, nbEntrees, nbSorties) {
     this.uid = uid;
     this.name = name;
-    this.nbEntrees = nbEntrees + 1; // +1 pour l'adresse de retour (call)
-    this.nbSorties = nbSorties + 1; // +1 pour l'adresse de retour (call)
+    this.nbEntrees = nbEntrees;
+    this.nbSorties = nbSorties;
     this.blocs = new Array();
     this.blocdeps = new Array();
     this.portdeps = new Array();
@@ -199,51 +220,108 @@ function bloc(uid, name, nbEntrees, nbSorties) {
         };
         this.blocdeps[blocEntree].push(blocSortie);
     };
-    this.compile = function(vm) {
+    this.innerCompile = function(vm) {
         var tri = this.blocdeps.triTopologique();
         
-        if (tri[0] != 0) { error(); }
+        // Est-ce vraiment nécessaire ?
+        // if (tri[0] != 0) { error("Les entrées ne sont pas en premier dans le bloc " + this.name); }
+
+        /* Stack :
+         * a return adress
+         * 9 resutl 1 of this bloc
+         * 8 result 0 of this bloc    stackpos[1] = 8
+         * 7 result 0 of bloc 3       stackpos[3] = 7
+         * 6 result 2 of bloc 2
+         * 5 result 1 of bloc 2
+         * 4 result 0 of bloc 2       stackpos[2] = 4
+         * 3 return adress
+         * 2 param 2
+         * 1 param 1                  
+         * 0 param 0                  stackpos[0] = 0
+         *
+         * Before ret, poke elements 7,9,a down to
+         *   positions 0,1,2, and pop the rest.
+         */
         
-        var stackpos = [];
-        var curpos = 0;
-        var comp = [];
-        comp.push(new vm.op("comment", "Bloc " + this.uid + " " + this.name));
-        tri.each(function(n) {
+        var stackpos = [];            // Position dans la pile des résultats de chaque bloc.
+        stackpos[0] = this.nbEntrees; // paramètres + adresse de retour.
+        var curpos = this.nbEntrees;  // Position actuelle du sommet de pile. Les paramètres ont déjà été mis sur la pile.
+        var comp = [];                // «Bytecode» généré.
+        
+        // 1 (les sorties) devrait être à la fin, potentiellement suivi par du code mort :
+        // des blocs non connectés à la sortie. On s'assure qu'il est bien à la fin.
+        // De plus, on enlève 0 (les entrées) car ils sont déjà sur la pile
+        tri = tri.without(0, 1);
+        tri.push(1);
+
+        tri.each(function (n) {
             stackpos[n] = curpos;
-            
             var b = this.blocs[n];
-            
-            // On empile chaque paramètre du bloc à appeller
-            for (entree = 0; entree < b.nbEntrees - 1; entree++) { // -1 car l'adresse de retour est pushée par "call"
+
+            // On empile chaque paramètre du bloc à appeler.
+            for (var entree = 0; entree < b.nbEntrees; entree++) {
                 var dep = this.portdeps[n][entree];
+                if (dep == undefined) {
+                    error("Entrée " + entree + " manquante pour le bloc " + n + " (" + b.name + ") de " + this.name);
+                }
                 var pos = stackpos[dep.blocSortie] + dep.portSortie;
                 comp.push(new vm.op("peek", curpos - pos - 1));
                 curpos++;
             }
 
-            if (n > 1) { // 0 & 1 are inputs & outputs
-                comp.push(new vm.op("call", b.uid));
+            if (n != 1) {                            // Le bloc "sortie" est un fake
+                comp.push(new vm.op("call", b.uid)); // pusher l'adresse de retour et appeler le bloc
             }
-            
+
             curpos -= b.nbEntrees; // le bloc appelé a empilé tous ses paramètres
             curpos += b.nbSorties; // et a dépilé ses résultats
         }, this);
         
-        console.log(curpos, this.nbEntrees);
-        comp.push(new vm.op("peek", curpos - this.nbEntrees));
-        curpos++;
-        for (s = 0; s < this.nbSorties; s++) {
-            comp.push(new vm.op("poke", curpos - this.nbSorties));
+        return { code: comp, junk: curpos - this.nbSorties + 1 };
+    };
+    this.compile = function(vm) {
+        var comp = [];
+        
+        comp.push(new vm.op("comment", "Bloc " + this.uid + " (" + this.name + ")"));
+        comp.push(new vm.op("lineskip"));
+        
+        // On réserve la place pour écrire les valeurs de retour.
+        for (var i = 0; i < this.nbSorties - this.nbEntrees; i++) {
+            comp.push(new vm.op("push", "0"));
         }
-        for (j = 0; j < curpos - this.nbSorties + 1; j++) {
+        
+        startpos = Math.max(this.nbEntrees, this.nbSorties);
+        
+        // On récupère les entrées en les faisant «sauter par-dessus» l'adresse
+        // de retour et les places réservées pour la sortie (s'il y en a).
+        for (var i = 0; i < this.nbEntrees; i++) {
+            comp.push(new vm.op("peek", startpos));
+        }
+        
+        // Le code du bloc à proprement parler.
+        var inner = this.innerCompile(vm)
+        comp.append(inner.code);
+        
+        // On fait remonter l'adresse de retour au-dessus des valeurs de retour.
+        comp.push(new vm.op("peek", startpos + inner.junk + this.nbSorties - this.nbEntrees));
+        
+        // On fait descendre les valeurs de retour et l'adresse de retour.
+        for (var i = 0; i < this.nbSorties + 1; i++) {
+            comp.push(new vm.op("poke", startpos + inner.junk));
+        }
+        
+        // On pop les calculs intermédiaires et (si nécessaire) les valeurs
+        // d'entrées qui n'ont pas été écrasées par une valeur de sortie.
+        for (var i = 0; i < (startpos + inner.junk) - this.nbSorties; i++) {
             comp.push(new vm.op("pop"));
         }
         
+        // Et ne pas oublier de faire return...
         comp.push(new vm.op("ret"));
         
         return comp;
-    };
-
+    }
+    
     // This is a hack...
     this.addBloc({ // 0 : self inputs
         name: "Entrées",
@@ -264,30 +342,42 @@ function init() {
     wPlus   = w.newBloc("+", 2, 1);
     wOne    = w.newBloc("1", 0, 1);
     wTwo    = w.newBloc("2", 0, 1);
-    wThesum = w.newBloc("Une somme", 0, 1);
+    wThesum = w.newBloc("Une somme", 2, 1);
+    wTest   = w.newBloc("Test", 0, 1);
     
-    wOne.compile  = function(vm) { return [ new vm.op("push", 1) ]; };
-    wTwo.compile  = function(vm) { return [ new vm.op("push", 2) ]; };
-    wPlus.compile = function(vm) { return [ new vm.op("add") ]; };
+    wOne.innerCompile  = function(vm) { return { junk: 0, code: [ new vm.op("push", 1) ] }; };
+    wTwo.innerCompile  = function(vm) { return { junk: 0, code: [ new vm.op("push", 2) ] }; };
+    wPlus.innerCompile = function(vm) { return { junk: 0, code: [ new vm.op("add")     ] }; };
     
     wiPlus1 = wThesum.addBloc(wPlus);
     wiPlus2 = wThesum.addBloc(wPlus);
+    wiPlus3 = wThesum.addBloc(wPlus);
+    wiPlus4 = wThesum.addBloc(wPlus);
     wiOne   = wThesum.addBloc(wOne);
     wiTwo   = wThesum.addBloc(wTwo);
     
     wThesum.connect(wiOne,   0, wiPlus1, 0);
     wThesum.connect(wiTwo,   0, wiPlus1, 1);
-    wThesum.connect(wiPlus2, 0, 1,       0);
+    wThesum.connect(wiPlus4, 0, 1,       0);
     wThesum.connect(wiPlus1, 0, wiPlus2, 0);
     wThesum.connect(wiTwo,   0, wiPlus2, 1);
+    wThesum.connect(0,       0, wiPlus3, 0);
+    wThesum.connect(0,       1, wiPlus3, 1);
+    wThesum.connect(wiPlus2, 0, wiPlus4, 0);
+    wThesum.connect(wiPlus3, 0, wiPlus4, 1);
     
-    // compThesum = wThesum.compile();
+    wiThesum = wTest.addBloc(wThesum);
+    wiTest1  = wTest.addBloc(wOne);
+    wiTest2  = wTest.addBloc(wTwo);
+    wTest.connect(wiTest1,  0, wiThesum, 0);
+    wTest.connect(wiTest2,  0, wiThesum, 1);
+    wTest.connect(wiThesum, 0, 1,        0);
+    
     var testVM = new vm();
-    compThesum = w.compile(vm);
+    compThesum = w.compile(vm, wTest);
 
-    debug = compThesum;
-    
-    log("<code><pre>" + compThesum.map(function (e, i) { return i + "&gt " + e.display(); }).join("\n") + "</pre></code>");
+    log("<code><pre>" + compThesum.display());
+    log(testVM.eval(compThesum).join(", "));
     
 /*    var testVm = new vm();
     log(testVm.eval(compThesum).join(", "));
