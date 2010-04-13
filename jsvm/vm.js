@@ -1,3 +1,9 @@
+function init() {
+    window.setTimeout("log('Start'); window.setTimeout('test_vm_call_and_compile()', 0);", 100);
+}
+
+/* **************************************** */
+
 Array.prototype.append = function(array2) {
     for (i = 0; i < array2.length; i++) {
         this[this.length] = array2[i];
@@ -34,6 +40,12 @@ function log(str) {
     $('log').insert("<div>" + str + "</div>");
 }
 
+function trace(str) {
+    if (typeof console != "undefined") {
+        console.log(str);
+    }
+}
+
 function error(str) {
     $('log').insert("<div class=\"error\">" + str + "</div>");
     _error();
@@ -67,7 +79,7 @@ function vm() {
             var instr = instructions[this.ip];
             var op    = this.operations[instr.operation];
             var args  = instr.arguments;
-            console.log(this.ip + " : [" + this.stack.join(",") + "]            (" + instr.display() + ")");
+            trace(this.ip + " : [" + this.stack.join(",") + "]            (" + instr.display() + ")");
             op.eval.apply(this, args);
         }
         return this.stack;
@@ -135,6 +147,11 @@ function vm() {
         jump: {
             display : function(instr) { return "jump " + instr; },
             eval    : function(instr) { this.ip = instr - 1; }
+        },
+        // N'exécute pas l'instruction suivante ssi le sommet de la pile vaut 0 (Skip if Zero)
+        sz: {
+            display : function() { return "sz"; },
+            eval    : function() { if (this.stack.peek(0) == 0) { this.ip++; } }
         },
         // Appeller la fonction instr, avec nbparam paramètres.
         call: {
@@ -261,7 +278,7 @@ function bloc(uid, name, nbEntrees, nbSorties) {
             // On empile chaque paramètre du bloc à appeler.
             for (var entree = 0; entree < b.nbEntrees; entree++) {
                 var dep = this.portdeps[n][entree];
-                if (dep == undefined) {
+                if (typeof dep == "undefined") {
                     error("Entrée " + entree + " manquante pour le bloc " + n + " (" + b.name + ") de " + this.name);
                 }
                 var pos = stackpos[dep.blocSortie] + dep.portSortie;
@@ -337,7 +354,7 @@ function bloc(uid, name, nbEntrees, nbSorties) {
     });
 }
 
-function init() {
+function test_vm_call_and_compile() {
     w = new world("Brave");
     wPlus   = w.newBloc("+", 2, 1);
     wOne    = w.newBloc("1", 0, 1);
