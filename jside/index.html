@@ -5,12 +5,23 @@
     <title>IDE</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script type="text/javascript" src="jquery-1.4.2.js"></script>
+    <script type="text/javascript" src="jquery.scrollTo.js"></script>
     <script type="text/javascript" src="ide.js"></script>
   </head>
   <body id="body">
+    <div id="outils">
+      <a href="#" class="bouton" id="nouveau-bloc">Nouveau bloc</a>
+      <a href="#" class="bouton" id="nouveau-lien">Nouveau lien</a>
+      <div class="clear"></div>
+    </div>
+    <div id="edition">
+    </div>
     <div id="log">
-      <h2>Log</h2>
-      <div id="log-content">
+      <div id="log-en-tete">
+        <h2>Log</h2>
+        <a href="#" class="bouton" id="log-pause">pause</a>
+      </div>
+      <div id="log-contenu">
       </div>
     </div>
   </body>

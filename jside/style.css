@@ -1,11 +1,13 @@
+body {
+    margin: 0;
+}
+
 #log {
-    border-top: thin solid gray;
-    padding-bottom: 1.7em;
     position: absolute;
+    top: 75%;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 20%;
 }
 
 #log p {
@@ -14,18 +16,80 @@
     margin: 0;
 }
 
-#log h2 {
+#log-en-tete {
     padding: 0 1em;
     margin: 0;
     font-size: small;
     background-color: lightgray;
 }
 
-#log-content {
+#log h2 {
+    display: inline;
+    font-size: 100%;
+    margin-right : 1em;
+}
+
+#log-en-tete .bouton {
+    color: #333;
+    border-color: #999;
+    background-color: #eee
+}
+
+#log-en-tete .bouton:hover {
+    color: #555;
+    border-color: #ccc;
+    background-color: #fff
+}
+
+#log-contenu {
     position: absolute;
-    top: 1em;
+    top: 1.7em; /* Hack, mais CSS ne nous permettra pas de faire mieux… :( */
     bottom: 0;
     left: 0;
     right: 0;
     overflow: auto;
+}
+
+#outils {
+    margin: 0;
+}
+
+.bouton {
+    display: inline-block;
+    padding: 0.1em 0.2em;
+    margin: 0.2em;
+    text-decoration: none;
+    border-width: thin;
+    border-style: solid;
+}
+
+#outils .bouton {
+    color: #242;
+    border-color: #8a8;
+    background-color: #efd;
+}
+
+#outils .bouton:hover {
+    color: #422;
+    border-color: #a88;
+    background-color: #fed;
+}
+
+#outils .clear {
+    clear:both;
+}
+
+#edition {
+    position: absolute;
+    border: thick solid gray;
+    top: 1.9em; /* Hack, mais CSS ne nous permettra pas de faire mieux… :( */
+    bottom: 25%;
+    left: 0;
+    right: 0;
+}
+
+.bloc.parent {
+    background-color: lightgray;
+    border: medium solid gray;
+    position: absolute;
 }
