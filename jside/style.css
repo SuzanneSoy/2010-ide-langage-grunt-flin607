@@ -64,12 +64,27 @@ body {
 }
 
 #outils .bouton {
+}
+
+#outils .bouton {
+    color: #242;
+    border-color: #8a8;
+    background-color: #efd;
+}
+
+#outils .boutonNormal {
     color: #242;
     border-color: #8a8;
     background-color: #efd;
 }
 
 #outils .bouton:hover {
+    color: #422;
+    border-color: #a88;
+    background-color: #fed;
+}
+
+#outils .boutonHover {
     color: #422;
     border-color: #a88;
     background-color: #fed;
@@ -86,10 +101,15 @@ body {
     bottom: 25%;
     left: 0;
     right: 0;
+    padding: 1em;
 }
 
 .bloc.parent {
     background-color: lightgray;
     border: medium solid gray;
     position: absolute;
+    width: 25%;
+    height: 30%;
+    top: 10%;
+    left: 20%;
 }

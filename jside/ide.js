@@ -2,6 +2,10 @@ $(document).ready(function () {
     setTimeout(init, 200);
 });
 
+$(function() {
+    $("#resizable").resizable();
+});
+
 function init() {
     $w = new world();
     
@@ -9,9 +13,12 @@ function init() {
     $('#nouveau-lien').click(uiNouveauLien);
     logPause = false;
     $('#log-pause').click(logPauseToggle);
+
+    $('#test').resizable();
     
     log("Démarré.");
     log("Ajoutez des blocs à l'espace de travail pour construire un programme.");
+    blink('#nouveau-bloc');
 }
 
 function world() {
@@ -33,14 +40,14 @@ function bloc(uid) {
 
 function uiNouveauBloc() {
     var b = $w.addBloc();
+    
     $('#edition').append("<div id=\"edition-" + b.uid + "\"></div>");
     var div = $('#edition-' + b.uid);
-    div.width(250);
-    div.height(100);
-    div.css('top', 100);
-    div.css('left', 200);
-/*    div.left(100); */
+    
     div.addClass("bloc parent");
+    div.draggable({ containment: '#edition' });
+    div.resizable();
+    
     log("Nouveau bloc.");
 }
 
@@ -58,6 +65,20 @@ function logPauseToggle() {
         $('#log-contenu').stop();
         $('#log-pause').text("play");
     }
+}
+
+function blink(elem) {
+    blinkToRed(elem, 10);
+}
+
+function blinkToRed(elem, count) {
+    if (count > 0) {
+        $(elem).switchClass('boutonNormal', 'boutonHover', 500, function() { blinkToGreen(elem, count); });
+    }
+}
+
+function blinkToGreen(elem, count) {
+    $(elem).switchClass('boutonHover', 'boutonNormal', 500, function() { blinkToRed(elem, count - 1); });
 }
 
 function log(msg) {
