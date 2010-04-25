@@ -2,10 +2,6 @@ $(document).ready(function () {
     setTimeout(init, 200);
 });
 
-$(function() {
-    $("#resizable").resizable();
-});
-
 function init() {
     $w = new world();
     
@@ -16,19 +12,21 @@ function init() {
     logPause = false;
     $('#log-pause').click(logPauseToggle);
 
-    $('#test').resizable();
-    
     log("Démarré.");
     log("Ajoutez des blocs à l'espace de travail pour construire un programme.");
     $('#nouveau-bloc').blink();
 
     test();
+    
+    var b = nouveauBloc("Scratch");
+    uiEditer(b.uid);
+    rechercher('');
 }
 
 function test() {
-    $w.addBloc("abcd");
-    $w.addBloc("bc");
-    $w.addBloc("xyz");
+    nouveauBloc("abcd");
+    nouveauBloc("bc");
+    nouveauBloc("xyz");
 }
 
 String.prototype.escapeXML = function() {
@@ -51,11 +49,13 @@ function world() {
     }
 }
 
-function bloc(uid, nom) {
+function bloc(uid, nom, description) {
     this.uid = uid;
     this.nom = nom || "Nouveau bloc";
+    this.description = description || "Aucune description.";
     this.definitions = [];
     log("Nouveau bloc \"" + this.nom + "\"");
+    b = this;
 }
 
 function blocDefJs() {
@@ -77,21 +77,112 @@ jQuery.fn.extend({
 	}
     },
     attrs: function(value) {
-        this.map(function(e) {
-            return $([e]).attr(value)
+        return this.map(function(idx, elem) {
+            return $([elem]).attr(value);
         });
+    },
+    toggleResizable: function() {
+        // TODO : devrait enregistrer les options.
+        
+        if (this.data('notResizable')) {
+            this.resizable();
+            this.height(this.data('oldHeight'));
+        } else {
+            this.resizable('destroy');
+            this.data('oldHeight', this.height());
+            this.height('auto');
+        }
+        
+        this.data('notResizable', ! this.data('notResizable'))
+        
+        return this;
     }
 });
 
 function uiRechercher() {
-    log("Recherche…");
-    var terme = $('#nom-bloc').val()
-    var res = $.grep($w.blocs, function (b) {
-        return b.nom.indexOf(terme) >= 0;
-    });
+    rechercher($('#nom-bloc').val());
+}
 
-    $(res).appendTo('#edition');
-    log("ok");
+function arreterRecherche() {
+    $('#resultats-recherche').hide();
+    $('#edition-blocs').show();
+}
+
+function demarrerRecherche() {
+    $('#resultats-recherche tbody').empty();
+    $('#resultats-recherche').show();
+    $('#edition-blocs').hide();
+}
+
+function rechercher(terme) {
+    log("Recherche…");
+    
+    demarrerRecherche();
+    
+    $(
+        $.grep($w.blocs, function (b) {
+            return b.nom.indexOf(terme) >= 0;
+        })
+    )
+    
+    .map(function(idx, elem) {
+        var res = $($('#modele-resultat-recherche').jqote(elem))
+        .data("uid", elem.uid)
+        .click(function() {
+            log(elem.uid);
+        });
+        
+        res.find('.editer').click(function() {
+            arreterRecherche();
+            uiEditer(elem.uid);
+            return false;
+        });
+        
+        res.find('.utiliser').click(function() {
+            arreterRecherche();
+            uiUtiliser(elem.uid);
+            return false;
+        });
+        
+        return res;
+    })
+    
+    .appendTo('#resultats-recherche tbody');
+}
+
+function uiEditer(uid) {
+    log("Édition de " + uid);
+    
+    /* $('#edition-blocs').children().hide(); */
+    $('#edition-' + $w.blocActif).hide();
+    $w.blocActif = uid;
+    $('#edition-' + uid).show();
+}
+
+function uiReduireBloc () {
+    $(this)
+        .toggleClass('icone-moins')
+        .toggleClass('icone-plus')
+        .parents('.bloc')
+            .find('.contenu')
+                .toggle()
+                .end()
+            .toggleResizable();
+}
+
+function uiUtiliser(uid) {
+    var uidParent = $w.blocActif;
+    
+    log("Utilisation de " + uid + " pour " + uidParent);
+
+    $($('#modele-utilisation-bloc').jqote($w.blocs[uid]))
+        /*.attr('id', "utilisation-" + uidParent + "-pour-" + uid)*/
+        .draggable({ containment: '#edition-' + uidParent})
+        .resizable()
+        .find('.reduire')
+            .click(uiReduireBloc)
+            .end()
+        .appendTo('#edition-' + uidParent);
 }
 
 function uiSerialiser() {
@@ -99,10 +190,21 @@ function uiSerialiser() {
 }
 
 function uiNouveauBloc() {
-    $w.addBloc($('#nom-bloc').val());
+    nouveauBloc($('#nom-bloc').val());
 }
 
-function uiShowBox() {
+function nouveauBloc(nom) {
+    var b = $w.addBloc(nom);
+    
+    $("<div/>")
+    .attr('id', "edition-" + b.uid)
+    .hide()
+    .appendTo('#edition-blocs');
+    
+    return b;
+}
+
+/* function uiShowBox() {
     var b = $w.addBloc();
     
     $('#edition').append("<div id=\"edition-" + b.uid + "\"></div>");
@@ -113,7 +215,7 @@ function uiShowBox() {
     div.resizable();
     
     log("Nouveau bloc.");
-}
+} */
 
 jQuery.fn.extend({
     blink: function (count, speed) {
@@ -122,6 +224,9 @@ jQuery.fn.extend({
         speed = speed || 1000;
         
         // Mouseover
+        // Todo : il y a des bugs graphiques ici,
+        // et il faudrait enlever ce hook "mouseover"
+        // après la première fois.
         elem.mouseover(function () {
             elem.clearQueue("blink");
             elem.queue("blink", function() {

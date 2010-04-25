@@ -104,12 +104,66 @@ body {
     padding: 1em;
 }
 
-.bloc.parent {
-    background-color: lightgray;
+#resultats-recherche {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#resultats-recherche th {
+    border-bottom: thin solid black;
+}
+
+#resultats-recherche td {
+    border-bottom: thin solid lightgray;
+}
+
+#resultats-recherche th {
+    text-align: left;
+}
+
+#edition-blocs > * {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.bloc {
     border: medium solid gray;
     position: absolute;
     width: 25%;
     height: 30%;
     top: 10%;
     left: 20%;
+}
+
+.bloc .tete {
+    margin: 0.2em;
+    padding: 0.3em;
+    background-color: lightgray;
+}
+
+.bloc .tete .icone {
+    float: right;
+}
+
+.bloc .contenu {
+    padding: 0.4em;
+}
+
+.icone {
+    display: block;
+    font-weight: bolder;
+    color: black;
+    text-align: center;
+    min-width: 1em;
+}
+
+.icone-plus:before {
+    content: "+";
+}
+
+.icone-moins:before {
+    content: "-";
 }
