@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+  <head>
+    <title>IDE</title>
+    <link rel="stylesheet" type="text/css" href="jquery/themes/custom-theme/jquery.ui.all.css" />
+    <link rel="stylesheet" type="text/css" href="style2.css" />
+    
+    <script type="text/javascript" src="jquery/jquery-1.4.2.js"></script>
+    
+    <script type="text/javascript" src="jquery/jquery.scrollTo.js"></script>
+    <script type="text/javascript" src="jquery/jquery.jqote2.js"></script>
+    
+    <script type="text/javascript" src="jquery/ui/jquery.ui.core.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.mouse.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.draggable.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.droppable.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.resizable.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.effects.core.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.effects.core.js"></script>
+    
+    <script type="text/javascript" src="ide.js"></script>
+  </head>
+  <body id="body">
+    <div id="wrapper">
+    <table id="top">
+      <tr>
+        <td>
+    
+    <div id="outils">
+      <input type="text" class="bouton" id="nom-bloc" />
+      <a href="#" class="bouton" id="rechercher">Rechercher</a>
+      <a href="#" class="bouton" id="nouveau-bloc">Nouveau bloc</a>
+      <a href="#" class="bouton" id="serialiser">Serialiser</a>
+      <div class="clear"></div>
+    </div>
+    
+        </td>
+      </tr>
+      <tr>
+        <td>
+    
+    <div id="edition">
+      <table id="resultats-recherche">
+        <thead>
+          <tr>
+            <th>
+              Uid
+            </th>
+            <th>
+              Nom
+            </th>
+            <th>
+              Description
+            </th>
+            <th>
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <script type="text/x-jqote-template" id="modele-resultat-recherche">
+          <![CDATA[
+            <tr class="resultat-recherche">
+              <td>
+                <%= this.uid %>
+              </td>
+              <td>
+                <%= this.nom %>
+              </td>
+              <td>
+                <%= this.description %>
+              </td>
+              <td>
+                <a class="button editer" href="#">Éditer</a>
+                <a class="button utiliser" href="#">Utiliser</a>
+              </td>
+            </tr>
+          ]]>
+        </script>
+        <tbody>
+        </tbody>
+      </table>
+      <div id="edition-blocs">
+        <script type="text/x-jqote-template" id="modele-utilisation-bloc">
+          <![CDATA[
+            <div class="bloc">
+              <div class="tete">
+                <span class="reduire icone icone-moins"></span>
+                <%= this.nom %>
+              </div>
+              <div class="contenu">
+                <%= this.description %>
+              </div>
+            </div>
+          ]]>
+        </script>
+      </div>
+    </div>
+    
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div id="log">
+            <div class="tete">
+              <h2>Log</h2>
+              <a href="#" class="bouton" id="log-pause">pause</a>
+            </div>
+            <div class="contenu">
+              <!-- Log -->
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+    </div>
+  </body>
+</html>

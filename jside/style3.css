@@ -1,0 +1,28 @@
+html, body, #hauteur-max {
+    height:100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+td {
+    border: thin solid red;
+    vertical-align: top;
+}
+
+td#log{
+    height:10em; /* On ne peut pas mettre 20% ici… */
+}
+
+#log-contenu {
+    height: 100%;
+    overflow: auto;
+}
+
+tr {
+    height:1em;
+}
+
+tr#main {
+    height: auto;
+}
