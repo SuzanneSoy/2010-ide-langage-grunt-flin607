@@ -1,3 +1,5 @@
+/* Mise en page */
+
 html, body, #hauteur-max {
     height:100%;
     width: 100%;
@@ -5,24 +7,192 @@ html, body, #hauteur-max {
     padding: 0;
 }
 
-td {
-    border: thin solid red;
-    vertical-align: top;
+#hauteur-max {
+    border-collapse: collapse;
 }
 
-td#log{
+#hauteur-max > tbody > tr {
+    height:1em;
+    margin: 0;
+    padding: 0;
+}
+
+#hauteur-max > tbody > tr > td {
+    vertical-align: top;
+    margin: 0;
+    padding: 0;
+}
+
+#hauteur-max > tbody > tr#elastique {
+    height: auto;
+}
+
+#hauteur-max > tbody > tr > td#td-log-contenu{
     height:10em; /* On ne peut pas mettre 20% ici… */
 }
 
-#log-contenu {
+.log .contenu {
     height: 100%;
     overflow: auto;
 }
 
-tr {
-    height:1em;
+
+
+/* Tous */
+
+.bouton {
+    display: inline-block;
+    margin: 0.2em;
+    text-decoration: none;
+    border-width: thin;
+    border-style: solid;
 }
 
-tr#main {
-    height: auto;
+.bouton {
+    color: #333;
+    border-color: #999;
+    background-color: #eee
+}
+
+.bouton:hover {
+    color: #555;
+    border-color: #ccc;
+    background-color: #fff
+}
+
+/* Icônes */
+.icone {
+    display: block;
+    font-weight: bolder;
+    color: black;
+    text-align: center;
+    min-width: 1em;
+}
+
+.icone-plus:before {
+    content: "+";
+}
+
+.icone-moins:before {
+    content: "-";
+}
+
+
+
+/* Outils */
+
+#outils .bouton {
+    color: #242;
+    border-color: #8a8;
+    background-color: #efd;
+}
+
+#outils .boutonNormal {
+    color: #242;
+    border-color: #8a8;
+    background-color: #efd;
+}
+
+#outils .bouton:hover {
+    color: #422;
+    border-color: #a88;
+    background-color: #fed;
+}
+
+#outils .boutonHover {
+    color: #422;
+    border-color: #a88;
+    background-color: #fed;
+}
+
+
+
+/* Zone principale */
+
+#elastique > td {
+    border-top: thick solid gray;
+    border-bottom: thick solid gray;
+}
+
+#edition {
+    border: thin solid green;
+    height: 100%;
+}
+
+/* Résultats de la recherche */
+
+#resultats-recherche {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#resultats-recherche thead th {
+    border-bottom: thin solid black;
+}
+
+#resultats-recherche thead tr {
+}
+
+#resultats-recherche tbody tr:first-child td {
+    /*padding-top: 0.2em;*/
+}
+
+#resultats-recherche td {
+    border-bottom: thin solid lightgray;
+}
+
+#resultats-recherche th {
+    text-align: left;
+}
+
+/* Édition des blocs */
+#edition-blocs > * {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.bloc {
+    border: medium solid gray;
+    position: absolute;
+    width: 25%;
+    height: 30%;
+    top: 10%;
+    left: 20%;
+}
+
+.bloc .tete {
+    margin: 0.2em;
+    padding: 0.3em;
+    background-color: lightgray;
+}
+
+.bloc .tete .icone {
+    float: right;
+}
+
+.bloc .contenu {
+    padding: 0.4em;
+}
+
+
+
+/* Log */
+
+.log .tete {
+    padding: 0 0.3em;
+}
+
+.log h2 {
+    display: inline;
+    font-size: 100%;
+    margin-right : 1em;
+}
+
+.log p {
+    border-bottom: thin solid lightgray;
+    padding: 0.7em 0.3em 0.3em;
+    margin: 0;
 }

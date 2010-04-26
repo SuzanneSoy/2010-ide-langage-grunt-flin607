@@ -3,51 +3,111 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
   <head>
     <title>IDE</title>
+    <link rel="stylesheet" type="text/css" href="jquery/themes/custom-theme/jquery.ui.all.css" />
     <link rel="stylesheet" type="text/css" href="style3.css" />
+    
+    <script type="text/javascript" src="jquery/jquery-1.4.2.js"></script>
+    
+    <script type="text/javascript" src="jquery/jquery.scrollTo.js"></script>
+    <script type="text/javascript" src="jquery/jquery.jqote2.js"></script>
+    
+    <script type="text/javascript" src="jquery/ui/jquery.ui.core.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.mouse.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.draggable.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.droppable.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.resizable.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.effects.core.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.effects.core.js"></script>
+    
+    <script type="text/javascript" src="ide.js"></script>
   </head>
   <body>
     <table id="hauteur-max">
-      <tr>
-        <td>
-          Menu
-        </td>
-      </tr>
-      <tr id="main">
-        <td id="td1">
-          abc
-        </td>
-      </tr>
-      <tr>
-        <td id="td1">
-          Log
-        </td>
-      </tr>
-      <tr>
-        <td id="log">
-          <div id="log-contenu">
-            1  Contenu du log<br/>
-            2  Contenu du log<br/>
-            3  Contenu du log<br/>
-            4  Contenu du log<br/>
-            5  Contenu du log<br/>
-            6  Contenu du log<br/>
-            7  Contenu du log<br/>
-            8  Contenu du log<br/>
-            9  Contenu du log<br/>
-            10 Contenu du log<br/>
-            11 Contenu du log<br/>
-            12 Contenu du log<br/>
-            13 Contenu du log<br/>
-            14 Contenu du log<br/>
-            15 Contenu du log<br/>
-            16 Contenu du log<br/>
-            17 Contenu du log<br/>
-            18 Contenu du log<br/>
-            19 Contenu du log<br/>
-            20 Contenu du log<br/>
-          </div>
-        </td>
-      </tr>
+      <tbody>
+        <tr>
+          <td>
+            <div id="outils">
+              <input type="text" class="bouton" id="nom-bloc" />
+              <input type="button" class="bouton" id="rechercher"   value="Rechercher" />
+              <input type="button" class="bouton" id="nouveau-bloc" value="Nouveau bloc" />
+              <input type="button" class="bouton" id="serialiser"   value="Serialiser" />
+            </div>
+          </td>
+        </tr>
+        <tr id="elastique">
+          <td  id="edition">
+              <table id="resultats-recherche">
+                <thead>
+                  <tr>
+                    <th>
+                      Uid
+                    </th>
+                    <th>
+                      Nom
+                    </th>
+                    <th>
+                      Description
+                    </th>
+                    <th>
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <script type="text/x-jqote-template" id="modele-resultat-recherche">
+                  <![CDATA[
+            <tr class="resultat-recherche">
+              <td>
+                <%= this.uid %>
+              </td>
+              <td>
+                <%= this.nom %>
+              </td>
+              <td>
+                <%= this.description %>
+              </td>
+              <td>
+                <a class="button editer" href="#">Éditer</a>
+                <a class="button utiliser" href="#">Utiliser</a>
+              </td>
+            </tr>
+            ]]>
+                </script>
+                <tbody>
+                </tbody>
+              </table>
+              <div id="edition-blocs">
+                <script type="text/x-jqote-template" id="modele-utilisation-bloc">
+                  <![CDATA[
+            <div class="bloc">
+              <div class="tete">
+                <span class="reduire icone icone-moins"></span>
+                <%= this.nom %>
+              </div>
+              <div class="contenu">
+                <%= this.description %>
+              </div>
+            </div>
+            ]]>
+                </script>
+              </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="log">
+            <div class="tete">
+              <h2>Log</h2>
+              <input type="button" class="bouton" id="log-pause" value="pause" />
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td id="td-log-contenu" class="log">
+            <div id="log" class="contenu">
+            </div>
+          </td>
+        </tr>
+      </tbody>
     </table>
   </body>
 </html>

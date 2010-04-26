@@ -2,7 +2,7 @@ body {
     margin: 0;
 }
 
-#log {
+.log {
     position: absolute;
     top: 75%;
     bottom: 0;
@@ -10,7 +10,7 @@ body {
     right: 0;
 }
 
-#log p {
+.log p {
     border-bottom: thin solid lightgray;
     padding: 0.7em 0.3em 0.3em;
     margin: 0;
@@ -23,7 +23,7 @@ body {
     background-color: lightgray;
 }
 
-#log h2 {
+.log h2 {
     display: inline;
     font-size: 100%;
     margin-right : 1em;
@@ -41,7 +41,7 @@ body {
     background-color: #fff
 }
 
-#log-contenu {
+.log .contenu {
     position: absolute;
     top: 1.7em; /* Hack, mais CSS ne nous permettra pas de faire mieux… :( */
     bottom: 0;
@@ -61,9 +61,6 @@ body {
     text-decoration: none;
     border-width: thin;
     border-style: solid;
-}
-
-#outils .bouton {
 }
 
 #outils .bouton {

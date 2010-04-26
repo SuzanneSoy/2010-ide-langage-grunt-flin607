@@ -19,7 +19,7 @@ function init() {
     test();
     
     var b = nouveauBloc("Scratch");
-    uiEditer(b.uid);
+    editer(b.uid);
     rechercher('');
 }
 
@@ -54,7 +54,6 @@ function bloc(uid, nom, description) {
     this.nom = nom || "Nouveau bloc";
     this.description = description || "Aucune description.";
     this.definitions = [];
-    log("Nouveau bloc \"" + this.nom + "\"");
     b = this;
 }
 
@@ -99,7 +98,8 @@ jQuery.fn.extend({
     }
 });
 
-function uiRechercher() {
+function uiRechercher() { 
+    log("Recherche…");
     rechercher($('#nom-bloc').val());
 }
 
@@ -115,8 +115,6 @@ function demarrerRecherche() {
 }
 
 function rechercher(terme) {
-    log("Recherche…");
-    
     demarrerRecherche();
     
     $(
@@ -152,7 +150,10 @@ function rechercher(terme) {
 
 function uiEditer(uid) {
     log("Édition de " + uid);
-    
+    editer(uid);
+}
+
+function editer(uid) {
     /* $('#edition-blocs').children().hide(); */
     $('#edition-' + $w.blocActif).hide();
     $w.blocActif = uid;
@@ -190,7 +191,9 @@ function uiSerialiser() {
 }
 
 function uiNouveauBloc() {
-    nouveauBloc($('#nom-bloc').val());
+    var nom = $('#nom-bloc').val();
+    log("Nouveau bloc \"" + nom + "\"");
+    nouveauBloc(nom);
 }
 
 function nouveauBloc(nom) {
@@ -251,19 +254,19 @@ jQuery.fn.extend({
 
 function logPauseToggle() {
     if (logPause) {
-        $('#log .contenu').stop().scrollTo($('#log .contenu :last'), 200);
+        $('.log .contenu').stop().scrollTo($('.log .contenu :last'), 200);
         logPause = false;
         $('#log-pause').text("pause");
     } else {
         logPause = true;
-        $('#log .contenu').stop();
+        $('.log .contenu').stop();
         $('#log-pause').text("play");
     }
 }
 
 function log(msg) {
-    var elem = $('#log .contenu').append("<p>"+msg+"</p>");
+    var elem = $('.log .contenu').append("<p>"+msg+"</p>");
     if (!logPause) {
-        $('#log .contenu').stop().scrollTo($('#log .contenu :last'), 100);
+        $('.log .contenu').stop().scrollTo($('.log .contenu :last'), 100);
     }
 }
