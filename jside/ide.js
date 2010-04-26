@@ -174,7 +174,7 @@ function uiReduireBloc () {
 function uiUtiliser(uid) {
     var uidParent = $w.blocActif;
     
-    log("Utilisation de " + uid + " pour " + uidParent);
+    log("Utilisation de " + $w.blocs[uid].nom + " pour " + $w.blocs[uidParent].nom);
 
     $($('#modele-utilisation-bloc').jqote($w.blocs[uid]))
         /*.attr('id', "utilisation-" + uidParent + "-pour-" + uid)*/
