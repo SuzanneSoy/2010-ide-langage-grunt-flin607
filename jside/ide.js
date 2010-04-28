@@ -38,6 +38,10 @@ String.prototype.escapeXML = function() {
     .replace(/'/g, "&apos;");
 }
 
+String.prototype.toDom = function() {
+    return $("" + this);
+}
+
 function world() {
     this.blocs = [];
     this.maxuid = 0;
@@ -54,6 +58,8 @@ function bloc(uid, nom, description) {
     this.nom = nom || "Nouveau bloc";
     this.description = description || "Aucune description.";
     this.definitions = [];
+    this.entrees = 3;
+    this.sorties = 2;
     b = this;
 }
 
@@ -124,25 +130,29 @@ function rechercher(terme) {
     )
     
     .map(function(idx, elem) {
-        var res = $($('#modele-resultat-recherche').jqote(elem))
-        .data("uid", elem.uid)
-        .click(function() {
-            log(elem.uid);
-        });
+        return $('#modele-resultat-recherche')
+            .jqote(elem)
+            .toDom()
+            .data("uid", elem.uid)
+            .click(function() {
+                log(elem.uid);
+            })
+            
+            .find('.editer')
+            .click(function() {
+                arreterRecherche();
+                uiEditer(elem.uid);
+                return false;
+            })
+            .end()
         
-        res.find('.editer').click(function() {
-            arreterRecherche();
-            uiEditer(elem.uid);
-            return false;
-        });
-        
-        res.find('.utiliser').click(function() {
-            arreterRecherche();
-            uiUtiliser(elem.uid);
-            return false;
-        });
-        
-        return res;
+            .find('.utiliser')
+            .click(function() {
+                arreterRecherche();
+                uiUtiliser(elem.uid);
+                return false;
+            })
+            .end();
     })
     
     .appendTo('#resultats-recherche tbody');
@@ -165,21 +175,22 @@ function uiReduireBloc () {
         .toggleClass('icone-moins')
         .toggleClass('icone-plus')
         .parents('.bloc')
-            .find('.contenu')
-                .toggle()
-                .end()
-            .toggleResizable();
+        .find('.contenu')
+            .toggle()
+            .end()
+        .toggleResizable();
 }
 
 function uiUtiliser(uid) {
     var uidParent = $w.blocActif;
     
     log("Utilisation de " + $w.blocs[uid].nom + " pour " + $w.blocs[uidParent].nom);
-
-    $($('#modele-utilisation-bloc').jqote($w.blocs[uid]))
-        /*.attr('id', "utilisation-" + uidParent + "-pour-" + uid)*/
-        .draggable({ containment: '#edition-' + uidParent})
-        .resizable()
+    
+    $('#modele-utilisation-bloc')
+        .jqote($w.blocs[uid])
+        .toDom()
+        .draggable({ containment: '#edition-' + uidParent + ' > .contenu'})
+        .resizable({ containment: '#edition-' + uidParent + ' > .contenu'}) /* Small bug here… */
         .find('.reduire')
             .click(uiReduireBloc)
             .end()
@@ -199,26 +210,15 @@ function uiNouveauBloc() {
 function nouveauBloc(nom) {
     var b = $w.addBloc(nom);
     
-    $("<div/>")
-    .attr('id', "edition-" + b.uid)
-    .hide()
-    .appendTo('#edition-blocs');
+    $('#modele-edition-bloc')
+        .jqote(b)
+        .toDom()
+        .attr('id', "edition-" + b.uid)
+        .hide()
+        .appendTo('#edition-blocs');
     
     return b;
 }
-
-/* function uiShowBox() {
-    var b = $w.addBloc();
-    
-    $('#edition').append("<div id=\"edition-" + b.uid + "\"></div>");
-    var div = $('#edition-' + b.uid);
-    
-    div.addClass("bloc parent serialize");
-    div.draggable({ containment: '#edition' });
-    div.resizable();
-    
-    log("Nouveau bloc.");
-} */
 
 jQuery.fn.extend({
     blink: function (count, speed) {

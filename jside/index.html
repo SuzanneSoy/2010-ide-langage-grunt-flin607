@@ -71,16 +71,58 @@
         </tbody>
       </table>
       <div id="edition-blocs">
-        <script type="text/x-jqote-template" id="modele-utilisation-bloc">
+        <script type="text/x-jqote-template" id="modele-edition-bloc">
           <![CDATA[
-            <div class="bloc">
+            <div class="editionBloc">
               <div class="tete">
-                <span class="reduire icone icone-moins"></span>
+                <!--<span class="reduire icone icone-moins"></span>-->
                 <%= this.nom %>
               </div>
               <div class="contenu">
-                <%= this.description %>
               </div>
+            </div>
+          ]]>
+        </script>
+        <script type="text/x-jqote-template" id="modele-utilisation-bloc">
+          <![CDATA[
+            <div class="bloc">
+              <table class="agencement-bloc">
+                <tbody>
+                  <tr style="height: 1em;">
+                    <td colspan="3" class="tete">
+                      <span class="reduire icone icone-moins"></span>
+                      <%= this.nom %>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="ports entree">
+                      <table class="ports entree">
+                        <tbody>
+                          <% for (i = 0; i < this.entrees; i++) { %>
+                          <tr>
+                            <td class="port entree">●</td>
+                          </tr>
+                          <% } %>
+                        </tbody>
+                      </table>
+                    </td>
+                    <td style="text-align:center;" class="contenu">
+                      <%= this.description %>
+                    </td>
+                    <td class="ports sortie">
+                      <table class="ports sortie">
+                        <tbody>
+                          <% for (i = 0; i < this.sorties; i++) { %>
+                          <tr>
+                            <td class="port sortie">●</td>
+                          </tr>
+                          <% } %>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           ]]>
         </script>
