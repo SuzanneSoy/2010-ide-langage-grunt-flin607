@@ -5,28 +5,30 @@ $(document).ready(function () {
 function init() {
     $w = new world();
     
+    // Lier les blocs
+    lienBlocsActif = { actif: false, elems: $([])};
+    
     $('#rechercher').click(uiRechercher);
     $('#nouveau-bloc').click(uiNouveauBloc);
     $('#serialiser').click(uiSerialiser);
     //$('#nouveau-lien').click(uiNouveauLien);
     logPause = false;
     $('#log-pause').click(logPauseToggle);
-
+    
     log("Démarré.");
     log("Ajoutez des blocs à l'espace de travail pour construire un programme.");
     $('#nouveau-bloc').blink();
-
-    test();
     
-    var b = nouveauBloc("Scratch");
-    editer(b.uid);
-    rechercher('');
-}
-
-function test() {
-    nouveauBloc("abcd");
-    nouveauBloc("bc");
-    nouveauBloc("xyz");
+    // Test
+    var a = nouveauBloc("abcd");
+    var b = nouveauBloc("bc");
+    var c = nouveauBloc("xyz");
+    var d = nouveauBloc("Scratch");
+    utiliser(a.uid, d.uid);
+    
+    arreterRecherche();
+    editer(d.uid);
+    //rechercher('');
 }
 
 String.prototype.escapeXML = function() {
@@ -101,8 +103,111 @@ jQuery.fn.extend({
         this.data('notResizable', ! this.data('notResizable'))
         
         return this;
+    },
+    offX: function(value) {
+        if (value === undefined) {
+            return this.offset().left;
+        } else {
+            return this.offset({left: value});
+        }
+    },
+    offY: function(value) {
+        if (value === undefined) {
+            return this.offset().top;
+        } else {
+            return this.offset({top: value});
+        }
+    },
+    leftX: function() {
+        return this.offX.apply(this, arguments);
+    },
+    topY: function() {
+        return this.offY.apply(this, arguments);
+    },
+    centerX: function() {
+        debug = this;
+        return this.offX() + (this.width() / 2);
+    },
+    centerY: function() {
+        return this.offY() + (this.height() / 2);
+    },
+    rightX: function() {
+        return this.offX() + this.width();
+    },
+    bottomY: function() {
+        return this.offY() + this.height();
     }
 });
+
+function surchargeAccesseur(nom, type, get, set) {
+    var _old = $.fn[nom];
+    $.fn[nom] = function(options) {
+        var args = arguments;
+        if (options !== undefined) {
+            var that = this;
+            return this.each(function (i) {
+                if (that[i] instanceof type) {
+                    set(that[i], options)
+                } else {
+                    _old.apply($(that[i]), args);
+                }
+            });
+        } else {
+            if (this[0] instanceof type) {
+                return get(this);
+            } else {
+	        return _old.call(this);
+            }
+        }
+    };
+    
+}
+
+function surchargeAccesseurSimple(nom, defaut, type) {
+    surchargeAccesseur(
+        nom,
+        type,
+        function (obj) { ret = obj[0][nom]; return (ret !== undefined) ? ret : defaut; },
+        function (obj, val) { obj[nom] = val; }
+    );
+}
+
+// This is the beauty of JavaScript ♥
+surchargeAccesseurSimple('height', 0, $.Event);
+surchargeAccesseurSimple('width', 0, $.Event);
+surchargeAccesseurSimple('scrollLeft', 0, $.Event);
+surchargeAccesseurSimple('scrollTop', 0, $.Event);
+surchargeAccesseurSimple('outerWidth', 0, $.Event);
+surchargeAccesseurSimple('outerHeight', 0, $.Event);
+surchargeAccesseur(
+    'offset',
+    $.Event,
+    function (obj) {
+        return {
+            left: obj[0].pageX,
+            top:  obj[0].pageY
+        };
+    },
+    function (obj, val) {
+        if ('left' in val) { that[i].pageX = val.left; }
+        if ('top'  in val) { that[i].pageY = val.top;  }
+    }
+);
+
+// Fix firefox bug : when top or left are set to a non-integer value, flicker occurs. 
+(function ($) {
+    var _offset = $.fn.offset;
+    
+    $.fn.offset = function(options) {
+        var args = arguments;
+        if (options !== undefined) {
+            if ('left' in options) { args[0].left = Math.floor(options.left); }
+            if ('top'  in options) { args[0].top  = Math.floor(options.top);  }
+        }
+        
+        return _offset.apply(this, args);
+    }
+}(jQuery));
 
 function uiRechercher() { 
     log("Recherche…");
@@ -183,9 +288,11 @@ function uiReduireBloc () {
 
 function uiUtiliser(uid) {
     var uidParent = $w.blocActif;
-    
     log("Utilisation de " + $w.blocs[uid].nom + " pour " + $w.blocs[uidParent].nom);
-    
+    utiliser(uid, uidParent);
+}
+
+function utiliser(uid, uidParent) {
     $('#modele-utilisation-bloc')
         .jqote($w.blocs[uid])
         .toDom()
@@ -193,6 +300,9 @@ function uiUtiliser(uid) {
         .resizable({ containment: '#edition-' + uidParent + ' > .contenu'}) /* Small bug here… */
         .find('.reduire')
             .click(uiReduireBloc)
+            .end()
+        .find('.port')
+            .click(uiLierBlocs)
             .end()
         .appendTo('#edition-' + uidParent);
 }
@@ -218,6 +328,80 @@ function nouveauBloc(nom) {
         .appendTo('#edition-blocs');
     
     return b;
+}
+
+function uiActualiserLien(_de, _vers, segments) {
+    if ($(_de).centerX() < $(_vers).centerX()) {
+        de = $(_de);
+        vers = $(_vers);
+    } else {
+        de = $(_vers);
+        vers = $(_de);
+    }
+    segments = $(segments);
+    var segment1 = segments.find('.segment-1');
+    var segment2 = segments.find('.segment-2');
+    var segment3 = segments.find('.segment-3');
+    
+    $(segment1)
+        .width((vers.centerX() - de.centerX()) / 2)
+        .position({my: 'left center', at: 'center', of: de});
+    $(segment3)
+        .width((vers.centerX() - de.centerX()) / 2)
+        .position({my: 'right center', at: 'center', of: vers});
+    $w.debug = [$(segment3), vers];
+    
+    var neg = segment3.centerY() - segment1.centerY();
+    
+    $(segment2)
+        .height((neg > 0) ? segment3.bottomY() - segment1.topY() : segment1.bottomY() - segment3.topY())
+        .position({
+            my: (neg > 0) ? 'center top' : 'center bottom',
+            at: (neg > 0) ? 'right top'  : 'right bottom',
+            of: (neg > 0) ? segment1     : segment1
+        });
+}
+
+function uiLierBlocs() {
+    if (!lienBlocsActif.actif) {
+        log("Début lien blocs");
+        lienBlocsActif.actif = true;
+        
+        var segments = $('#modele-lien-blocs')
+            .jqote()
+            .toDom()
+            .appendTo($('body'));
+        
+        var start = $(this);
+        
+        var elems = $(this)
+            .parents(".editionBloc")
+            .add(segments);
+        
+        lienBlocsActif.start = start;
+        lienBlocsActif.elems = elems;
+        lienBlocsActif.segments = segments;
+        
+        elems.bind('mousemove.creerLien', function (event) {
+            uiActualiserLien(start, event, segments);
+        });
+        elems.bind('click.creerLien', function (event) {
+            log("Fin lien blocs");
+            lienBlocsActif.elems.unbind('.creerLien');
+            segments.remove();
+            lienBlocsActif.actif = false;
+        });
+    } else {
+        log("Connexion lien blocs");
+        with (lienBlocsActif) {
+            elems.unbind('.creerLien');
+            actif = false;
+            debug = this;
+            uiActualiserLien(start, this, segments);
+        }
+    }
+    
+    return false;
 }
 
 jQuery.fn.extend({

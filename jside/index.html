@@ -17,6 +17,7 @@
     <script type="text/javascript" src="jquery/ui/jquery.ui.draggable.js"></script>
     <script type="text/javascript" src="jquery/ui/jquery.ui.droppable.js"></script>
     <script type="text/javascript" src="jquery/ui/jquery.ui.resizable.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.position.js"></script>
     <script type="text/javascript" src="jquery/ui/jquery.ui.effects.core.js"></script>
     <script type="text/javascript" src="jquery/ui/jquery.effects.core.js"></script>
     
@@ -100,7 +101,7 @@
                         <tbody>
                           <% for (i = 0; i < this.entrees; i++) { %>
                           <tr>
-                            <td class="port entree">●</td>
+                            <td class="port entree"><div class="port symbole"></td><!--●-->
                           </tr>
                           <% } %>
                         </tbody>
@@ -114,7 +115,7 @@
                         <tbody>
                           <% for (i = 0; i < this.sorties; i++) { %>
                           <tr>
-                            <td class="port sortie">●</td>
+                            <td class="port sortie"><div class="symbole"></div></td>
                           </tr>
                           <% } %>
                         </tbody>
@@ -123,6 +124,18 @@
                   </tr>
                 </tbody>
               </table>
+            </div>
+          ]]>
+        </script>
+        <script type="text/x-jqote-template" id="modele-lien-blocs">
+          <![CDATA[
+            <div class="segments">
+              <div class="lien horizontal segment-1">
+              </div>
+              <div class="lien vertical segment-2">
+              </div>
+              <div class="lien horizontal segment-3">
+              </div>
             </div>
           ]]>
         </script>

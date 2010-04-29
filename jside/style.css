@@ -184,6 +184,36 @@ body {
     color: green;
 }
 
+/* Liens */
+.lien {
+    background-color: lightblue;
+    position: absolute;
+    height: 5px;
+    width: 5px;
+}
+
+.port .symbole {
+    width: 10px;
+    height: 10px;
+    background-color: lightblue;
+    border: thin solid blue;
+    /* z-index: 2000; */
+}
+
+.port:hover .symbole {
+    background-color: lightgreen;
+    border-color: green;
+}
+
+
+/*.segment-1 {
+    background-color: lightgreen;
+}
+
+.segment-3 {
+    background-color: pink;
+}*/
+
 
 
 /* Log */
