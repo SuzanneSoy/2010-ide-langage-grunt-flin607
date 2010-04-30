@@ -150,6 +150,11 @@ body {
     background-color: lightgray;
 }
 
+.bloc .contenu .titre {
+    display: none;
+    text-align: center;
+}
+
 .bloc .tete {
     text-align: center;
 }
@@ -162,37 +167,26 @@ body {
     padding: 0.4em;
 }
 
-.bloc .ports {
-    width:100%;
+/* Ports */
+
+.ports {
     height:100%;
     width: 1em;
+    padding: 0;
+    border-collapse: collapse;
 }
 
-.bloc .ports.sortie {
+.ports.sortie {
     text-align: right;
 }
 
-.bloc .ports.entree {
+.ports.entree {
     text-align: left;
 }
 
-.bloc .port.sortie:hover {
-    color: green;
-}
-
-.bloc .port.entree:hover {
-    color: green;
-}
-
-/* Liens */
-.lien {
-    background-color: lightblue;
-    position: absolute;
-    height: 5px;
-    width: 5px;
-}
-
 .port .symbole {
+    position: relative;
+    z-index: 10;
     width: 10px;
     height: 10px;
     background-color: lightblue;
@@ -204,6 +198,15 @@ body {
     background-color: lightgreen;
     border-color: green;
 }
+
+/* Liens */
+.lien {
+    background-color: lightblue;
+    position: absolute;
+    height: 5px;
+    width: 5px;
+}
+
 
 
 /*.segment-1 {

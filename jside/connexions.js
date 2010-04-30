@@ -17,7 +17,6 @@ function uiActualiserLien(_de, _vers, segments) {
     $(segment3)
         .width((vers.centerX() - de.centerX()) / 2)
         .position({my: 'right center', at: 'center', of: vers});
-    $w.debug = [$(segment3), vers];
     
     var neg = segment3.centerY() - segment1.centerY();
     
@@ -58,17 +57,42 @@ function uiLierBlocs() {
             lienBlocsActif.elems.unbind('.creerLien');
             segments.remove();
             lienBlocsActif.actif = false;
-            return true;
+            return false;
         });
     } else {
         log("Connexion lien blocs");
-        with (lienBlocsActif) {
-            elems.unbind('.creerLien');
-            actif = false;
-            debug = this;
-            uiActualiserLien(start, this, segments);
+        
+        // Création du lien
+        var lien = {
+            start: $(lienBlocsActif.start),
+            end: $(this),
+            segments: $(lienBlocsActif.segments)
+        };
+        
+        // Un lien a été créé, on est à l'écoute de nouveaux liens
+        // (et non plus à l'écoute de la fin d'une connexion)
+        lienBlocsActif.elems.unbind('.creerLien');
+        lienBlocsActif.actif = false;
+        
+        debugg = lien;
+        if ((lien.start.parents('.bloc:last')[0] == lien.end.parents('.bloc:last')[0])
+            || (lien.start.hasClass('entree') && lien.end.hasClass('entree'))
+            || (lien.start.hasClass('sortie') && lien.end.hasClass('sortie'))) {
+            log("abc");
+            lien.segments.remove();
+            return;
         }
-        return true;
+        
+        // Mise à jour des positions des segments lors des drag, etc.
+        $(lien.start).parents('.bloc:last')
+            .add($(lien.end).parents('.bloc:last'))
+            .bind('reduire dragstart drag dragstop resizestart resize resizestop', function (event) {
+                uiActualiserLien(lien.start, lien.end, lien.segments);
+            });
+        
+        // Et on re-dessine le lien bien en place maintenant que la cible
+        // est un port et non plus la souris.
+        uiActualiserLien(lien.start, lien.end, lien.segments);
     }
     
     return false;

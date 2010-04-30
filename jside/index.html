@@ -81,12 +81,42 @@
         <script type="text/x-jqote-template" id="modele-edition-bloc">
           <![CDATA[
             <div class="editionBloc">
-              <div class="tete">
-                <!--<span class="reduire icone icone-moins"></span>-->
-                <%= this.nom %>
-              </div>
-              <div class="contenu">
-              </div>
+              <table class="agencement-bloc">
+                <tbody>
+                  <tr style="height: 1em;" class="tete">
+                    <td colspan="3">
+                      <span class="reduire icone icone-moins"></span>
+                      <%= this.nom %>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="ports sortie">
+                      <table class="ports sortie">
+                        <tbody>
+                          <% for (i = 0; i < this.entrees; i++) { %>
+                          <tr>
+                            <td class="port sortie"><div class="symbole"></td><!--●-->
+                          </tr>
+                          <% } %>
+                        </tbody>
+                      </table>
+                    </td>
+                    <td style="text-align:center;" class="contenu">
+                    </td>
+                    <td class="ports entree">
+                      <table class="ports entree">
+                        <tbody>
+                          <% for (i = 0; i < this.sorties; i++) { %>
+                          <tr>
+                            <td class="port entree"><div class="symbole"></div></td>
+                          </tr>
+                          <% } %>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           ]]>
         </script>
@@ -95,8 +125,8 @@
             <div class="bloc">
               <table class="agencement-bloc">
                 <tbody>
-                  <tr style="height: 1em;">
-                    <td colspan="3" class="tete">
+                  <tr style="height: 1em;" class="tete">
+                    <td colspan="3">
                       <span class="reduire icone icone-moins"></span>
                       <%= this.nom %>
                     </td>
@@ -107,14 +137,21 @@
                         <tbody>
                           <% for (i = 0; i < this.entrees; i++) { %>
                           <tr>
-                            <td class="port entree"><div class="port symbole"></td><!--●-->
+                            <td class="port entree"><div class="symbole"></td><!--●-->
                           </tr>
                           <% } %>
                         </tbody>
                       </table>
                     </td>
                     <td style="text-align:center;" class="contenu">
-                      <%= this.description %>
+                      <div class="description">
+                        <%= this.description %>
+                      </div>
+                      <div class="titre">
+                        <span class="reduire">
+                          <%= this.nom %>
+                        </span>
+                      </div>
                     </td>
                     <td class="ports sortie">
                       <table class="ports sortie">

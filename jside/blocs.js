@@ -47,6 +47,9 @@ function nouveauBloc(nom) {
         .toDom()
         .attr('id', "edition-" + b.uid)
         .hide()
+        .find('.port')
+            .mousedown(uiLierBlocs)
+            .end()
         .appendTo('#edition-blocs');
     
     return b;
@@ -87,16 +90,24 @@ function utiliser(uid, uidParent) {
         .find('.port')
             .mousedown(uiLierBlocs)
             .end()
-        .appendTo('#edition-' + uidParent);
+        .appendTo('#edition-' + uidParent + ' .contenu:first');
 }
 
 function uiReduireBloc () {
     $(this)
-        .toggleClass('icone-moins')
-        .toggleClass('icone-plus')
+        /*.toggleClass('icone-moins')
+        .toggleClass('icone-plus')*/
         .parents('.bloc')
-        .find('.contenu')
+        .find('.tete')
             .toggle()
             .end()
-        .toggleResizable();
+        .find('.contenu .description')
+            .toggle()
+            .end()
+        .find('.contenu .titre')
+            .toggle()
+            .end()
+        .toggleResizable()
+        // TODO : devrait envoyer 'reduire' un coup sur deux, et 'agrandir' sinon
+        .trigger('reduire');
 }

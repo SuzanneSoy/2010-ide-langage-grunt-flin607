@@ -73,7 +73,6 @@ jQuery.fn.extend({
         return this.offY.apply(this, arguments);
     },
     centerX: function() {
-        debug = this;
         return this.offX() + (this.width() / 2);
     },
     centerY: function() {

@@ -34,6 +34,7 @@ function rechercher(terme) {
             
             .find('.editer')
             .click(function() {
+                arreterRecherche();
                 uiEditer(elem.uid);
                 return false;
             })
@@ -41,6 +42,7 @@ function rechercher(terme) {
         
             .find('.utiliser')
             .click(function() {
+                arreterRecherche();
                 uiUtiliser(elem.uid);
                 return false;
             })

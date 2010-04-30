@@ -20,7 +20,10 @@ function init() {
     $('#nouveau-bloc').blink();
     rechercher('');
     
-    // Demo
+    demo();
+}
+
+function demo() {
     var a = nouveauBloc("abcd");
     var b = nouveauBloc("bc");
     var c = nouveauBloc("xyz");
