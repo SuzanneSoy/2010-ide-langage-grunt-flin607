@@ -17,6 +17,7 @@
     <script type="text/javascript" src="jquery/ui/jquery.ui.draggable.js"></script>
     <script type="text/javascript" src="jquery/ui/jquery.ui.droppable.js"></script>
     <script type="text/javascript" src="jquery/ui/jquery.ui.resizable.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.sortable.js"></script>
     <script type="text/javascript" src="jquery/ui/jquery.ui.position.js"></script>
     <script type="text/javascript" src="jquery/ui/jquery.ui.effects.core.js"></script>
     <script type="text/javascript" src="jquery/ui/jquery.effects.core.js"></script>
@@ -35,6 +36,9 @@
       <input type="button" class="bouton" id="rechercher"   value="Rechercher" />
       <input type="button" class="bouton" id="nouveau-bloc" value="Nouveau bloc" />
       <input type="button" class="bouton" id="serialiser"   value="Serialiser" />
+      <input type="button" class="bouton" id="ajout-port-entree" value="Ajouter un port d'entree" />
+      <input type="button" class="bouton" id="ajout-port-sortie" value="Ajouter un port de sortie" />
+      <input type="button" class="bouton" id="suppr-port"        value="Supprimer un port" />
       <div class="clear"></div>
     </div>
     <div id="edition">
@@ -80,12 +84,11 @@
       <div id="edition-blocs">
         <script type="text/x-jqote-template" id="modele-edition-bloc">
           <![CDATA[
-            <div class="editionBloc">
+            <div class="editionBloc bloc">
               <table class="agencement-bloc">
                 <tbody>
                   <tr style="height: 1em;" class="tete">
                     <td colspan="3">
-                      <span class="reduire icone icone-moins"></span>
                       <%= this.nom %>
                     </td>
                   </tr>
@@ -95,7 +98,7 @@
                         <tbody>
                           <% for (i = 0; i < this.entrees; i++) { %>
                           <tr>
-                            <td class="port sortie"><div class="symbole"></td><!--●-->
+                            <td class="port sortie"><div class="symbole"></td>
                           </tr>
                           <% } %>
                         </tbody>
@@ -187,7 +190,7 @@
     <div class="log">
       <div id="log-en-tete">
         <h2>Log</h2>
-        <a href="#" class="bouton" id="log-pause">pause</a>
+        <input type="button" class="bouton" id="log-pause" value="pause" />
       </div>
       <div class="contenu">
       </div>

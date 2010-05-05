@@ -48,7 +48,17 @@ function nouveauBloc(nom) {
         .attr('id', "edition-" + b.uid)
         .hide()
         .find('.port')
-            .mousedown(uiLierBlocs)
+            .bind('mousedown click', uiLierBlocs)
+            .end()
+        .find('table.ports > tbody')
+            .sortable({
+                appendTo: 'body',
+                cursorAt: {top:7, left:7} // Hack-o-matic 7 & 7 pour que le symbole soit centré sous le curseur
+            })
+            .bind('sortstart', uiLierBlocs)
+            .bind('sort sortstop', function() {
+                $(this).parents('.bloc:first').trigger('changer');
+            })
             .end()
         .appendTo('#edition-blocs');
     
@@ -64,7 +74,6 @@ function uiEditer(uid) {
 
 function editer(uid) {
     arreterRecherche();
-    /* $('#edition-blocs').children().hide(); */
     $('#edition-' + $w.blocActif).hide();
     $w.blocActif = uid;
     $('#edition-' + uid).show();
@@ -82,13 +91,13 @@ function utiliser(uid, uidParent) {
     $('#modele-utilisation-bloc')
         .jqote($w.blocs[uid])
         .toDom()
-        .draggable({ containment: '#edition-' + uidParent + ' > .contenu'})
-        .resizable({ containment: '#edition-' + uidParent + ' > .contenu'}) /* Small bug here… */
+        .draggable({ containment: '#edition-' + uidParent + ' .contenu:first'})
+        .resizable({ containment: '#edition-' + uidParent + ' .contenu:first'}) /* Small bug here… */
         .find('.reduire')
             .click(uiReduireBloc)
             .end()
         .find('.port')
-            .mousedown(uiLierBlocs)
+            .click(uiLierBlocs)
             .end()
         .appendTo('#edition-' + uidParent + ' .contenu:first');
 }

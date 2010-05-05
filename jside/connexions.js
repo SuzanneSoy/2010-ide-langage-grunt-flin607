@@ -29,71 +29,85 @@ function uiActualiserLien(_de, _vers, segments) {
         });
 }
 
-function uiLierBlocs() {
-    if (!lienBlocsActif.actif) {
-        log("Début lien blocs");
-        lienBlocsActif.actif = true;
-        
-        var segments = $('#modele-lien-blocs')
-            .jqote()
-            .toDom()
-            .appendTo($('body'));
-        
-        var start = $(this);
-        
-        var elems = $(this)
-            .parents(".editionBloc")
-            .add(segments);
-        
-        lienBlocsActif.start = start;
-        lienBlocsActif.elems = elems;
-        lienBlocsActif.segments = segments;
-        
-        elems.bind('mousemove.creerLien', function (event) {
-            uiActualiserLien(start, event, segments);
-        });
-        elems.bind('mousedown.creerLien', function (event) {
-            log("Fin lien blocs");
-            lienBlocsActif.elems.unbind('.creerLien');
-            segments.remove();
-            lienBlocsActif.actif = false;
-            return false;
-        });
+function uiLierBlocs(ev) {
+    /* Hack pour ne pas capturer le clic après un sort */
+    if (ev.type == 'mousedown') {
+        lienBlocsActif.pret = true;
+        return true;
+    } else if (ev.type == 'sortstart') {
+        lienBlocsActif.pret = false;
+        return true;
     } else {
-        log("Connexion lien blocs");
-        
-        // Création du lien
-        var lien = {
-            start: $(lienBlocsActif.start),
-            end: $(this),
-            segments: $(lienBlocsActif.segments)
-        };
-        
-        // Un lien a été créé, on est à l'écoute de nouveaux liens
-        // (et non plus à l'écoute de la fin d'une connexion)
-        lienBlocsActif.elems.unbind('.creerLien');
-        lienBlocsActif.actif = false;
-        
-        debugg = lien;
-        if ((lien.start.parents('.bloc:last')[0] == lien.end.parents('.bloc:last')[0])
-            || (lien.start.hasClass('entree') && lien.end.hasClass('entree'))
-            || (lien.start.hasClass('sortie') && lien.end.hasClass('sortie'))) {
-            log("abc");
-            lien.segments.remove();
-            return;
-        }
-        
-        // Mise à jour des positions des segments lors des drag, etc.
-        $(lien.start).parents('.bloc:last')
-            .add($(lien.end).parents('.bloc:last'))
-            .bind('reduire dragstart drag dragstop resizestart resize resizestop', function (event) {
+        if (!lienBlocsActif.pret) {
+            lienBlocsActif.pret = true;
+            return true;
+        } else {
+            log(lienBlocsActif.pret);
+            /* Fin du hack non-capture de clic après sort */
+            if (!lienBlocsActif.actif) {
+                lienBlocsActif.actif = true;
+                
+                var segments = $('#modele-lien-blocs')
+                    .jqote()
+                    .toDom()
+                    .appendTo($('body'));
+                
+                var start = $(this);
+                
+                var elems = $(this)
+                    .parents(".editionBloc.bloc")
+                    .add(segments);
+                
+                lienBlocsActif.start = start;
+                lienBlocsActif.elems = elems;
+                lienBlocsActif.segments = segments;
+                
+                elems.bind('mousemove.creerLien', function (event) {
+                    uiActualiserLien(start, event, segments);
+                });
+                /*elems.bind('mousedown.creerLien', function (event) {*/
+                elems.bind('click.creerLien', function (event) {
+                    lienBlocsActif.elems.unbind('.creerLien');
+                    segments.remove();
+                    lienBlocsActif.actif = false;
+                    return false;
+                });
+            } else {
+                // Création du lien
+                var lien = {
+                    start: $(lienBlocsActif.start),
+                    end: $(this),
+                    segments: $(lienBlocsActif.segments)
+                };
+                
+                // Un lien a été créé, on est à l'écoute de nouveaux liens
+                // (et non plus à l'écoute de la fin d'une connexion)
+                    lienBlocsActif.elems.unbind('.creerLien');
+                lienBlocsActif.actif = false;
+
+                if ((lien.start.parents('.bloc:first')[0] == lien.end.parents('.bloc:first')[0])
+                    /*|| (lien.start.hasClass('entree') && lien.end.hasClass('entree'))
+                    || (lien.start.hasClass('sortie') && lien.end.hasClass('sortie'))*/) {
+                    log("Connexion impossible !");
+                    lien.segments.remove();
+                    return;
+                }
+                
+                // Mise à jour des positions des segments lors des drag, etc.
+                lien.start.parents('.bloc:first')
+                    .add(lien.end.parents('.bloc:first'))
+                    .bind('changer reduire dragstart drag dragstop resizestart resize resizestop', function (event) {
+                        uiActualiserLien(lien.start, lien.end, lien.segments);
+                    });
+                
+                // Et on re-dessine le lien bien en place maintenant que la cible
+                // est un port et non plus la souris.
                 uiActualiserLien(lien.start, lien.end, lien.segments);
-            });
-        
-        // Et on re-dessine le lien bien en place maintenant que la cible
-        // est un port et non plus la souris.
-        uiActualiserLien(lien.start, lien.end, lien.segments);
+                
+                log("Connexion.");
+            }
+            
+            return false;
+        }
     }
-    
-    return false;
 }

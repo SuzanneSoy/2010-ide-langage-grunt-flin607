@@ -3,7 +3,7 @@ function init() {
     $w = new world();
     
     // Connexions
-    lienBlocsActif = { actif: false, elems: $([])};
+    lienBlocsActif = { pret: true, actif: false, elems: $([])};
     
     // Barre d'outils
     $('#rechercher').click(uiRechercher);
@@ -13,6 +13,10 @@ function init() {
     // Log
     logPause = false;
     $('#log-pause').click(logPauseToggle);
+    
+    // Panneau principal (édition).
+    // Évitons que tout soit sélectionné lorsqu'on clique sur une zone vide:
+    $('#edition').disableSelection();
 
     // Bienvenue
     log("Démarré.");

@@ -2,11 +2,11 @@ function logPauseToggle() {
     if (logPause) {
         $('.log .contenu').stop().scrollTo($('.log .contenu :last'), 200);
         logPause = false;
-        $('#log-pause').text("pause");
+        $('#log-pause').val("pause");
     } else {
         logPause = true;
         $('.log .contenu').stop();
-        $('#log-pause').text("play");
+        $('#log-pause').val("play");
     }
 }
 
