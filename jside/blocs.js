@@ -47,6 +47,7 @@ function nouveauBloc(nom) {
         .toDom()
         .attr('id', "edition-" + b.uid)
         .hide()
+        // TODO : ce qui est dessous devrait aller dans log.js !!!
         .find('.port')
             .bind('mousedown click', uiLierBlocs)
             .end()
