@@ -1,6 +1,6 @@
 function uiRechercher() { 
     log("Recherche…");
-    rechercher($('#nom-bloc').val());
+    rechercher($('#nom-bloc').val(), uiEditer);
 }
 
 function arreterRecherche() {
@@ -14,7 +14,8 @@ function demarrerRecherche() {
     $('#edition-blocs').hide();
 }
 
-function rechercher(terme) {
+function rechercher(terme, action) {
+    action = action || function() {return true;}
     demarrerRecherche();
     
     $(
@@ -27,9 +28,10 @@ function rechercher(terme) {
         return $('#modele-resultat-recherche')
             .jqote(elem)
             .toDom()
+            .addClass(elem.uid == $w.blocActif ? 'actif' : '')
             .data("uid", elem.uid)
-            .click(function() {
-                log(elem.uid);
+            .click(function () {
+                action(elem.uid);
             })
             
             .find('.editer')

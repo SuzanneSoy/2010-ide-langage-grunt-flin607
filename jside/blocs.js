@@ -99,14 +99,15 @@ function utiliser(uid, uidParent) {
         .find('.port')
             .click(uiLierBlocs)
             .end()
-        .appendTo('#edition-' + uidParent + ' .contenu:first');
+        .css('position', 'absolute') // Chrome seems to ignore this in the css file.
+        .appendTo($('#edition-' + uidParent + ' .contenu').first());
 }
 
 function uiReduireBloc () {
     $(this)
         /*.toggleClass('icone-moins')
         .toggleClass('icone-plus')*/
-        .parents('.bloc')
+        .parents('.bloc:first')
         .find('.tete')
             .toggle()
             .end()

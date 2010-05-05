@@ -13,6 +13,7 @@ function init() {
     // Log
     logPause = false;
     $('#log-pause').click(logPauseToggle);
+    $('#log-eval').click(logEval);
     
     // Panneau principal (édition).
     // Évitons que tout soit sélectionné lorsqu'on clique sur une zone vide:

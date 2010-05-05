@@ -101,7 +101,7 @@ Si on généralise ce résultat, on peut dire qu'un programme est défini par un
 
 La représentation graphique ou textuelle du programme peut être assurée par un autre programme.
 
-Sa sémantique d'évaluation peut être définie par une machine abstraite, dont les (méta-)entrées sont le programme, ainsi que des entrées pour le programme, et dont les (méta-)sorties sont les sorties que le programme devrait avoir. Tiens ? Entrées, sorties, une relation fonctionnelle (les sorties sont celles du programme pour ses entrées), \dots Eh oui, notre machine abstraite, c'est-à-dire notre sémantique d'évaluation est bel et bien un programme elle aussi.
+Sa sémantique d'évaluation peut être définie par une machine abstraite, dont les (méta-)entrées sont le programme, ainsi que des entrées pour le programme, et dont les (méta-)sorties sont les sorties que le programme devrait avoir. Tiens ? Entrées, sorties, une relation fonctionnelle (les sorties sont celles du programme pour ses entrées), \dots\ Eh oui, notre machine abstraite, c'est-à-dire notre sémantique d'évaluation est bel et bien un programme elle aussi.
 
 De même, la machine réelle vers laquelle on éspère pouvoir compiler le programme, peut être modélisée par un programme. Pendant que nous y sommes, rien ne justifie la présence de la machine réelle, car la machine abstraite pourrait très bien être la même que celle qui exécute le programme. C'est le cas par exemple si notre langage est le code machine d'un certain processeur : L'octet 0x12345678 a pour signification «diviser l'accumulateur par 2», c'est une définition de la sémantique du langage, et à la fois une définition de la machine qui exécute le programme.
 
@@ -125,7 +125,7 @@ On a donc les équations suivantes dans le cas simple (une seule machine, une se
 
 \subsection{Base}
 
-Nous voilà bien avancés\dots Un programme est un programme. C'est donc une définition récursive. Et toute définition récursive doit avoir une base, et une règle pour générer de nouveaux éléments. Nous venons de définir la règle, cherchons les bases possibles~:
+Nous voilà bien avancés\dots\ Un programme est un programme. C'est donc une définition récursive. Et toute définition récursive doit avoir une base, et une règle pour générer de nouveaux éléments. Nous venons de définir la règle, cherchons les bases possibles~:
 \begin{itemize}
 \item Machine de Turing
 \item Lambda-calcul

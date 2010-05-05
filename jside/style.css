@@ -6,7 +6,11 @@ body {
 
 
 
-/* Tous */
+/* Boutons */
+
+.log form {
+    display: inline-block;
+}
 
 .bouton {
     display: inline-block;
@@ -119,6 +123,14 @@ body {
 
 #resultats-recherche td {
     border-bottom: thin solid lightgray;
+}
+
+#resultats-recherche tr:hover td {
+    background-color: #fed;
+}
+
+#resultats-recherche .actif td {
+    background-color: #efd;
 }
 
 #resultats-recherche th {

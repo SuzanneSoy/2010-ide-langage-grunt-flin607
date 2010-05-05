@@ -42,7 +42,6 @@ function uiLierBlocs(ev) {
             lienBlocsActif.pret = true;
             return true;
         } else {
-            log(lienBlocsActif.pret);
             /* Fin du hack non-capture de clic après sort */
             if (!lienBlocsActif.actif) {
                 lienBlocsActif.actif = true;
@@ -50,7 +49,7 @@ function uiLierBlocs(ev) {
                 var segments = $('#modele-lien-blocs')
                     .jqote()
                     .toDom()
-                    .appendTo($('body'));
+                    .appendTo($(this).parents('.editionBloc').first());
                 
                 var start = $(this);
                 
