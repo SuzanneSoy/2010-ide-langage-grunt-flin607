@@ -224,6 +224,11 @@ body {
     /* z-index: 2000; */
 }
 
+.port .symbole.placeholder {
+    background-color: white;
+    border: thin solid lightgray;
+}
+
 .port:hover .symbole {
     background-color: lightgreen;
     border-color: green;

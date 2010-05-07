@@ -19,7 +19,6 @@
     <script type="text/javascript" src="jquery/ui/jquery.ui.resizable.js"></script>
     <script type="text/javascript" src="jquery/ui/jquery.ui.sortable.js"></script>
     <script type="text/javascript" src="jquery/ui/jquery.ui.position.js"></script>
-    <script type="text/javascript" src="jquery/ui/jquery.ui.effects.core.js"></script>
     <script type="text/javascript" src="jquery/ui/jquery.effects.core.js"></script>
     
     <script type="text/javascript" src="extensions-jQuery.js"></script>
@@ -98,7 +97,7 @@
                         <tbody>
                           <% for (i = 0; i < this.entrees; i++) { %>
                           <tr>
-                            <td class="port sortie"><div class="symbole"></td>
+                            <td><div class="port sortie"><div class="symbole"></div></div></td>
                           </tr>
                           <% } %>
                         </tbody>
@@ -111,7 +110,7 @@
                         <tbody>
                           <% for (i = 0; i < this.sorties; i++) { %>
                           <tr>
-                            <td class="port entree"><div class="symbole"></div></td>
+                            <td><div class="port entree"><div class="symbole"></div></div></td>
                           </tr>
                           <% } %>
                         </tbody>

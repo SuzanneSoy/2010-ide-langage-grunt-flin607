@@ -47,20 +47,7 @@ function nouveauBloc(nom) {
         .toDom()
         .attr('id', "edition-" + b.uid)
         .hide()
-        // TODO : ce qui est dessous devrait aller dans log.js !!!
-        .find('.port')
-            .bind('mousedown click', uiLierBlocs)
-            .end()
-        .find('table.ports > tbody')
-            .sortable({
-                appendTo: 'body',
-                cursorAt: {top:7, left:7} // Hack-o-matic 7 & 7 pour que le symbole soit centré sous le curseur
-            })
-            .bind('sortstart', uiLierBlocs)
-            .bind('sort sortstop', function() {
-                $(this).parents('.bloc:first').trigger('changer');
-            })
-            .end()
+        .preparerBlocConnexions('edition')
         .appendTo('#edition-blocs');
     
     return b;
@@ -97,9 +84,7 @@ function utiliser(uid, uidParent) {
         .find('.reduire')
             .click(uiReduireBloc)
             .end()
-        .find('.port')
-            .click(uiLierBlocs)
-            .end()
+        .preparerBlocConnexions()
         .css('position', 'absolute') // Chrome seems to ignore this in the css file.
         .appendTo($('#edition-' + uidParent + ' .contenu').first());
 }

@@ -1,3 +1,35 @@
+jQuery.fn.preparerBlocConnexions = function(arg) {
+    $(this).find('.port')
+        .bind('mousedown click', uiLierBlocs);
+    
+    if (arg == 'edition') {
+        $(this).find('table.ports:first > tbody, table.ports:last > tbody')
+            .sortable({
+                //axis: 'y',
+                scroll:   false,
+                appendTo: 'body',
+                cursorAt: {top:7, left:7}, // Hack-o-matic 7 & 7 pour que le symbole soit centré sous le curseur
+                helper: function (ev, elem) {
+                    // height: auto pour conter jquery qui force une hauteur malgrè l'option
+                    // forceHelperSize: false.
+                    return $('<div class="port" style="height: auto"><div class="symbole"/></div>');
+                },
+                start: function(ev, ui) {
+                    $(ui.placeholder)
+                        .css('visibility', '')
+                        .css('height', '')
+                        .append('<td class="port sortie"><div class="symbole placeholder"></td>');
+                },
+            })
+            .bind('sortstart', uiLierBlocs)
+            .bind('sort sortstop', function() {
+                $(this).parents('.bloc:first').trigger('changer');
+            });
+    }
+    
+    return $(this);
+}
+
 function uiActualiserLien(_de, _vers, segments) {
     if ($(_de).centerX() < $(_vers).centerX()) {
         de = $(_de);
@@ -38,7 +70,7 @@ function uiLierBlocs(ev) {
         lienBlocsActif.pret = false;
         return true;
     } else {
-        if (!lienBlocsActif.pret) {
+        if (!lienBlocsActif.actif && !lienBlocsActif.pret) {
             lienBlocsActif.pret = true;
             return true;
         } else {
