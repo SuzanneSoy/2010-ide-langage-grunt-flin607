@@ -1,0 +1,8 @@
+#les blocs n'apparaissent pas dans chrome
+bug redimentionnement bbrun (No repro !)
+bug ports tout à gauche & à droite qui se déplacent mal verticalement (?)
+superposition : les ports du dessous apparaissent au-dessus.
+redimentionnement trop petit.
+redimentionnement pas assez grand. (jamais content celui-là!)
+#tout le monde se réduit.
+traits qui restent quand on change de bloc.

@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+  <head>
+    <title>IDE</title>
+    <link rel="stylesheet" type="text/css" href="jquery/themes/custom-theme/jquery.ui.all.css" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    
+    <script type="text/javascript" src="jquery/jquery-1.4.2.js"></script>
+    
+    <script type="text/javascript" src="jquery/jquery.scrollTo.js"></script>
+    <script type="text/javascript" src="jquery/jquery.jqote2.js"></script>
+    
+    <script type="text/javascript" src="jquery/ui/jquery.ui.core.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.mouse.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.draggable.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.droppable.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.resizable.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.sortable.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.ui.position.js"></script>
+    <script type="text/javascript" src="jquery/ui/jquery.effects.core.js"></script>
+    
+    <script type="text/javascript" src="extensions-jQuery.js"></script>
+    <script type="text/javascript" src="log.js"></script>
+    <script type="text/javascript" src="blocs.js"></script>
+    <script type="text/javascript" src="recherche.js"></script>
+    <script type="text/javascript" src="connexions.js"></script>
+    <script type="text/javascript" src="sauvegarde.js"></script>
+    <script type="text/javascript" src="init.js"></script>
+  </head>
+  <body id="body">
+    <div id="outils">
+      <input type="text" class="bouton" id="nom-bloc" />
+      <input type="button" class="bouton" id="rechercher"   value="Rechercher" />
+      <input type="button" class="bouton" id="nouveau-bloc" value="Nouveau bloc" />
+      <input type="button" class="bouton" id="serialiser"   value="Serialiser" />
+      <input type="button" class="bouton" id="ajout-port-entree" value="Ajouter un port d'entree" />
+      <input type="button" class="bouton" id="ajout-port-sortie" value="Ajouter un port de sortie" />
+      <input type="button" class="bouton" id="suppr-port"        value="Supprimer un port" />
+      <div class="clear"></div>
+    </div>
+    <div id="edition">
+      <table id="resultats-recherche">
+        <thead>
+          <tr>
+            <th>
+              Uid
+            </th>
+            <th>
+              Nom
+            </th>
+            <th>
+              Description
+            </th>
+            <th>
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <script type="text/x-jqote-template" id="modele-resultat-recherche">
+          <![CDATA[
+            <tr class="resultat-recherche">
+              <td>
+                <%= this.uid %>
+              </td>
+              <td>
+                <%= this.nom %>
+              </td>
+              <td>
+                <%= this.description %>
+              </td>
+              <td>
+                <a class="button editer" href="#">Éditer</a>
+                <a class="button utiliser" href="#">Utiliser</a>
+              </td>
+            </tr>
+          ]]>
+        </script>
+        <tbody>
+        </tbody>
+      </table>
+      <div id="edition-blocs">
+        <script type="text/x-jqote-template" id="modele-edition-bloc">
+          <![CDATA[
+            <div class="editionBloc bloc">
+              <table class="agencement-bloc">
+                <tbody>
+                  <tr style="height: 1em;" class="tete">
+                    <td colspan="3">
+                      <%= this.nom %>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="ports sortie">
+                      <table class="ports sortie">
+                        <tbody>
+                          <% for (i = 0; i < this.entrees; i++) { %>
+                          <tr>
+                            <td><div class="port sortie"><div class="symbole"></div></div></td>
+                          </tr>
+                          <% } %>
+                        </tbody>
+                      </table>
+                    </td>
+                    <td style="text-align:center;" class="contenu">
+                    </td>
+                    <td class="ports entree">
+                      <table class="ports entree">
+                        <tbody>
+                          <% for (i = 0; i < this.sorties; i++) { %>
+                          <tr>
+                            <td><div class="port entree"><div class="symbole"></div></div></td>
+                          </tr>
+                          <% } %>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          ]]>
+        </script>
+        <script type="text/x-jqote-template" id="modele-utilisation-bloc">
+          <![CDATA[
+            <div class="bloc">
+              <table class="agencement-bloc">
+                <tbody>
+                  <tr style="height: 1em;" class="tete">
+                    <td colspan="3">
+                      <span class="reduire icone icone-moins"></span>
+                      <%= this.nom %>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="ports entree">
+                      <table class="ports entree">
+                        <tbody>
+                          <% for (i = 0; i < this.entrees; i++) { %>
+                          <tr>
+                            <td class="port entree"><div class="symbole"></td><!--●-->
+                          </tr>
+                          <% } %>
+                        </tbody>
+                      </table>
+                    </td>
+                    <td style="text-align:center;" class="contenu">
+                      <div class="description">
+                        <%= this.description %>
+                      </div>
+                      <div class="titre">
+                        <span class="reduire">
+                          <%= this.nom %>
+                        </span>
+                      </div>
+                    </td>
+                    <td class="ports sortie">
+                      <table class="ports sortie">
+                        <tbody>
+                          <% for (i = 0; i < this.sorties; i++) { %>
+                          <tr>
+                            <td class="port sortie"><div class="symbole"></div></td>
+                          </tr>
+                          <% } %>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          ]]>
+        </script>
+        <script type="text/x-jqote-template" id="modele-lien-blocs">
+          <![CDATA[
+            <div class="segments">
+              <div class="lien horizontal segment-1">
+              </div>
+              <div class="lien vertical segment-2">
+              </div>
+              <div class="lien horizontal segment-3">
+              </div>
+            </div>
+          ]]>
+        </script>
+      </div>
+    </div>
+    <div class="log">
+      <div id="log-en-tete">
+        <h2>Log</h2>
+        <input type="button" class="bouton" id="log-pause" value="pause" />
+        <form action="#">
+          <input type="text" class="bouton" id="log-cmdline" value="'hello world';" style="width: 500px;" />
+          <input type="submit" class="bouton" id="log-eval" value="eval" />
+        </form>
+      </div>
+      <div class="contenu">
+      </div>
+    </div>
+  </body>
+</html>

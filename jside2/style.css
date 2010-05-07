@@ -1,0 +1,305 @@
+/* Mise en page */
+
+body {
+    margin: 0;
+}
+
+
+
+/* Boutons */
+
+.log form {
+    display: inline-block;
+}
+
+.bouton {
+    display: inline-block;
+    padding: 0.1em 0.2em;
+    margin: 0.2em;
+    text-decoration: none;
+    border-width: thin;
+    border-style: solid;
+}
+
+.bouton {
+    color: #333;
+    border-color: #999;
+    background-color: #eee
+}
+
+.bouton:hover {
+    color: #555;
+    border-color: #ccc;
+    background-color: #fff
+}
+
+/* Icônes */
+
+.icone {
+    display: block;
+    font-weight: bolder;
+    color: black;
+    text-align: center;
+    min-width: 1.3em;
+    border-width: thin;
+    border-style: solid;
+    font-size: 80%;
+}
+
+.icone {
+    color: #333;
+    border-color: #999;
+    background-color: #eee
+}
+
+.icone:hover {
+    color: #555;
+    border-color: #ccc;
+    background-color: #fff
+}
+
+.icone-plus:before {
+    content: "+";
+}
+
+.icone-moins:before {
+    content: "-";
+}
+
+
+
+/* Outils */
+#outils {
+    margin: 0;
+}
+
+#outils .bouton {
+    color: #242;
+    border-color: #8a8;
+    background-color: #efd;
+}
+
+#outils .boutonNormal {
+    color: #242;
+    border-color: #8a8;
+    background-color: #efd;
+}
+
+#outils .bouton:hover {
+    color: #422;
+    border-color: #a88;
+    background-color: #fed;
+}
+
+#outils .boutonHover {
+    color: #422;
+    border-color: #a88;
+    background-color: #fed;
+}
+
+
+
+/* Zone principale */
+
+#edition {
+    position: absolute;
+    border: thick solid gray;
+    top: 1.9em; /* Hack, mais CSS ne nous permettra pas de faire mieux… :( */
+    bottom: 25%;
+    left: 0;
+    right: 0;
+    padding: 1em;
+}
+
+/* Résultats de la recherche */
+#resultats-recherche {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#resultats-recherche th {
+    border-bottom: thin solid black;
+}
+
+#resultats-recherche td {
+    border-bottom: thin solid lightgray;
+}
+
+#resultats-recherche tr:hover td {
+    background-color: #fed;
+}
+
+#resultats-recherche .actif td {
+    background-color: #efd;
+}
+
+#resultats-recherche th {
+    text-align: left;
+}
+
+/*#edition-blocs > * {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}*/
+
+/* Édition des blocs */
+
+#edition-blocs .editionBloc {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    /* Écrasement des valeurs de .bloc ci-dessous */
+    border: none;
+    width: auto;
+    height: auto;
+}
+
+.bloc {
+    border: medium solid gray;
+    background-color: white;
+    position: absolute;
+    width: 350px;
+    height: 110px;
+    top: 100px;
+    left: 200px;
+}
+
+.agencement-bloc {
+    width: 100%;
+    height: 100%;
+}
+
+.tete {
+    margin: 0.2em;
+    padding: 0.3em;
+    background-color: lightgray;
+}
+
+.bloc .contenu .titre {
+    display: none;
+    text-align: center;
+}
+
+.bloc .tete {
+    text-align: center;
+}
+
+.tete .icone {
+    float: right;
+}
+
+.contenu {
+    padding: 0.4em;
+}
+
+/* Ports */
+
+.ports {
+    height:100%;
+    width: 1em;
+    padding: 0;
+    border-collapse: collapse;
+}
+
+.ports.sortie {
+    text-align: right;
+}
+
+.ports.entree {
+    text-align: left;
+}
+
+.port .symbole {
+    position: relative;
+    z-index: 10;
+    width: 10px;
+    height: 10px;
+    background-color: lightblue;
+    border: thin solid blue;
+    /* z-index: 2000; */
+}
+
+.port .symbole.placeholder {
+    background-color: white;
+    border: thin solid lightgray;
+}
+
+.port:hover .symbole {
+    background-color: lightgreen;
+    border-color: green;
+}
+
+/* Liens */
+.lien {
+    background-color: lightblue;
+    position: absolute;
+    height: 5px;
+    width: 5px;
+}
+
+
+
+/*.segment-1 {
+    background-color: lightgreen;
+}
+
+.segment-3 {
+    background-color: pink;
+}*/
+
+
+
+/* Log */
+
+.log {
+    position: absolute;
+    top: 75%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.log p {
+    border-bottom: thin solid lightgray;
+    padding: 0.1em 0.3em 0;
+    margin: 0;
+}
+
+#log-en-tete {
+    padding: 0 1em;
+    margin: 0;
+    font-size: small;
+    background-color: lightgray;
+}
+
+.log h2 {
+    display: inline;
+    font-size: 100%;
+    margin-right : 1em;
+}
+
+#log-en-tete .bouton {
+    color: #333;
+    border-color: #999;
+    background-color: #eee
+}
+
+#log-en-tete .bouton:hover {
+    color: #555;
+    border-color: #ccc;
+    background-color: #fff
+}
+
+.log .contenu {
+    position: absolute;
+    top: 1.7em; /* Hack, mais CSS ne nous permettra pas de faire mieux… :( */
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: auto;
+}

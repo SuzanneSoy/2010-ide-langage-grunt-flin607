@@ -1,0 +1,71 @@
+#test-table-layout {
+    left: 100px;
+}
+
+#test-ui-layout {
+    left: 400px;
+}
+
+#test-js-layout {
+    left: 700px;
+}
+
+#test-tk-layout {
+    left: 1000px;
+}
+
+#test-table-layout .tk.contenu .tk.box {
+    height: 100%;
+}
+
+
+/* Positions */
+
+.tk.window {
+    position: absolute;
+    width: 200px;
+    height: 300px;
+    top:100px;
+}
+
+.tk.title {
+    text-align: center;
+}
+
+.tk.contenu {
+    text-align: center;
+}
+
+.tk.pied {
+    text-align: center;
+}
+
+.tk.box-table {
+    height: 100%;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Couleurs */
+
+.tk.window {
+    border: thin solid red;
+}
+
+.tk.title .tk.box {
+    background-color: lightgreen;
+    border: thin solid green;
+    margin: 5px;
+}
+
+.tk.contenu .tk.box {
+    background-color: lightblue;
+    border: thin solid blue;
+    margin: 5px;
+}
+
+.tk.pied .tk.box {
+    background-color: lightgray;
+    border: thin solid gray;
+    margin: 5px;
+}
