@@ -50,8 +50,13 @@
     padding: 0;
 }
 
+.tk.hcontainer > * {
+    float: left;
+}
+
 .tk.hcontainer-clear {
     clear: both;
+    float: none;
 }
 
 .tk.bouton {

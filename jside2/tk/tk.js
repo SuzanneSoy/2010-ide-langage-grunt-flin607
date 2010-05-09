@@ -197,12 +197,14 @@ function widget(a, b, c) {
             _.window(this.nom, this.description);
         },
         boutonReduire: function(_) {
-            _.options();
-            _.square('tk bouton reduire','-');
+            _.options('class', '');
+            this['class'] += 'tk bouton fermer';
+            _.square(_, this,'-');
         },
         boutonFermer: function(_) {
-            _.options();
-            _.square('tk bouton reduire','×');
+            _.options('class', '');
+            this['class'] += 'tk bouton reduire';
+            _.square(_, this,'×');
         },
         barreTitre: function(_) {
             _.options(
@@ -212,9 +214,9 @@ function widget(a, b, c) {
             );
             
             _.hcontainer('tk barre-titre', [1],
-                         fermer  = _.div('tk fermer',  _.boutonFermer()),
-                         titre   = _.div('tk titre',   _.box(this.titre)),
-                         reduire = _.div('tk reduire', _.boutonReduire()));
+                         fermer  = _.boutonFermer('tk fermer'),
+                         titre   = _.div('tk titre',   this.titre),
+                         reduire = _.boutonReduire('tk reduire'));
         },
         window: function(_) {
             _.options(
@@ -232,10 +234,20 @@ function widget(a, b, c) {
             _.vcontainer('tk window', [1],
                          _.barreTitre(this.titre, this.canClose, this.canReduce),
                          _.div('tk contenu', _.box(this.contenu)),
-                         _.div('tk pied',    _.box(this.pied)));
-            
-            _().width(this.width);
-            _().height(this.height);
+                         _.div('tk pied',    _.box(this.pied)))
+                
+                .width(this.width)
+                .height(this.height)
+                .draggable()
+                .resizable({
+                    resize: function(i,e) {
+                        return $(this)
+                            .trigger('sizeChange')
+                            .find('*')
+                            .trigger('sizeChange')
+                            .trigger('posChange');
+                    }
+                });
             
             if (!this.canClose) {
                 fermer.hide();
@@ -254,17 +266,16 @@ function widget(a, b, c) {
                 'autoWidth', []
             );
             
+//            _().catchFromUp('sizeChange', 'autoWidth');
+//            _().catchFromDown('sizeChange', 'autoWidth');
+            
             _(this.autoWidth).addClass('auto-width');
+            this['class'] += ' tk hcontainer';
             
             _.div(_, this,
                   _('rest'));
-            
-            _().children()
-                .css('float', 'left');
             _().append('<div class="tk hcontainer-clear">');
-            
-            _().autoHsize();
-            
+            _().autoWidth();
         },
         vcontainer: function(_) {
             _.options(
@@ -277,7 +288,7 @@ function widget(a, b, c) {
             _.div(_, this,
                   _('rest'));
             
-            _().autoVsize();
+            _().autoHeight();
         },
         box: function(_) {
             _.options(
@@ -317,47 +328,41 @@ function widget(a, b, c) {
     
 
 jQuery.fn.extend({
-    autoHsize: function() {
+    autoWidth: function() {
         var that = this;
-        window.setTimeout(function() { $(that)._autoHsize(); });
+        window.setTimeout(function() { $(that)._autoSize('width'); }, 0);
+        $(this).bind('sizeChange posChange', function() {
+            $(this)._autoSize('width');
+            return true;
+        });
     },
-    autoVsize: function() {
+    autoHeight: function() {
         var that = this;
-        window.setTimeout(function() { $(that)._autoVsize(); });
+        window.setTimeout(function() { $(that)._autoSize('height'); }, 0);
+        $(this).bind('sizeChange posChange', function() {
+            $(this)._autoSize('height');
+            return true;
+        });
     },
-    _autoVsize: function() {
-        var total = $(this)
-            .innerHeight();
-        var minus = $(this)
-            .children(':not(.auto-height)')
-            .invoke('outerHeight', true)
-            .sum();
-        var nbshares = $(this)
-            .children('.auto-height')
-            .size();
-        
-        $(this)
-            .children('.auto-height')
-            .height((total - minus) / nbshares);
-        
-        return this;
-    },
-    _autoHsize: function() {
-        var total = $(this)
-            .innerWidth();
+    _autoSize: function(dimension) {
+        var Dimension = dimension.charAt(0).toUpperCase()
+            + dimension.substring(1);
+        var total = this[0]['client'+Dimension];
         var scope = $(this)
-            .children(':visible:not(.tk.hcontainer-clear)');
+            .children(':visible')
+            .not('.tk.hcontainer-clear')
+            .not('.ui-resizable-handle');
         var minus = (scope)
-            .not('.auto-width')
-            .invoke('outerWidth', true)
+            .not('.auto-'+dimension)
+            .invoke('outer'+Dimension, true)
             .sum();
         var nbshares = (scope)
-            .filter('.auto-width')
+            .filter('.auto-'+dimension)
             .size();
         
         (scope)
-            .filter('.auto-width')
-            .width((total - minus) / nbshares);
+            .filter('.auto-'+dimension)
+            [dimension]((total - minus) / nbshares);
         
         return this;
     },
@@ -372,12 +377,18 @@ jQuery.fn.extend({
             $(this.height($(this).width()));
         }
         return this;
+    },
+    catchFromUp: function(signal, action) {
+        console.log('catchFromUp', signal, action);
+    },
+    catchFromDown: function(signal, action) {
+        console.log('catchFromDown', signal, action);
     }
 });
 
 $(function () {
     tk.bloc('Un bloc')
         .attr('id', 'test-tk-widget')
-        .appendTo('body')
-        .autoVsize();
+        .appendTo('body');
+//        .autoHeight();
 });
