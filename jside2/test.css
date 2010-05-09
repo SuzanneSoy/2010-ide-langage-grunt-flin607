@@ -22,7 +22,7 @@
 /* Positions */
 
 .tk.window {
-    position: absolute;
+    position: absolute ! important;
     width: 200px;
     height: 300px;
     top:100px;
@@ -33,6 +33,7 @@
 }
 
 .tk.contenu {
+    height: 100%;
     text-align: center;
 }
 
@@ -50,15 +51,40 @@
     padding: 0;
 }
 
-.tk.hcontainer > * {
-    float: left;
+/* hcontainer */
+.tk.hcontainer-table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-.tk.hcontainer-clear {
-    clear: both;
-    float: none;
+.tk.hcontainer-td {
+    padding: 0;
+    width: 1px;
 }
 
+.tk.hcontainer-td.auto-width {
+    width: auto;
+}
+
+/* vcontainer */
+.tk.vcontainer-table {
+    height: 100%;
+    border-collapse: collapse;
+}
+
+.tk.vcontainer-td {
+    padding: 0;
+}
+
+.tk.vcontainer-tr {
+    height: 0px;
+}
+
+.tk.vcontainer-tr.auto-height {
+    height: auto;
+}
+
+/* bouton */
 .tk.bouton {
     text-align: center;
     border: thin solid gray;

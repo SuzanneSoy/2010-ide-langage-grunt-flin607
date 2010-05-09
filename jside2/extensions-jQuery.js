@@ -22,6 +22,18 @@ String.prototype.appendTo = function() {
 // Extensions de jQuery
 
 jQuery.fn.extend({
+    remap: function(fn) {
+        var a = $.makeArray(arguments);
+        a.shift();
+
+        var r = $();
+        this.each(function(i, e) {
+            var aa = $.makeArray(a);
+            aa.push(e);
+            r = r.add(fn.apply(this, aa));
+        });
+        return r;
+    },
     // Sérialise le DOM de l'élément sous forme de HTML.
     serializeDOM: function(value) {
         /* get the DOM of this node, serialized as HTML.

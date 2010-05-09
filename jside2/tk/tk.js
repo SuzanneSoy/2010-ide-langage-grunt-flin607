@@ -198,12 +198,12 @@ function widget(a, b, c) {
         },
         boutonReduire: function(_) {
             _.options('class', '');
-            this['class'] += 'tk bouton fermer';
+            this['class'] += ' tk bouton fermer';
             _.square(_, this,'-');
         },
         boutonFermer: function(_) {
             _.options('class', '');
-            this['class'] += 'tk bouton reduire';
+            this['class'] += ' tk bouton reduire';
             _.square(_, this,'×');
         },
         barreTitre: function(_) {
@@ -255,8 +255,7 @@ function widget(a, b, c) {
         },
         square: function(_) {
             _.options('class', '');
-            _.div(_, this,
-                  _('rest'));
+            _.div(_, this, _('rest'));
 
             _().square();
         },
@@ -266,16 +265,20 @@ function widget(a, b, c) {
                 'autoWidth', []
             );
             
-//            _().catchFromUp('sizeChange', 'autoWidth');
-//            _().catchFromDown('sizeChange', 'autoWidth');
-            
             _(this.autoWidth).addClass('auto-width');
-            this['class'] += ' tk hcontainer';
+            this['class'] += ' tk hcontainer-table';
             
-            _.div(_, this,
-                  _('rest'));
-            _().append('<div class="tk hcontainer-clear">');
-            _().autoWidth();
+            _.table(_, this,
+                    _.tr('tk hcontainer-tr',
+                         _('rest').remap(_.hcontainerCell, 'tk hcontainer-td')));
+        },
+        hcontainerCell: function(_) {
+            _.options('class', '');
+            
+            if (_('rest').is('.auto-width'))
+                this['class'] += ' auto-width';
+            
+            _.td(_, this, _('rest'))
         },
         vcontainer: function(_) {
             _.options(
@@ -284,11 +287,20 @@ function widget(a, b, c) {
             );
             
             _(this.autoHeight).addClass('auto-height');
+            this['class'] += ' tk vcontainer-table';
             
-            _.div(_, this,
-                  _('rest'));
+            _.table(_, this,
+                    _('rest').remap(_.vcontainerCell, 'tk vcontainer-tr'));
+        },
+        vcontainerCell: function(_) {
+            _.options('class', '');
             
-            _().autoHeight();
+            if (_('rest').is('.auto-height'))
+                this['class'] += ' auto-height';
+            
+            _.tr(_, this,
+                 _.td('tk vcontainer-td',
+                      _('rest')));
         },
         box: function(_) {
             _.options(
@@ -377,12 +389,6 @@ jQuery.fn.extend({
             $(this.height($(this).width()));
         }
         return this;
-    },
-    catchFromUp: function(signal, action) {
-        console.log('catchFromUp', signal, action);
-    },
-    catchFromDown: function(signal, action) {
-        console.log('catchFromDown', signal, action);
     }
 });
 
