@@ -33,7 +33,7 @@
     <div id="test-table-layout" class="tk window">
       <table style="height:100%; width:100%;">
         <tr style="height:1px">
-          <td class="tk title">
+          <td class="tk titre">
             <div class="tk box">
               Titre
               <br/>
@@ -91,7 +91,7 @@
       </div>
     </div>
     <div id="test-js-layout" class="tk window">
-      <div class="tk title">
+      <div class="tk titre">
         <table class="tk box-table">
           <tr>
             <td>
@@ -109,10 +109,8 @@
       <div class="tk contenu auto-height">
         <table class="tk box-table">
           <tr>
-            <td>
-              <div class="tk box">
-                Contenu A
-              </div>
+            <td class="tk box">
+              Contenu A
             </td>
           </tr>
         </table>
@@ -140,8 +138,6 @@
         </table>
       </div>
     </div>
-    <div id="test-tk-layout" class="tk window">
-    </div>
     <script type="text/x-jqote-template" id="tk-box">
       <![CDATA[
         <table class="tk box-table">
@@ -156,8 +152,8 @@
     <script type="text/x-jqote-template" id="tk-window">
       <![CDATA[
         <div class="tk window">
-          <div class="tk title">
-            <%:title%>
+          <div class="tk titre">
+            <%:titre%>
           </div>
           <div class="tk contenu auto-height">
             <%:contenu%>

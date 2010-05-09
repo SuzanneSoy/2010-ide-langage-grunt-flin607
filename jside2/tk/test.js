@@ -2,15 +2,7 @@ $(function () {
     $('#test-ui-layout').layout({ applyDefaultStyles: true });
     $('#test-ui-layout').children('.ui-layout-north').draggable();
     
-    var outer = 0;
-    $('#test-js-layout')
-        .each(function (i, e) {
-            if ($(e).is('.auto-height')) {
-                outer += $(e).outerHeight() - $(e).innerHeight();
-            }
-        });
-    
-    var container =
+    /*var container =
         $('#test-js-layout');
     var total = (container)
         .innerHeight();
@@ -24,5 +16,5 @@ $(function () {
     
     (container)
         .children('.auto-height')
-        .height((total - minus) / nbshares);
+        .height((total - minus) / nbshares);*/
 });

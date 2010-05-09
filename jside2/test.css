@@ -10,7 +10,7 @@
     left: 700px;
 }
 
-#test-tk-layout {
+#test-tk-widget {
     left: 1000px;
 }
 
@@ -28,7 +28,7 @@
     top:100px;
 }
 
-.tk.title {
+.tk.titre {
     text-align: center;
 }
 
@@ -46,26 +46,43 @@
     border-collapse: collapse;
 }
 
+.tk.box-td {
+    padding: 0;
+}
+
+.tk.hcontainer-clear {
+    clear: both;
+}
+
+.tk.bouton {
+    text-align: center;
+    border: thin solid gray;
+    font-weight: bold;
+}
+
+.tk.bouton:hover {
+    color: blue;
+    border-color: black;
+    cursor: default;
+}
+
 /* Couleurs */
 
 .tk.window {
     border: thin solid red;
 }
 
-.tk.title .tk.box {
+.tk.barre-titre {
     background-color: lightgreen;
     border: thin solid green;
-    margin: 5px;
 }
 
 .tk.contenu .tk.box {
     background-color: lightblue;
     border: thin solid blue;
-    margin: 5px;
 }
 
 .tk.pied .tk.box {
-    background-color: lightgray;
-    border: thin solid gray;
-    margin: 5px;
+    //background-color: lightgray;
+    //border: thin solid gray;
 }
