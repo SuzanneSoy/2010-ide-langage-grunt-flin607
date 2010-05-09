@@ -1,0 +1,4 @@
+(function($) {
+    widget(tk, {
+    });
+})(jQuery);

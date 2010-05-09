@@ -1,20 +1,11 @@
 $(function () {
-    $('#test-ui-layout').layout({ applyDefaultStyles: true });
-    $('#test-ui-layout').children('.ui-layout-north').draggable();
+    tk.bloc('Un bloc')
+        .attr('id', 'test-tk-widget')
+        .topY(200)
+        .appendTo('body');
     
-    /*var container =
-        $('#test-js-layout');
-    var total = (container)
-        .innerHeight();
-    var minus = (container)
-        .children(':not(.auto-height)')
-        .invoke('outerHeight', true)
-        .sum();
-    var nbshares = (container)
-        .children('.auto-height')
-        .size();
-    
-    (container)
-        .children('.auto-height')
-        .height((total - minus) / nbshares);*/
+    tk.bloc('Un bloc')
+        .attr('id', 'test-tk-widget')
+        .leftX(200)
+        .appendTo('body');
 });

@@ -1,0 +1,11 @@
+/* Couleurs */
+
+.tk.window {
+    border: medium solid gray;
+    background-color: white;
+}
+
+.tk.barre-titre {
+    background-color: lightgray;
+    border-bottom: thin solid gray;
+}

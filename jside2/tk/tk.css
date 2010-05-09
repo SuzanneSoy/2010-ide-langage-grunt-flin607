@@ -96,24 +96,3 @@
     border-color: black;
     cursor: default;
 }
-
-/* Couleurs */
-
-.tk.window {
-    border: thin solid red;
-}
-
-.tk.barre-titre {
-    background-color: lightgreen;
-    border: thin solid green;
-}
-
-.tk.contenu .tk.box {
-    background-color: lightblue;
-    border: thin solid blue;
-}
-
-.tk.pied .tk.box {
-    //background-color: lightgray;
-    //border: thin solid gray;
-}
