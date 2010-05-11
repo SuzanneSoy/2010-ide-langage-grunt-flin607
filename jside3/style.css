@@ -1,0 +1,112 @@
+/* Pour les redimensionnements trop petits */
+.ui-resizable {
+    overflow: hidden;
+}
+
+body {
+    position:absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+/* Monde */
+.monde {
+    position:absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+/* Barre d'outils */
+.barre-outils.fenetre {
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    
+    border: thin solid blue;
+    background-color: lightblue;
+}
+
+/* Log */
+.log.fenetre {
+    position: absolute;
+    bottom: 100px;
+    right: 100px;
+    width: 15em;
+    min-width: 4em;
+    min-height: 3em;
+    height: 8em;
+    
+    border: thin solid blue;
+    background-color: lightblue;
+}
+
+.log.messages {
+    position: absolute;
+    top: 1.4em;
+    bottom: 0;
+    width: 100%;
+    overflow: auto;
+}
+
+/* Bloc */
+.bloc.fenetre {
+    position: absolute;
+    top: 250px;
+    left: 300px;
+    width: 25em;
+    min-width: 4em;
+    min-height: 3em;
+    height: 12em;
+    
+    border: medium solid gray;
+    background-color: white;
+}
+
+.bloc.titre {
+    background-color: lightgray;
+    border: medium solid white;
+}
+
+.bloc.titre {
+    background-color: lightgray;
+    border: medium solid white;
+    border-bottom: none;
+}
+
+/* Tabs */
+.bloc.tabs.titres {
+    position: absolute;
+    top: 1.4em;
+    left: 0;
+    right: 0;
+    background: lightgray;
+    padding-bottom: .1em;
+    
+    border: medium solid white;
+    border-style: none solid none solid;
+}
+
+.définition.titre {
+    background-color: white;
+    border: thin solid gray;
+    margin: 0.1em 0.1em 0 0;
+    float: left;
+}
+
+.nouvelle-définition {
+    float: right;
+}
+
+/* Fenêtres */
+.titre {
+    background-color: #eef;
+    border-bottom: thin solid blue;
+    padding: .1em;
+    margin: 0;
+    font-size: 100%;
+    text-align: center;
+}

@@ -11,6 +11,7 @@
     <script type="text/javascript" src="jquery/jquery.scrollTo.js"></script>
     <script type="text/javascript" src="jquery/jquery.jqote2.js"></script>
     <script type="text/javascript" src="jquery/jquery.my.enumerable.js"></script>
+    <script type="text/javascript" src="jquery/jquery.tools.min.js"></script>
     
     <!-- jQuery UI -->
     <link rel="stylesheet" type="text/css" href="jquery/themes/custom-theme/jquery.ui.all.css" />
@@ -28,13 +29,65 @@
     
     <!-- jQuery - mes extensions -->
     <script type="text/javascript" src="extensions-jQuery.js"></script>
+
+    <!-- Modèle -->
+    <script type="text/javascript" src="modele.js"></script>
+    
+    <!-- Vue -->
+    <script type="text/javascript" src="vue.js"></script>
     
     <!-- Test -->
     <script type="text/javascript" src="test.js"></script>
-    <link rel="stylesheet" type="text/css" href="test.css" />
+
+    <!-- Apparence -->
+    <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
-  <body style="position: absolute;">
-    <!--<div id="drop" style="position: absolute; top:100px; left: 100px; height: 1em;  width:1em;  background-color: lightgray; text-align: center;">×</div>-->
-    <div id="drag" style="position: absolute; top:300px; left: 700px; height: 20px; width:20px; background-color: lightblue;"></div>
+  <body style="position: absolute;" id="editeur">
+    <script type="text/x-jqote-template" id="vue-monde">
+      <![CDATA[
+        <div class="monde">
+        </div>
+      ]]>
+    </script>
+    <script type="text/x-jqote-template" id="vue-barre-outils">
+      <![CDATA[
+        <div class="barre-outils fenetre">
+          <h2 class="barre-outils titre">Barre d'outils</h2>
+          <input type="button" value="Nouveau bloc" class="barre-outils nouveau-bloc"/>
+          <input type="button" value="Coucou"/>
+        </div>
+      ]]>
+    </script>
+    <script type="text/x-jqote-template" id="vue-log">
+      <![CDATA[
+        <div class="log fenetre">
+          <h2 class="log titre">Log</h2>
+          <div class="log messages">
+          </div>
+        </div>
+      ]]>
+    </script>
+    <script type="text/x-jqote-template" id="vue-bloc">
+      <![CDATA[
+        <div class="bloc fenetre">
+          <h2 class="bloc titre"><%= this.bloc.nom %></h2>
+          <div class="bloc tabs titres">
+            <h3 class="définition titre">Définition A</h3>
+            <h3 class="définition titre">Définition B</h3>
+            <h3 class="définition titre">Définition C</h3>
+            <input type="button" class="nouvelle-définition" value="+" />
+          </div>
+          <div class="bloc définitions">
+          </div>
+        </div>
+      ]]>
+    </script>
+    <script type="text/x-jqote-template" id="vue-définition">
+      <![CDATA[
+        <div class="définition">
+          
+        </div>
+      ]]>
+    </script>
   </body>
 </html>

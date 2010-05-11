@@ -22,6 +22,10 @@ String.prototype.appendTo = function() {
 // Extensions de jQuery
 
 jQuery.fn.extend({
+    addTo: function(collection) {
+        $.merge(collection, this);
+        return collection;
+    },
     remap: function(fn) {
         var a = $.makeArray(arguments);
         a.shift();
