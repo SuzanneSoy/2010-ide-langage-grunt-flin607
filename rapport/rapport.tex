@@ -19,8 +19,9 @@
 \usetikzlibrary{matrix,fit,calc}
 
 \usepackage{amsmath}
+\usepackage{tocbibind}
 
-\usepackage{rapportv3}
+\usepackage{rapport}
 
 \author{Georges Dupéron}
 \title{Langage de programmation}
@@ -28,6 +29,8 @@
 \begin{document}
 
 \maketitle
+\tableofcontents
+\newpage
 
 \section{Objectif}
 
@@ -84,7 +87,25 @@ La question à se poser maintenant est ~:
   Qu'est-ce qui définit ce programme ?
 \end{figure}
 
-Ou, comme l'aurait dit TODO, «What are your inputs ? What are your outputs ? What is the functional relation between them ?».
+Ou, comme le disait un des collègues de Joe~Armstrong~\cite{what-inputs}~:
+
+\begin{figure}[h!]
+  \centering
+  \begin{quotation}
+    «~A program is a black box. It has inputs and it has outputs. And there is a functional relationship between the inputs and the outputs. What are the inputs to your problem ? What are the outputs to your problem ? What is the functional relationship between the two ?~»
+  \end{quotation}
+\end{figure}
+% Citation de Joe Armstrong, parue dans :
+% titre : Coders at Work
+% Auteur : Peter Seibel
+% ISBN 978-1-4302-1948-4
+% http://www.codersatwork.com/
+% http://books.google.fr/books?id=B_OQYipTYzsC&lpg=PP1&pg=PA217#v=onepage (bas de page)
+
+%(03:37:51) bbrun: tu ecrit a l'endroit ou tu veux mettre ta biblio \bibliographystyle{plain}
+%\bibliography{nomBibliographieSansExtension}
+%(03:38:36) aim: ok merchi beaucoup
+%(03:38:46) bbrun: et dans le texte a l'endroit ou tu veux mettre ta reference tu tappe \cite{what-inputs} et tu a un truc comme sa en fin de page [Image]
 
 Ce programme est constitué
 \begin{itemize}
@@ -165,5 +186,10 @@ call-bloc prend en paramètre des fonctions permettant de calculer ses paramètr
 \item En évaluation «eager», on évalue les paramètres au début de l'appel du bloc, et on stocke leur valeur pour une future utilisation (ou non).
 \item Pour une macro, on stocke juste les paramètres eux-mêmes (avec leur fonction d'évaluation, s'il y en a une).
 \end{itemize}
+
+\appendix
+
+\bibliographystyle{plain}
+\bibliography{biblio}
 
 \end{document}
