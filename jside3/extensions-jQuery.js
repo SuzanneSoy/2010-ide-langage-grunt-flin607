@@ -22,6 +22,9 @@ String.prototype.appendTo = function() {
 // Extensions de jQuery
 
 jQuery.fn.extend({
+    scrollToLast: function(speed) {
+        return this.scrollTo(this.children().last(), speed);
+    },
     addTo: function(collection) {
         $.merge(collection, this);
         return collection;

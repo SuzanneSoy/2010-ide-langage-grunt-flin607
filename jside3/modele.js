@@ -34,22 +34,24 @@ function Monde(nom) {
         uid: singleton.uid(),
         // Propriétés
         nom: nom,
-        // vue
-        vues: $(),
         // Parents
         // Enfants
-        log: new Log(this),
-        barreOutils: new BarreOutils(this),
+        log: null,
+        barreOutils: null, // J'ai des doutes sur la présence de barreOutils…
         blocs: [],
         scratch: null,
         // Ajout
-        ajouterVue: function(v) {
-            v.modèle = this;
-            v.addTo(this.vues);
-        },
         ajouterBloc: function(b) {
             b.monde = this;
             this.blocs.push(b);
+        },
+        définirBarreOutils: function(bo) {
+            bo.monde = this;
+            this.barreOutils = bo;
+        },
+        définirLog: function(l) {
+            l.monde = this;
+            this.log = l;
         },
         // Suppression
         supprimerBloc: function(b) {
@@ -60,32 +62,21 @@ function Monde(nom) {
     this.ajouterBloc(this.scratch);
     var iscratch = new InstanceBloc(this.scratch, {vues: this.vues}); // Attention, devrait utiliser une définition !!!
     this.scratch.ajouterInstance(iscratch);*/
-    this.scratch = {vues: this.vues};
+    this.scratch = new Définition(); // this.scratch.bloc == null;
 }
 
-function BarreOutils(monde) {
+function BarreOutils() {
     $.extend(this, {
-        monde: monde,
-        vues: [],
-        ajouterVue: function(v) {
-            v.modèle = this;
-            this.vues.push(v);
-        },
+        monde: null,
     });
 }
 
-function Log(monde) {
+function Log() {
     $.extend(this, {
-        monde: monde,
-        vues: [],
+        monde: null,
         messages: [],
         cbMessage: [],
         // Ajout
-        ajouterVue: function(v) {
-            v.modèle = this;
-            this.vues.push(v);
-        },
-        // ?
         envoiMessage: function(msg) {
             this.messages.push(msg);
             faireCallbacks(this.cbMessage, msg);
@@ -103,8 +94,6 @@ function Bloc(nom) {
         // Propriétés
         nom: nom,
         description: '', // Est une définition ?
-        // vue
-        vues: [],
         // Parents
         monde: null,
         // Utilisation
@@ -114,29 +103,18 @@ function Bloc(nom) {
         portsEntree: [],
         portsSortie: [],
         // Ajout
-        ajouterVue: function(v) {
-            v.modèle = this;
-            v.addTo(this.vues);
-        },
-        ajouterInstance: function(ib) {
+        /*ajouterInstance: function(ib) {
             //ib.bloc = this;
             this.instances.push(ib);
+        },*/
+        demanderInstance: function() {
+            var ib = new InstanceBloc();
+            ib.bloc = this;
+            this.instances.push(ib);
+            return ib;
         },
-        ajouterDéfinition: function(d) {
-            d.bloc = this;
-            this.définitions.push(d);
-        },
-        nouvelleDéfinition:  function(nom)         { définitions.push(new Définition(nom, this)); },
-        nouveauPortEntree:   function()            { portsEntree.push(new Port('entree', this)); },
-        nouveauPortSortie:   function()            { portsEntree.push(new Port('entree', this)); },
-        //nouvelleInstance:    function(destination) { instances.push(new InstanceBloc(this, destination)); },
-        // Suppression
-        supprimerDéfinition: function(def)  { définitions.remove(def); },
-        supprimerPortEntree: function(port) { portsEntree.remove(port); },
-        supprimerPortSortie: function(port) { portsSortie.remove(port); },
-        supprimerInstance:   function(inst) { instances.remove(inst); },
         // Modification
-        déplacerDéfinition: function(def, position) {
+        /*déplacerDéfinition: function(def, position) {
             var pos = définitions.remove(def);
             if (pos < position) position--;
             définitions.insert(def,position);
@@ -150,44 +128,41 @@ function Bloc(nom) {
             var pos = portsSortie.remove(port);
             if (pos < position) position--;
             portsSortie.insert(port,position);
+        },*/
+        ajouterDéfinition: function(d) {
+            d.bloc = this;
+            this.définitions.push(d);
+            faireCallbacks(this.cbAjoutDéfinition, d);
         },
-        cbAjoutInstanceBloc: [],
-        onAjoutInstanceBloc: function(callback) {
-            this.cbAjoutInstanceBloc.push(callback);
+        cbAjoutDéfinition: [],
+        onAjoutDéfinition: function(callback) {
+            this.cbAjoutDéfinition.push(callback);
         }
     });
 }
 
-function InstanceBloc(bloc, définitionParente) {
+function InstanceBloc() {
     $.extend(this, {
         uid: singleton.uid(),
         // Propriétés
-        bloc: bloc,
-        // vue
-        vues: [],
+        bloc: null,
         // Parents
-        définition: définitionParente,
+        définition: null,
         // Enfants
         //instancesPorts: [],
         // Ajout
-        ajouterVue: function(v) {
-            v.modèle = this;
-            v.addTo(this.vues);
-        },
     });
 }
 
-function Définition(nom, blocParent) {
+function Définition(nom) {
     $.extend(this, {
         uid: singleton.uid(),
         // Propriétés
         nom: nom,
         type: null,
         //description: '',
-        // vue
-        vues: [],
         // Parents
-        bloc: blocParent,
+        bloc: null,
         // Enfants
         connexions: [],
         instancesBlocs: [],
@@ -195,11 +170,16 @@ function Définition(nom, blocParent) {
         ajouterInstanceBloc: function(ib) {
             ib.définition = this;
             this.instancesBlocs.push(ib);
+            faireCallbacks(this.cbAjoutInstanceBloc, ib);
         },
         ajouterConnexion: function(c) {
             c.définition = this;
             this.connexion.push(c);
         },
+        cbAjoutInstanceBloc: [],
+        onAjoutInstanceBloc: function(callback) {
+            this.cbAjoutInstanceBloc.push(callback);
+        }
     });
 }
 
@@ -209,8 +189,6 @@ function Connexions(de, vers, définitionParente) {
         // Propriétés
         de: de,
         vers: vers,
-        // vue
-        vues: [],
         // Parents
         définition: définitionParente,
         // Enfants
@@ -231,8 +209,7 @@ function Port(sens, blocParent) {
         sens: sens, /* entrée / sortie */
         nom: '',
         description: '',
-        // vue
-        vues: [],
+        // ?
         instances: [],
         // Parents
         bloc: blocParent,
@@ -246,8 +223,6 @@ function Port(sens, blocParent) {
         uid: singleton.uid(),
         // Propriétés
         port: port,
-        // vue
-        vues: [],
         // Parents
         instanceBloc: instanceBlocParente,
         // Enfants

@@ -1,115 +1,159 @@
-function VMonde(m) {
-    this.modèle = m;
-    var elem = $.extend(this, (
+/* function MQuelqueChose() */
+/* function VQuelqueChose(vueParente) */
+/* function CQuelqueChose(modèle, vueParente) */
+
+/*
+Règles :
+Le modèle ne fait que des callbacks.
+La vue ne peut que s'ajouter à sa vue parente.
+Le contrôleur peut dialoguer avec son modèle, sa vue, et les enfants de sa vue.
+Le contrôleur peut transmettre la vue parente reçue en paramètre à sa vue.
+*/
+
+function VMonde(appendToElement) {
+    $.extend(this, (
         $('#vue-monde')
-            .jqote(m)
-            .appendTo('#editeur')));
+            .jqote({})
+            .appendTo(appendToElement)));
     
-    this.modèle.ajouterVue(this);
-    
-    new VBarreOutils(m.barreOutils);
-    new VLog(m.log);
+    this.vBarreOutils = null;
+    this.vLog = null;
+    this.vScratch = this.find('.scratch');
 }
 
-function VBarreOutils(b) {
-    this.modèle = b;
-    var elem = $.extend(this,(
+function CMonde(mMonde, appendToElement) {
+    this.modèle = mMonde;
+    this.modèle.définirBarreOutils(new BarreOutils());
+    this.modèle.définirLog(new Log());
+    this.vue = new VMonde(appendToElement, mMonde);
+
+    this.vue.vBarreOutils = new CBarreOutils(this.modèle.barreOutils, this.vue);
+    this.vue.vLog = new CLog(this.modèle.log, this.vue);
+    
+    var that = this;
+    this.modèle.scratch.onAjoutInstanceBloc(function(instanceBloc) {
+        var cib = new CInstanceBloc(instanceBloc, that.vue.vScratch);
+    })
+}
+
+function VBarreOutils(vMondeParente) {
+    $.extend(this,(
         $('#vue-barre-outils')
-            .jqote(b)
-            .appendTo(b.monde.vues)));
+            .jqote({})
+            .appendTo(vMondeParente)));
     
-    (elem)
-        .draggable()
-        .resizable()
-        .find('.nouveau-bloc')
-        .click(function() {
-            elem.modèle.monde.log.envoiMessage("Nouveau bloc.");
-            
-            var b = new Bloc("Bloc 2");
-            elem.modèle.monde.ajouterBloc(b);
-            
-            var ib = new InstanceBloc(b, elem.modèle.monde.scratch);
-            b.ajouterInstance(ib);
-            new VInstanceBloc(ib);
-        })
-        .end();
+    this.vBarreTitre = this.find('.barre-titre');
+    this.vTitre = this.find('.titre');
+    this.vBoutonNouveauBloc = this.find('.nouveau-bloc');
     
-    this.modèle.ajouterVue(this);
+    this.draggable();
+    this.resizable();
 }
 
-function VLog(l) {
-    this.modèle = l;
-    var elem = $.extend(this,(
-        $('#vue-log')
-            .jqote(this.modèle)
-            .appendTo(this.modèle.monde.vues)));
-
-    (elem)
-        .draggable()
-        .resizable()
-        .find('.log-pause')
-        .click(function() {
-            if (elem.modèle.pause) {
-                elem.modèle.pause = false;
-                elem.find('.messages')
-                    .stop()
-                    .scrollTo(elem.find('.messages :last'), 200);
-                elem.find('.log-pause').val("pause");
-            } else {
-                elem.modèle.pause = true;
-                elem.find('.messages').stop();
-                elem.find('.log-pause').val("play");
-            }
-        })
-        .end();
+function CBarreOutils(mBarreOutils, vMondeParente) {
+    this.modèle = mBarreOutils;
+    this.vue = new VBarreOutils(vMondeParente);
     
-    elem.modèle.onMessage(function(msg) {
-        var m = elem.find('.messages');
-        m.append($('<div/>').text(msg));
-        if (!elem.modèle.pause) {
-            elem.find('.messages')
-                .stop()
-                .scrollTo(elem.find('.messages :last-child'), 100);
+    var that = this;
+    (this.vue.vBoutonNouveauBloc)
+        .click(function() {
+            that.modèle.monde.log.envoiMessage("Nouveau bloc.");
+            var b = new Bloc("Bloc 2");
+            var ib = b.demanderInstance();
+            that.modèle.monde.scratch.ajouterInstanceBloc(ib);
+            
+            /* new CInstanceBloc(null, ib); // TODO */
+        });
+}
+
+function VLog(vMondeParente) {
+    $.extend(this,(
+        $('#vue-log')
+            .jqote({})
+            .appendTo(vMondeParente)));
+    
+    this.vBarreTitre = this.find('.barre-titre');
+    this.vTitre = this.find('.titre');
+    this.vBoutonPause = this.find('.log.pause');
+    this.vBoutonPlay = this.find('.log.play');
+    this.vMessages = this.find('.messages');
+    
+    this.doPlay = function() {
+        this.vMessages.stop().scrollToLast(200);
+        this.vBoutonPause.show();
+        this.vBoutonPlay.hide();
+    };
+    this.doPause = function() {
+        this.vMessages.stop();
+        this.vBoutonPause.hide();
+        this.vBoutonPlay.show();
+    };
+    
+    this.draggable();
+    this.resizable();
+    this.vMessages.css('top', this.vBarreTitre.outerHeight());
+    this.doPlay();
+}
+
+function CLog(mLog, vMondeParente) {
+    this.modèle = mLog;
+    this.vue = new VLog(vMondeParente);
+    
+    var that = this;
+    this.vue.vBoutonPause.add(this.vue.vBoutonPlay)
+        .click(function() {
+            if (that.modèle.pause) {
+                that.modèle.pause = false;
+                that.vue.doPlay();
+            } else {
+                that.modèle.pause = true;
+                that.vue.doPause();
+            }
+        });
+
+    this.modèle.onMessage(function(msg) {
+        that.vue.vMessages.append($('<div/>').text(msg));
+        if (!that.modèle.pause) {
+            that.vue.vMessages.stop().scrollToLast(100);
         }
     });
-    
-    elem.find('.messages')
-        .css('top', elem.find('.titre').outerHeight());
-    
-    elem.modèle.ajouterVue(this);
 }
 
-function VInstanceBloc(ib) {
-    debug2 = ib;
-    this.modèle = ib;
-    var elem = $.extend(this,(
+function VInstanceBloc(vDéfinitionParente) {
+    $.extend(this,(
         $('#vue-bloc')
-            .jqote(ib)
-            .appendTo(ib.définition.vues)));
+            .jqote({})
+            .appendTo(vDéfinitionParente)));
+
+    this.vBarreTitre = this.find('.barre-titre');
+    this.vTitre = this.find('.titre');
+    this.vTitresTabs = this.find('.bloc.tabs.titres');
+    this.vBoutonNouvelleDéfinition = this.find('.nouvelle-définition');
+
+    this.draggable();
+    this.resizable();
+    this.vTitresTabs.css('top', this.vBarreTitre.outerHeight());
+}
+
+function CInstanceBloc(mInstanceBloc, vDéfinitionParente) {
+    this.modèle = mInstanceBloc;
+    this.vue = new VInstanceBloc(vDéfinitionParente);
     
-    elem.draggable()
-        .resizable()
-        .find('.bloc.tabs.titres')
-            .css('top', elem.find('.bloc.titre').outerHeight())
-        .end()
-        .find('.nouvelle-définition')
+    (this.vue.vBoutonNouvelleDéfinition)
         .click(function() {
             elem.modèle.bloc.monde.log.envoiMessage("Nouvelle définition.");
             var d = new Définition();
             elem.modèle.bloc.ajouterDéfinition(d);
-        })
-        .end();
+        });
     
-    elem.modèle.bloc.onAjoutInstanceBloc(function(instanceBloc) {
-        
+    this.modèle.bloc.onAjoutDéfinition(function(définition) {
+        console.log("Ajout de définition", définition);
     });
-    
-    elem.modèle.ajouterVue(this);
 }
 
-function VDéfinition(d, vueInstanceBloc) {
+function VDéfinition(d, vInstanceBlocParente) {
     this.modèle = d;
-    this.vueInstanceBloc = vueInstanceBloc;
+    this.vInstanceBloc = vInstanceBlocParente;
     var elem = $.extend(this,(
         $('#vue-définition')
             .jqote(d)
@@ -122,17 +166,16 @@ function VDéfinition(d, vueInstanceBloc) {
 
 function test() {
     var m = new Monde("Le Monde");
+    var cm = new CMonde(m, '#editeur');
     
-    new VMonde(m);
-    
-    var b = new Bloc("Bloc 1");
+/*    var b = new Bloc("Bloc 1");
     m.ajouterBloc(b);
     
     var ib = new InstanceBloc(b, m.scratch);
     b.ajouterInstance(ib);
     
-    new VInstanceBloc(ib);
-    
+    new VInstanceBloc(null, ib); // TODO
+    */
     testlog(m, 6);
 }
 

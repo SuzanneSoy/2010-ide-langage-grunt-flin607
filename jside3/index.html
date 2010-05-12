@@ -45,13 +45,16 @@
     <script type="text/x-jqote-template" id="vue-monde">
       <![CDATA[
         <div class="monde">
+          <div class="scratch"></div>
         </div>
       ]]>
     </script>
     <script type="text/x-jqote-template" id="vue-barre-outils">
       <![CDATA[
         <div class="barre-outils fenetre">
-          <h2 class="barre-outils titre">Barre d'outils</h2>
+          <!--<div class="log barre-titre">-->
+          <h2 class="barre-outils barre-titre titre">Barre d'outils</h2>
+          <!--</div>-->
           <input type="button" value="Nouveau bloc" class="barre-outils nouveau-bloc"/>
           <input type="button" value="Coucou"/>
         </div>
@@ -60,8 +63,13 @@
     <script type="text/x-jqote-template" id="vue-log">
       <![CDATA[
         <div class="log fenetre">
-          <h2 class="log titre">Log</h2>
+          <div class="log barre-titre">
+            <input type="button" class="log pause" value="▌▌" style="padding-right: 0.1em;" />
+            <input type="button" class="log play" value="▶"/>
+            <h2 class="titre">Log</h2>
+          </div>
           <div class="log messages">
+            <div><!-- Il faut au moins un message (vide). --></div>
           </div>
         </div>
       ]]>
@@ -69,12 +77,12 @@
     <script type="text/x-jqote-template" id="vue-bloc">
       <![CDATA[
         <div class="bloc fenetre">
-          <h2 class="bloc titre"><%= this.bloc.nom %></h2>
+          <h2 class="bloc barre-titre titre">Nom du bloc</h2>
           <div class="bloc tabs titres">
             <h3 class="définition titre">Définition A</h3>
             <h3 class="définition titre">Définition B</h3>
             <h3 class="définition titre">Définition C</h3>
-            <input type="button" class="nouvelle-définition" value="+" />
+            <input type="button" class="nouvelle-définition" value="+"/>
           </div>
           <div class="bloc définitions">
           </div>
@@ -87,6 +95,13 @@
           
         </div>
       ]]>
+    </script>
+    <script type="x-exemple-local-storage">
+      if (!localStorage[window.location.href]) {
+          localStorage[window.location.href] = 0;
+      }
+      localStorage[window.location.href] = parseInt(localStorage[window.location.href]) + 1;
+      document.getElementById('count').textContent = localStorage[window.location.href];
     </script>
   </body>
 </html>

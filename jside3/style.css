@@ -52,6 +52,14 @@ body {
     overflow: auto;
 }
 
+.log.pause {
+    float: right;
+}
+
+.log.play {
+    float: right;
+}
+
 /* Bloc */
 .bloc.fenetre {
     position: absolute;
@@ -102,11 +110,28 @@ body {
 }
 
 /* Fenêtres */
-.titre {
+.barre-titre {
     background-color: #eef;
     border-bottom: thin solid blue;
     padding: .1em;
-    margin: 0;
     font-size: 100%;
     text-align: center;
+}
+
+h2.titre {
+    font-size: 100%;
+    margin: 0;
+}
+
+input {
+    background-color: white;
+    border: thin solid black;
+}
+
+input:hover {
+    border-color: slategray;
+}
+
+input[type=button]:hover {
+    color: slategray;
 }
