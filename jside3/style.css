@@ -4,6 +4,7 @@
 }
 
 body {
+    cursor: default;
     position:absolute;
     top: 0;
     left: 0;
@@ -92,7 +93,7 @@ body {
     left: 0;
     right: 0;
     background: lightgray;
-    padding-bottom: .1em;
+    padding-bottom: 0;
     
     border: medium solid white;
     border-style: none solid none solid;
@@ -105,8 +106,33 @@ body {
     float: left;
 }
 
+.définition.titre.active {
+    background-color: #eee;
+    border-bottom: thin solid white;
+}
+
 .nouvelle-définition {
     float: right;
+}
+
+.définitions {
+    position: absolute;
+    top: 2.9em;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    padding-bottom: .1em;
+}
+
+/* Définitions */
+.définition.contenu {
+    height: 100%;
+}
+
+.définition.contenu.aucune-définition {
+    text-align: center;
+    padding-top: 1em;
 }
 
 /* Fenêtres */

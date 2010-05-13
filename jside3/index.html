@@ -29,11 +29,20 @@
     <!-- jQuery - mes extensions -->
     <script type="text/javascript" src="extensions-jQuery.js"></script>
 
-    <!-- Modèle -->
+    <!-- Modèle / Vue - fonctions utilitaires et explications -->
     <script type="text/javascript" src="modele.js"></script>
-    
-    <!-- Vue -->
     <script type="text/javascript" src="vue.js"></script>
+    
+    <!-- MVC -->
+    <script type="text/javascript" src="mvc/monde.js"></script>
+    <script type="text/javascript" src="mvc/barre-outils.js"></script>
+    <script type="text/javascript" src="mvc/log.js"></script>
+    <script type="text/javascript" src="mvc/instance-log.js"></script>
+    <script type="text/javascript" src="mvc/bloc.js"></script>
+    <script type="text/javascript" src="mvc/instance-bloc.js"></script>
+    <script type="text/javascript" src="mvc/definition.js"></script>
+    <script type="text/javascript" src="mvc/connexion.js"></script>
+    <script type="text/javascript" src="mvc/port.js"></script>
     
     <!-- Test -->
     <script type="text/javascript" src="test.js"></script>
@@ -56,7 +65,8 @@
           <h2 class="barre-outils barre-titre titre">Barre d'outils</h2>
           <!--</div>-->
           <input type="button" value="Nouveau bloc" class="barre-outils nouveau-bloc"/>
-          <input type="button" value="Coucou"/>
+          <input type="button" value="Recherche" class="barre-outils recherche"/>
+          <input type="button" value="Log" class="barre-outils log"/>
         </div>
       ]]>
     </script>
@@ -64,7 +74,7 @@
       <![CDATA[
         <div class="log fenetre">
           <div class="log barre-titre">
-            <input type="button" class="log pause" value="▌▌" style="padding-right: 0.1em;" />
+            <input type="button" class="log pause" value="▌▌" style="padding-right: 0.2em;" />
             <input type="button" class="log play" value="▶"/>
             <h2 class="titre">Log</h2>
           </div>
@@ -79,19 +89,27 @@
         <div class="bloc fenetre">
           <h2 class="bloc barre-titre titre">Nom du bloc</h2>
           <div class="bloc tabs titres">
-            <h3 class="définition titre">Définition A</h3>
-            <h3 class="définition titre">Définition B</h3>
-            <h3 class="définition titre">Définition C</h3>
+            <h3 class="définition titre aucune-définition">Aucune définition</h3>
             <input type="button" class="nouvelle-définition" value="+"/>
           </div>
           <div class="bloc définitions">
+            <div class="définition contenu aucune-définition">
+              Aucune définition.
+              <br/>
+              Cliquez sur le + ci-dessus pour en créer une.
+            </div>
           </div>
         </div>
       ]]>
     </script>
+    <script type="text/x-jqote-template" id="vue-définition-titre">
+      <![CDATA[
+        <h3 class="définition titre">Nom de la définition</h3>
+      ]]>
+    </script>
     <script type="text/x-jqote-template" id="vue-définition">
       <![CDATA[
-        <div class="définition">
+        <div class="définition contenu">
           
         </div>
       ]]>
