@@ -11,7 +11,7 @@ function MRecherche() {
         instances: [],
         demanderInstance: function() {
             var mir = new MInstanceRecherche();
-            mir.recherche = this;
+            mir.mRecherche = this;
             this.instances.push(mir);
             return mir;
         },

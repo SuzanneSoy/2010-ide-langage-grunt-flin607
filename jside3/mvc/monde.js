@@ -52,15 +52,45 @@ function MMonde(nom) {
             this.blocs.remove(b);
         }
     });
+
+    var that = this;
     
     /* Actions */
-    this.actionAucune = function() {}
+    this.actionAucune = function() {};
+    this.actionNouveauBloc = function(cDéfinition, rect, rectParent) {
+        that.outilZone = that.actionAucune;
+        if (rect.width < 10 || rect.height < 10) {
+            return;
+        }
+        
+        var mb = new MBloc();
+        that.ajouterBloc(mb);
+        var mib = mb.demanderInstance();
+        mib.rect = rect;
+        mib.rectParent = rectParent
+        cDéfinition.modèle.ajouterInstanceBloc(mib);
+    };
+
+    this.actionInstanceBloc_mBloc = null;
+    this.actionInstanceBloc = function(cDéfinition, rect, rectParent) {
+        that.outilZone = that.actionAucune;
+        if (rect.width < 10 || rect.height < 10 || that.actionInstanceBloc_mBloc === null) {
+            return;
+        }
+        
+        console.log(that);
+        var mib = that.actionInstanceBloc_mBloc.demanderInstance();
+        mib.rect = rect;
+        mib.rectParent = rectParent
+        cDéfinition.modèle.ajouterInstanceBloc(mib);
+    };
     
     /* Outils */
     this.outilZone = this.actionAucune;
     
     /* Scratch */
-    this.mBlocScratch = new MBloc(); // this.scratch.bloc == null;
+    this.mBlocScratch = new MBloc();
+    this.mBlocScratch.changeNom("Scratch");
     this.ajouterBloc(this.mBlocScratch);
     this.mDéfinitionScratch = new MDéfinition();
     this.mBlocScratch.ajouterDéfinition(this.mDéfinitionScratch);

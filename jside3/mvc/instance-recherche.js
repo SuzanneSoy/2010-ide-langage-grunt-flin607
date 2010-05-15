@@ -2,7 +2,7 @@ function MInstanceRecherche() {
     $.extend(this, {
         uid: singleton.uid(),
         // Propriétés
-        recherche: null,
+        mRecherche: null,
         termes: '',
         sélection: [],
         ajouterRésultatSélection: function(s) {
@@ -91,19 +91,19 @@ function CInstanceRecherche(mInstanceRecherche, vMondeParente) {
             that.actualiserRecherche();
         });
     
-    (this.modèle.recherche.monde)
+    (this.modèle.mRecherche.monde)
         .onAjoutBloc(function(bloc) {
             that.actualiserRecherche([bloc], true, true);
         });
     
-    (this.modèle.recherche.monde)
+    (this.modèle.mRecherche.monde)
         .onModificationBloc(function(bloc) {
             that.actualiserRecherche([bloc], true, true);
         });
     
     this.actualiserRecherche = function(domaine, animAjout, animSuppression) {
         var termes = this.vue.termes().toLowerCase().split(" ");
-        var domaine = domaine || this.modèle.recherche.monde.blocs;
+        var domaine = domaine || this.modèle.mRecherche.monde.blocs;
         var résultats = filtrerValeurs(mInstanceRecherche, domaine, termes, function(b) {
             return {
                 original: b.nom,

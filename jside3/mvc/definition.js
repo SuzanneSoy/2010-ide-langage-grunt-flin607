@@ -46,16 +46,14 @@ function CDéfinition(mDéfinition, vInstanceBlocParente) {
     var that = this;
     this.vue.zonable({
         start: function() {
-            console.log('startZone');
         },
         zone: function() {
-            //console.log('zone');
         },
         end: function(start, end, rect) {
-            console.log('endZone');
-            that.modèle.bloc.monde.outilZone(that, rect);
+            that.modèle.bloc.monde.outilZone(that, rect, getRectangle(that.vue));
         }
     });
+    
     this.modèle.onAjoutInstanceBloc(function(instanceBloc) {
         var cib = new CInstanceBloc(instanceBloc, that.vue);
     });

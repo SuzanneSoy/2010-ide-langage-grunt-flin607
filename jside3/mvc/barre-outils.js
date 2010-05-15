@@ -28,19 +28,7 @@ function CBarreOutils(mBarreOutils, vMondeParente) {
     (this.vue.vBoutonNouveauBloc)
         .click(function() {
             that.modèle.monde.log.envoiMessage("Cliquez-glissez pour créer un nouveau bloc.");
-            that.modèle.monde.outilZone = function(cDéfinition, rect) {
-                console.log('Zone sur', cDéfinition, rect.x1, rect.y1, rect.x2, rect.y2, rect.width, rect.height);
-                that.modèle.monde.outilZone = that.modèle.monde.actionAucune;
-                
-                var mb = new MBloc();
-                that.modèle.monde.ajouterBloc(mb);
-                var mib = mb.demanderInstance();
-                cDéfinition.modèle.ajouterInstanceBloc(mib);
-            }
-/*            var mb = new MBloc();
-            that.modèle.monde.ajouterBloc(mb);
-            var mib = mb.demanderInstance();
-            that.modèle.monde.scratch.ajouterInstanceBloc(mib);*/
+            that.modèle.monde.outilZone = that.modèle.monde.actionNouveauBloc;
         });
     
     (this.vue.vBoutonRecherche)

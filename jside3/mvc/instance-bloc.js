@@ -75,6 +75,10 @@ function CInstanceBloc(mInstanceBloc, vDéfinitionParente) {
         });
     
     this.vue.titre(this.modèle.bloc.nom);
+    this.vue.css('left', (this.modèle.rect.x1 - this.modèle.rectParent.x1) / this.modèle.rectParent.width * vDéfinitionParente.width());
+    this.vue.css('top', (this.modèle.rect.y1 - this.modèle.rectParent.y1) / this.modèle.rectParent.height * vDéfinitionParente.height());
+    this.vue.width(this.modèle.rect.width / this.modèle.rectParent.width * vDéfinitionParente.width());
+    this.vue.height(this.modèle.rect.height / this.modèle.rectParent.height * vDéfinitionParente.height());
     
     new CDéfinitions(this.modèle, this.vue.vDéfinitions);
 }

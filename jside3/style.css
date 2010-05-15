@@ -139,12 +139,12 @@ body {
 /* Instance-bloc */
 .instance-bloc.vMain {
     position: absolute;
-    top: 250px;
-    left: 300px;
-    width: 25em;
+    top: 2%;
+    left: 3%;
+    width: 20%;
     min-width: 4em;
     min-height: 3em;
-    height: 12em;
+    height: 20%;
     
     border: medium solid gray;
     background-color: white;

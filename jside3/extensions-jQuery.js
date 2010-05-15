@@ -191,6 +191,10 @@ surchargeAccesseur(
 
 
 getRectangle = function(x1,y1,x2,y2) {
+    if (y1 === undefined) {
+        var o = $(x1).offset();
+        return getRectangle(o.left, o.top, o.left + $(x1).width(), o.top + $(x1).height());
+    }
     if (x2 === undefined) {
         var oa = $(x1).offset();
         var ob = $(y1).offset();

@@ -50,9 +50,17 @@ function CRésultatRecherche(mRésultatRecherche, vInstanceRechercheParente) {
     
     var that = this;
     this.vue.toggle(function() {
-        that.modèle.mInstanceRecherche.ajouterRésultatSélection(that);
+        var mir = that.modèle.mInstanceRecherche;
+        mir.ajouterRésultatSélection(that);
+        var monde = mir.mRecherche.monde;
+        monde.actionInstanceBloc_mBloc = that.modèle.objet;
+        monde.outilZone = monde.actionInstanceBloc;
     }, function() {
-        that.modèle.mInstanceRecherche.supprimerRésultatSélection(that);
+        var mir = that.modèle.mInstanceRecherche;
+        mir.supprimerRésultatSélection(that);
+        var monde = mir.mRecherche.monde;
+        monde.actionInstanceBloc_mBloc = null;
+        monde.outilZone = monde.actionAucune;
     });
     
     this.ajoutSélection = function() {
