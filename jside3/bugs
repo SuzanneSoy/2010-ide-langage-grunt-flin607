@@ -1,1 +1,9 @@
 Lors de la création de la vue d'une instance-bloc, les définitions existantes ne sont pas ajoutées.
+
+
+TODO :
+ports
+ports ré-ordonnables
+types de définitions
+fenêtres "debug" (avec un pseudo-port qui va "piquer" sur un port, une connexion, …
+"exécution" (pour les fenêtres debug)
