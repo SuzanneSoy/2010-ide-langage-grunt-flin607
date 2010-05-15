@@ -3,6 +3,10 @@
     overflow: hidden;
 }
 
+.clearfloat {
+    clear: both;
+}
+
 body {
     cursor: default;
     position:absolute;
@@ -28,7 +32,78 @@ body {
     left: 100px;
     
     border: thin solid blue;
-    background-color: lightblue;
+    background-color: white;
+}
+
+/* Recherche */
+.recherche.fenetre {
+    position: absolute;
+    bottom: 250px;
+    right: 100px;
+    width: 15em;
+    min-width: 4em;
+    min-height: 3em;
+    height: 8em;
+    
+    border: thin solid blue;
+    background-color: white;
+}
+
+.recherche.résultats {
+    position: absolute;
+    top: 1.4em;
+    bottom: 0;
+    width: 100%;
+    overflow: auto;
+}
+
+.recherche.termes {
+    float: right;
+}
+
+/* Résultat-recherche */
+.résultat-recherche:hover {
+    /* Doit être plus important que les flashouillages
+     * rouges et verts */
+    background-color: #eee !important;
+}
+
+.résultat-recherche.sélectionné {
+    background-color: lightgray; !important;
+}
+
+.résultat-recherche.ajout {
+    background-color: lightgreen;
+}
+
+.résultat-recherche.suppression {
+    background-color: pink;
+    overflow: hidden;
+}
+
+.résultat-recherche.vUid {
+    display: block;
+    font-size: small;
+    color: gray;
+    padding-right: 0.2em;
+    float: right;
+}
+
+.résultat-recherche .occurence {
+    color: green;
+    font-weight: bold;
+}
+
+.résultat-recherche .superposée {
+    color: orange;
+    font-weight: bold;
+}
+
+.résultat-recherche .superposition {
+    /* Yeah, sorry, that character is overlapped by
+       two or more matches. Want some chocolate ?   */
+    color: chocolate;
+    font-weight: bold;
 }
 
 /* Log */
@@ -61,8 +136,8 @@ body {
     float: right;
 }
 
-/* Bloc */
-.bloc.fenetre {
+/* Instance-bloc */
+.instance-bloc.vMain {
     position: absolute;
     top: 250px;
     left: 300px;
@@ -75,23 +150,22 @@ body {
     background-color: white;
 }
 
-.bloc.titre {
-    background-color: lightgray;
-    border: medium solid white;
-}
-
-.bloc.titre {
+.instance-bloc.vBarre-titre {
     background-color: lightgray;
     border: medium solid white;
     border-bottom: none;
 }
 
-/* Tabs */
-.bloc.tabs.titres {
+.instance-bloc.vDéfinitions {
     position: absolute;
     top: 1.4em;
     left: 0;
     right: 0;
+    bottom: 0;
+}
+
+/* Définitions (Tabs) */
+.définitions.vTitresTabs {
     background: lightgray;
     padding-bottom: 0;
     
@@ -99,23 +173,11 @@ body {
     border-style: none solid none solid;
 }
 
-.définition.titre {
-    background-color: white;
-    border: thin solid gray;
-    margin: 0.1em 0.1em 0 0;
-    float: left;
-}
-
-.définition.titre.active {
-    background-color: #eee;
-    border-bottom: thin solid white;
-}
-
-.nouvelle-définition {
+.définitions.vNouvelle-définition {
     float: right;
 }
 
-.définitions {
+.définitions.vContenusTabs {
     position: absolute;
     top: 2.9em;
     left: 0;
@@ -125,18 +187,39 @@ body {
     padding-bottom: .1em;
 }
 
-/* Définitions */
-.définition.contenu {
+/* Définition */
+.définition.vTitre {
+    background-color: white;
+    border: thin solid gray;
+    margin: 0.1em 0.1em 0 0;
+    float: left;
+}
+
+.définition.vTitre.active {
+    background-color: #eee;
+    border-bottom: thin solid white;
+}
+
+.définition.vCorps {
     height: 100%;
 }
 
-.définition.contenu.aucune-définition {
+.définition.vCorps.vAucune-définition {
     text-align: center;
     padding-top: 1em;
 }
 
+/* Zone */
+.vZone {
+    position: absolute;
+    border: thin solid blue;
+    background-color: lightblue;
+    opacity: 0.5;
+}
+
 /* Fenêtres */
-.barre-titre {
+.barre-titre,
+.vBarre-titre{
     background-color: #eef;
     border-bottom: thin solid blue;
     padding: .1em;
@@ -144,7 +227,8 @@ body {
     text-align: center;
 }
 
-h2.titre {
+h2.titre,
+h2.vTitre {
     font-size: 100%;
     margin: 0;
 }

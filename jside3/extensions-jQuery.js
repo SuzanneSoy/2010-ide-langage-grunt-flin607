@@ -22,6 +22,10 @@ String.prototype.appendTo = function() {
 // Extensions de jQuery
 
 jQuery.fn.extend({
+    /* Mathias Bynens - http://stackoverflow.com/questions/2059743/detect-elements-overflow-using-jquery */
+    overflows: function() {
+        return ($(this).width() !== this.clientWidth || $(this).height() !== this.clientHeight);
+    },
     scrollToLast: function(speed) {
         return this.scrollTo(this.children().last(), speed);
     },
@@ -118,7 +122,7 @@ function surchargeAccesseur(nom, type, get, set) {
         var args = arguments;
         if (options !== undefined) {
             var that = this;
-            var ret = this.map(function (i) {
+            var ret = $(this).map(function (i) {
                 if (that[i] instanceof type) {
                     return set(that[i], options);
                 } else {
@@ -185,6 +189,86 @@ surchargeAccesseur(
     }
 }(jQuery));
 
+
+getRectangle = function(x1,y1,x2,y2) {
+    if (x2 === undefined) {
+        var oa = $(x1).offset();
+        var ob = $(y1).offset();
+        return getRectangle(oa.left, oa.top, ob.left, ob.top);
+    }
+    return {
+        x1: Math.min(x1,x2),
+        y1: Math.min(y1,y2),
+        x2: Math.max(x1,x2),
+        y2: Math.max(y1,y2),
+        width: Math.abs(x1 - x2),
+        height: Math.abs(y1 - y2)
+    };
+};
+
+jQuery.fn.corners = function(x1,y1,x2,y2) {
+    var rect = getRectangle(x1,y1,x2,y2);
+    this.offset({left: rect.x1, top: rect.y1});
+    this.width(rect.width);
+    this.height(rect.height);
+}
+
+jQuery.fn.zonable = function(start, zone, end) {
+    var opts = {
+        start: function() {return true;},
+        zone: function() {return true;},
+        end: function() {return true;}
+    };
+    if (typeof start == "function") {
+        if (start) opts.start = start;
+        if (zone) opts.start = start;
+        if (end) opts.start = start;
+    } else {
+        if (start) $.extend(opts, start);
+    }
+    
+    var z = {};
+    z.vZone = $('#vue-zone').jqote({}).appendTo(this);
+    z.vZone.hide();
+    z.zoning = false;
+    z.start = null;
+
+    z.manageDown = function(e) {
+        if (e.target != this || opts.start(e) === false) {
+            return true;
+        }
+        z.start = $(e);
+        z.zoning = true;
+        z.vZone.show();
+        z.manageMove(e);
+        return false;
+    };
+    z.manageMove = function(e) {
+        if (z.zoning) {
+            if (opts.zone(z.start, e) === false) {
+                return true;
+            }
+            z.vZone.corners(z.start, e);
+            return false;
+        }
+    };
+    z.manageUp = function(e) {
+        if (z.zoning) {
+            z.manageMove(e);
+            if (opts.end(z.start, e, getRectangle(z.start, e)) === false) {
+                return true;
+            }
+            z.vZone.hide();
+            z.zoning = false;
+            return false;
+        }
+    }
+    
+    var that = this;
+    this.mousedown(z.manageDown);
+    this.mousemove(z.manageMove);
+    this.mouseup(z.manageUp);
+}
 
 
 /* Fioritures graphique */

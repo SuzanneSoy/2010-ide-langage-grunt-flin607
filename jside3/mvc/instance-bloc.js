@@ -13,46 +13,48 @@ function MInstanceBloc() {
 
 function VInstanceBloc(vDéfinitionParente) {
     $.extend(this,(
-        $('#vue-bloc')
+        $('#vue-instance-bloc')
             .jqote({})
             .appendTo(vDéfinitionParente)));
 
-    this.vBarreTitre = this.find('.barre-titre');
-    this.vTitre = this.find('.titre');
-    this.vBoutonNouvelleDéfinition = this.find('.nouvelle-définition');
-    this.vTitresTabs = this.find('.bloc.tabs.titres');
-    this.vDéfinitions = this.find('.définitions');
-    this.vAucuneDéfinition = this.find('.aucune-définition');
-
-    this.aucuneDéfinition = true;
+    this.vBarreTitre = this.find('.instance-bloc.vBarre-titre');
+    this.vTitre = this.find('.instance-bloc.vTitre');
+    this.vVueTitre = this.find('.instance-bloc.vVue-titre');
+    this.vÉditionTitre = this.find('.instance-bloc.vÉdition-titre');
+    this.vChampTitre = this.find('.instance-bloc.vChamp-titre');
+    this.vBoutonValiderTitre = this.find('.instance-bloc.vBoutonValiderTitre');
+    this.vDéfinitions = this.find('.instance-bloc.vDéfinitions');
     
     var that = this;
-    this.ajoutVDéfinition = function(vTitreDéfinition, vDéfinition) {
-        if (this.aucuneDéfinition) {
-            this.vAucuneDéfinition.hide();
-            this.aucuneDéfinition = false;
+    this.titre = function(val) {
+        if (typeof val != "function") {
+            this.vTitre.text(val);
+            this.ajusterBarreTitre();
+            return true;
         }
-        var vD = vDéfinition.appendTo(this.vDéfinitions);
-        var vTD = vTitreDéfinition.appendTo(this.vTitresTabs);
-        
-        vTD.click(function() {
-            that.changerTab(vTD, vD);
+        this.vTitre.hide();
+        this.vChampTitre.val(this.vTitre.text());
+        this.vÉditionTitre.show();
+        this.ajusterBarreTitre();
+        this.vChampTitre.select();
+        var cbModifTitre = val;
+        this.vÉditionTitre.submit(function(ev) {
+            that.vTitre.show();
+            that.vÉditionTitre.hide();
+            that.ajusterBarreTitre();
+            window.setTimeout(function() {cbModifTitre(that.vChampTitre.val());}, 0);
+            return false;
         });
-        this.changerTab(vTD, vD);
-        return vD;
-    };
+    }
     
-    this.changerTab = function(titreTab, contenuTab) {
-        this.vDéfinitions.children().hide();
-        this.vTitresTabs.children().removeClass("active");
-        titreTab.addClass("active");
-        contenuTab.show();
-    };
+    this.ajusterBarreTitre = function() {
+        this.vDéfinitions.css('top', this.vBarreTitre.outerHeight());
+    }
     
     this.draggable();
     this.resizable();
-    this.vTitresTabs.css('top', this.vBarreTitre.outerHeight());
-    this.vDéfinitions.css('top', this.vBarreTitre.outerHeight() + this.vTitresTabs.outerHeight());
+    this.vÉditionTitre.hide();
+    this.ajusterBarreTitre();
 }
 
 function CInstanceBloc(mInstanceBloc, vDéfinitionParente) {
@@ -60,15 +62,19 @@ function CInstanceBloc(mInstanceBloc, vDéfinitionParente) {
     this.vue = new VInstanceBloc(vDéfinitionParente);
     
     var that = this;
-    (this.vue.vBoutonNouvelleDéfinition)
-        .click(function() {
-            that.modèle.bloc.monde.log.envoiMessage("Nouvelle définition.");
-            var md = new MDéfinition();
-            that.modèle.bloc.ajouterDéfinition(md);
+    (this.vue.vTitre)
+        .dblclick(function() {
+            that.vue.titre(function(nouveauNom) {
+                that.modèle.bloc.changeNom(nouveauNom);
+            });
         });
     
-    this.modèle.bloc.onAjoutDéfinition(function(définition) {
-        that.modèle.bloc.monde.log.envoiMessage("Ajout de définition", définition);
-        new CDéfinition(définition, that.vue);
-    });
+    (this.modèle.bloc)
+        .onChangeNom(function(nouveauNom) {
+            that.vue.titre(that.modèle.bloc.nom);
+        });
+    
+    this.vue.titre(this.modèle.bloc.nom);
+    
+    new CDéfinitions(this.modèle, this.vue.vDéfinitions);
 }

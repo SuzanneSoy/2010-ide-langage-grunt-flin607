@@ -6,21 +6,28 @@ function MMonde(nom) {
         // Parents
         // Enfants
         log: null,
+        recherche: null,
         barreOutils: null, // J'ai des doutes sur la présence de barreOutils…
         blocs: [],
-        scratch: null,
+        mBlocScratch: null,
+        mDéfinitionScratch: null,
         // Ajout
         ajouterBloc: function(b) {
             b.monde = this;
             this.blocs.push(b);
+            var that = this;
+            b.onModification(function(b) {
+                faireCallbacks(that.cbModificationBloc, b);
+            });
+            faireCallbacks(this.cbAjoutBloc, b);
         },
-        définirBarreOutils: function(bo) {
-            bo.monde = this;
-            this.barreOutils = bo;
+        cbAjoutBloc: [],
+        onAjoutBloc: function(callback) {
+            this.cbAjoutBloc.push(callback);
         },
-        définirLog: function(l) {
-            l.monde = this;
-            this.log = l;
+        cbModificationBloc: [],
+        onModificationBloc: function(callback) {
+            this.cbModificationBloc.push(callback);
         },
         instancesLog: [],
         ajouterInstanceLog: function(il) {
@@ -31,18 +38,40 @@ function MMonde(nom) {
         onAjoutInstanceLog: function(callback) {
             this.cbAjoutInstanceLog.push(callback);
         },
+        instancesRecherche: [],
+        ajouterInstanceRecherche: function(ir) {
+            this.instancesRecherche.push(ir);
+            faireCallbacks(this.cbAjoutInstanceRecherche, ir);
+        },
+        cbAjoutInstanceRecherche: [],
+        onAjoutInstanceRecherche: function(callback) {
+            this.cbAjoutInstanceRecherche.push(callback);
+        },
         // Suppression
         supprimerBloc: function(b) {
             this.blocs.remove(b);
         }
     });
-    /*this.scratch = new Bloc("Scratch");
-    this.ajouterBloc(this.scratch);
-    var iscratch = new InstanceBloc(this.scratch, {vues: this.vues}); // Attention, devrait utiliser une définition !!!
-    this.scratch.ajouterInstance(iscratch);*/
-    this.scratch = new MDéfinition(); // this.scratch.bloc == null;
-    this.définirBarreOutils(new MBarreOutils());
-    this.définirLog(new MLog());
+    
+    /* Actions */
+    this.actionAucune = function() {}
+    
+    /* Outils */
+    this.outilZone = this.actionAucune;
+    
+    /* Scratch */
+    this.mBlocScratch = new MBloc(); // this.scratch.bloc == null;
+    this.ajouterBloc(this.mBlocScratch);
+    this.mDéfinitionScratch = new MDéfinition();
+    this.mBlocScratch.ajouterDéfinition(this.mDéfinitionScratch);
+    
+    /* this.scratch = new MDéfinition(); // this.scratch.bloc == null; */
+    this.barreOutils = new MBarreOutils();
+    this.barreOutils.monde = this;
+    this.recherche = new MRecherche();
+    this.recherche.monde = this;
+    this.log = new MLog();
+    this.log.monde = this;
 }
 
 function VMonde(appendToElement) {
@@ -52,23 +81,29 @@ function VMonde(appendToElement) {
             .appendTo(appendToElement)));
     
     this.vBarreOutils = null;
-    this.vLog = null;
     this.vScratch = this.find('.scratch');
+    
+    this.ajoutVDéfinition = function(vTitreDéfinition, vCorpsDéfinition) {
+        this.vScratch.replaceWith(vCorpsDéfinition);
+        this.vScratch = vCorpsDéfinition;
+    }
 }
 
 function CMonde(mMonde, appendToElement) {
     this.modèle = mMonde;
     this.vue = new VMonde(appendToElement, mMonde);
     this.vue.vBarreOutils = new CBarreOutils(this.modèle.barreOutils, this.vue);
-    //this.vue.vLog = new CLog(this.modèle.log, this.vue);
     
     var that = this;
-    this.modèle.scratch.onAjoutInstanceBloc(function(instanceBloc) {
-        var cib = new CInstanceBloc(instanceBloc, that.vue.vScratch);
-    });
+    
+    CDéfinition(this.modèle.mDéfinitionScratch, this.vue);
     
     this.modèle.onAjoutInstanceLog(function (instanceLog) {
         var cil = new CInstanceLog(instanceLog, that.vue);
+    });
+    
+    this.modèle.onAjoutInstanceRecherche(function (instanceRecherche) {
+        var cil = new CInstanceRecherche(instanceRecherche, that.vue);
     });
 }
 

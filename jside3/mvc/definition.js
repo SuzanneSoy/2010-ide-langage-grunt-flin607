@@ -29,19 +29,34 @@ function MDéfinition() {
 
 blablabla = 0;
 function VDéfinition(vInstanceBlocParente) {
-    var t = $('#vue-définition-titre').jqote({});
-    var d = $('#vue-définition').jqote({}).toDom();
-    d.append(blablabla++);
-    vInstanceBlocParente.ajoutVDéfinition(t, d)
-    $.extend(this,d);
+    $.extend(this,(
+        $('#vue-définition')
+            .jqote({})
+            .toDom()));
+    this.vTitre = $('#vue-définition-titre').jqote({});
+    vInstanceBlocParente.ajoutVDéfinition(this.vTitre, this);
     
-    this.mousedown(function(e) {
-        console.log("mousedown");
-        return false;
-    });
+    this.append(blablabla++); // Debug
 }
 
 function CDéfinition(mDéfinition, vInstanceBlocParente) {
     this.modèle = mDéfinition;
     this.vue = new VDéfinition(vInstanceBlocParente);
+    
+    var that = this;
+    this.vue.zonable({
+        start: function() {
+            console.log('startZone');
+        },
+        zone: function() {
+            //console.log('zone');
+        },
+        end: function(start, end, rect) {
+            console.log('endZone');
+            that.modèle.bloc.monde.outilZone(that, rect);
+        }
+    });
+    this.modèle.onAjoutInstanceBloc(function(instanceBloc) {
+        var cib = new CInstanceBloc(instanceBloc, that.vue);
+    });
 }

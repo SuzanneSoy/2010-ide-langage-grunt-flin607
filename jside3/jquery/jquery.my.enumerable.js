@@ -38,18 +38,19 @@
     },
 
     // $([1,2,3]).select(function() { return this % 2 == 1 }) // => [1, 3]
-    select: function(enumerable, callback) {
+    /* Removed by jspam@free.fr : conflicts with $.select() (for input forms)
+      select: function(enumerable, callback) {
       var result = [];
       $.each(enumerable, function(index) {
         if (callback.call(this, index))
           result.push(this);
       });
       return $(result);
-    },
+    }, */
 
     // $([1,2,3]).reject(function() { return this % 2 == 1 }) // => [2]
     reject: function(enumerable, callback) {
-      return $.select(enumerable, negate(callback));
+      return /*$.select*/$.filter(enumerable, negate(callback));
     },
 
     // $([1,2]).any(function() { return this == 1 }) // => true
