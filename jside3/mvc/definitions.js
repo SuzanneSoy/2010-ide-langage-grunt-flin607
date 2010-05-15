@@ -4,7 +4,8 @@ function VDéfinitions(vInstanceBlocParente) {
     $.extend(this,(
         $('#vue-définitions')
             .jqote({})
-            .appendTo(vInstanceBlocParente)));
+            .toDom()));
+    vInstanceBlocParente.setVDéfinitions(this);
     
     this.vTitresTabs = this.find('.définitions.vTitresTabs');
     this.vBoutonNouvelleDéfinition = this.find('.définitions.vNouvelle-définition');
@@ -28,6 +29,7 @@ function VDéfinitions(vInstanceBlocParente) {
             that.changerTab(vtd, vcd);
         });
         this.changerTab(vtd, vcd);
+        this.ajusterBarreTitres();
         return vcd;
     };
 
@@ -38,7 +40,11 @@ function VDéfinitions(vInstanceBlocParente) {
         contenuTab.show();
     };
     
-    this.vContenusTabs.css('top', this.vTitresTabs.outerHeight());
+    this.ajusterBarreTitres = function() {
+        that.vContenusTabs.css('top', that.vTitresTabs.outerHeight());
+    }
+    
+    this.ajusterBarreTitres();
 }
 
 function CDéfinitions(mInstanceBloc, vInstanceBlocParente) {

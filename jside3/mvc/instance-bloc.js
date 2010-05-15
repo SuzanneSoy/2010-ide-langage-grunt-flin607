@@ -23,9 +23,15 @@ function VInstanceBloc(vDéfinitionParente) {
     this.vÉditionTitre = this.find('.instance-bloc.vÉdition-titre');
     this.vChampTitre = this.find('.instance-bloc.vChamp-titre');
     this.vBoutonValiderTitre = this.find('.instance-bloc.vBoutonValiderTitre');
+    this.vDéfinitions_ = this.find('.instance-bloc.vDéfinitions'); // quick hack because otherwise tabs titles disapear (???)
     this.vDéfinitions = this.find('.instance-bloc.vDéfinitions');
     
     var that = this;
+    this.setVDéfinitions = function(vDéfinitions) {
+        this.vDéfinitions_.append(vDéfinitions); // quick hack because otherwise tabs titles disapear (???)
+        this.vDéfinitions = vDéfinitions;
+    }
+    
     this.titre = function(val) {
         if (typeof val != "function") {
             this.vTitre.text(val);
@@ -48,11 +54,16 @@ function VInstanceBloc(vDéfinitionParente) {
     }
     
     this.ajusterBarreTitre = function() {
-        this.vDéfinitions.css('top', this.vBarreTitre.outerHeight());
+        that.vDéfinitions.css('top', that.vBarreTitre.outerHeight());
     }
     
     this.draggable();
-    this.resizable();
+    this.resizable({
+        resize: function() {
+            that.ajusterBarreTitre();
+            that.vDéfinitions.ajusterBarreTitres();
+        }
+    });
     this.vÉditionTitre.hide();
     this.ajusterBarreTitre();
 }
@@ -80,5 +91,5 @@ function CInstanceBloc(mInstanceBloc, vDéfinitionParente) {
     this.vue.width(this.modèle.rect.width / this.modèle.rectParent.width * vDéfinitionParente.width());
     this.vue.height(this.modèle.rect.height / this.modèle.rectParent.height * vDéfinitionParente.height());
     
-    new CDéfinitions(this.modèle, this.vue.vDéfinitions);
+    new CDéfinitions(this.modèle, this.vue);
 }

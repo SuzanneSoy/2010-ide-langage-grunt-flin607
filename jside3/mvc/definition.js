@@ -27,21 +27,18 @@ function MDéfinition() {
     });
 }
 
-blablabla = 0;
-function VDéfinition(vInstanceBlocParente) {
+function VDéfinition(vDéfinitionsParente) {
     $.extend(this,(
         $('#vue-définition')
             .jqote({})
             .toDom()));
     this.vTitre = $('#vue-définition-titre').jqote({});
-    vInstanceBlocParente.ajoutVDéfinition(this.vTitre, this);
-    
-    this.append(blablabla++); // Debug
+    vDéfinitionsParente.ajoutVDéfinition(this.vTitre, this);
 }
 
-function CDéfinition(mDéfinition, vInstanceBlocParente) {
+function CDéfinition(mDéfinition, vDéfinitionsParente) {
     this.modèle = mDéfinition;
-    this.vue = new VDéfinition(vInstanceBlocParente);
+    this.vue = new VDéfinition(vDéfinitionsParente);
     
     var that = this;
     this.vue.zonable({
