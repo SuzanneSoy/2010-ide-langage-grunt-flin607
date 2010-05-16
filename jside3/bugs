@@ -7,3 +7,6 @@ ports ré-ordonnables
 types de définitions
 fenêtres "debug" (avec un pseudo-port qui va "piquer" sur un port, une connexion, …
 "exécution" (pour les fenêtres debug)
+suppression de blocs, etc.
+annulation
+enregistrement
