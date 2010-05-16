@@ -13,13 +13,15 @@
   urlcolor=black%
 }
 
+\usepackage{graphicx}
+
 \usepackage{pgffor}
 \usepackage{ifthen}
 \usepackage{tikz}
 \usetikzlibrary{matrix,fit,calc}
 
 \usepackage{amsmath}
-\usepackage{tocbibind}
+\usepackage[nottoc, notlof, notlot]{tocbibind}
 
 \usepackage{rapport}
 
@@ -34,8 +36,51 @@
 
 \section{Objectif}
 
-Le but de ce projet est de mettre au point un langage de programmation utilisant le paradigme du dataflow\footnote{\url{http://en.wikipedia.org/wiki/Dataflow}}, n'ayant pas de primitives fixes.
-\section{Recherche}
+\subsection{Sujet}
+Il y a environ 20 ans, le langage et le système d'exploitation FORTH avaient été mis au point, avec pour but de créer un environnement
+totalement personnalisé pour chaque utilisateur. La particularité de FORTH était qu'il ne possédait pas de mots-clés, ou instructions
+figées, et que chaque utilisateur était en mesure de définir lui-même ses propres primitives, voire redéfinir ses primitives... à
+l'infini.
+
+L'échec de FORTH est venu, entre autres de la nécessité d'échanger des programmes entre utilisateurs, et des conflits dus à l'homonymie
+(même nom, fonction différente) et à la synonymie (même fonction, noms différents). %Également, l'évolution des besoins et
+Les fonctions n'étaient pas toujours documentées, ce qui fait qu'un même programmeur ne pouvait pas faire exécuter, à un intervalle de
+temps relativement court, 2 fois le même programme...
+
+Pour autant, le côté adaptatif et souple de FORTH aurait été largement plébiscité s'il n'y avait eu cette difficulté. Une manière de
+contourner ce genre de conflit, dû à une représentation symbolique textuelle trop fortement contrainte par la syntaxe, est de se pencher
+vers une programmation qui privilégie les flux de données sur les actions à réaliser, et vers des bases graphiques plutôt que textuelles,
+laissant donc à chaque utilisateur la liberté de définir ses actions, et préservant en revanche les flux.
+
+L'idée de ce projet est de proposer une première architecture de compilateur ou d'interpréteur de premier niveau pour illustrer ce
+paradigme, et tenter d'en évaluer les propriétés. Ce projet nécessite un excellent niveau en programmation et un goût prononcé pour
+l'écriture de compilateurs.
+
+\subsection{…}
+%TODO IDE fait partie du langage
+Le but de ce projet sera donc dans un premier temps de définir un langage de programmation visuel utilisant le paradigme du
+dataflow\footnote{\url{http://en.wikipedia.org/wiki/Dataflow}}, et n'ayant pas de primitives fixes. Dans un second temps, nous
+implémenterons un EDI\footnote{Éditeur de Développement Intégré} permettant de créer des programmes dans ce langage, et de les interpréter.
+
+% TODO : fragment !!!
+% Référecne perdue :(
+Des recherches ont montré que dans le cadre des langages de programmation visuels, l'éditeur jouait un rôle aussi important que le langage
+lui-même.
+
+DSL = bien mais pas bien. Langages existants : ajout au vocabulaire (fonctions, variables), mais pas à la grammaire (structure) (sauf
+macros, mais pas complètement). Nous on propose de permettre d'écrire de n'importe quelle manière (grammaire libre), tout en gardant la
+possibilité d'ajout au vocabulaire. Nous ne gardons que les barrières nécessaires à une certaine cohérence (des éléments graphiques
+connectés à d'autres). Les blocs peuvent être ronds, les traits annotés d'étiquettes, ou encore d'autres choses.
+
+Graphes avec noeuds étiquetés et arcs éiquetés à chaque extrémité (et sur l'arc lui-même) => graphes généralisés.
+
+Preuve de complétude de Turing : un graphe = des noeuds connectés par des arcs, un noeud = l'arc NULL ou qqch du genre. // $\lambda(\lambda(\dots))$.
+
+L'interface utilisateur devient alors la même chose (fenêtres = blocs avec un affichage particulier).
+
+\section{Formalisation du langage}
+
+Dans cette section, nous allons essayer de trouver quelle est la nature, l'essence d'un programme, de manière à 
 
 \subsection{Programme en dataflow}
 
@@ -87,7 +132,7 @@ La question à se poser maintenant est ~:
   Qu'est-ce qui définit ce programme ?
 \end{figure}
 
-Ou, comme le disait un des collègues de Joe~Armstrong~\cite{what-inputs}~:
+Ou, comme le disait un des collègues de Joe~Armstrong~\cite{what-are-the-inputs}~:
 
 \begin{figure}[h!]
   \centering
@@ -95,17 +140,6 @@ Ou, comme le disait un des collègues de Joe~Armstrong~\cite{what-inputs}~:
     «~A program is a black box. It has inputs and it has outputs. And there is a functional relationship between the inputs and the outputs. What are the inputs to your problem ? What are the outputs to your problem ? What is the functional relationship between the two ?~»
   \end{quotation}
 \end{figure}
-% Citation de Joe Armstrong, parue dans :
-% titre : Coders at Work
-% Auteur : Peter Seibel
-% ISBN 978-1-4302-1948-4
-% http://www.codersatwork.com/
-% http://books.google.fr/books?id=B_OQYipTYzsC&lpg=PP1&pg=PA217#v=onepage (bas de page)
-
-%(03:37:51) bbrun: tu ecrit a l'endroit ou tu veux mettre ta biblio \bibliographystyle{plain}
-%\bibliography{nomBibliographieSansExtension}
-%(03:38:36) aim: ok merchi beaucoup
-%(03:38:46) bbrun: et dans le texte a l'endroit ou tu veux mettre ta reference tu tappe \cite{what-inputs} et tu a un truc comme sa en fin de page [Image]
 
 Ce programme est constitué
 \begin{itemize}
@@ -146,14 +180,26 @@ On a donc les équations suivantes dans le cas simple (une seule machine, une se
 
 \subsection{Base}
 
-Nous voilà bien avancés\dots\ Un programme est un programme. C'est donc une définition récursive. Et toute définition récursive doit avoir une base, et une règle pour générer de nouveaux éléments. Nous venons de définir la règle, cherchons les bases possibles~:
+Nous voilà bien avancés\dots\ Un programme est un programme. C'est donc une définition récursive. Et toute définition récursive doit avoir une base, et des règles pour générer de nouveaux éléments. Nous venons de définir les règles, cherchons les bases possibles~:
 \begin{itemize}
 \item Machine de Turing
 \item Lambda-calcul
 \item Langage mathémathique
 \end{itemize}
 
-Le lambda-calcul et la machine de Turing sont équivalents\footnote{\url{http://en.wikipedia.org/wiki/Lambda_calculus\#Computable_functions_and_lambda_calculus}}, par contre le langage mathémathique permet d'exprimer des fonctions non-calculables, des ensembles infinis, et tout un tas de choses obscures. Comme nos machines physiques actuelles sont une version bâtarde des machines de Turing (qui n'ont pas de limite sur la quantité de mémoire disponible, contrairement aux notres), il semble sage de laisser de côté le langage mathémathique (pour l'instant, dans quelques années, peut-être qu'il sera temps de l'ajouter).
+Le lambda-calcul et la machine de Turing sont
+équivalents\footnote{\url{http://en.wikipedia.org/wiki/Lambda_calculus\#Computable_functions_and_lambda_calculus}}$\vphantom{X}^{,}$\footnote{Bien qu'ils ne
+  semblent pas être totalement équivalents\cite{lambda-turing-equivalence}~: \quote{However, [Lambda Calculus] is not a model of computation for we
+    cannot calculate an upper bound on resource consumption of its reduction steps without resorting to another model of computation, such
+    as [Turing Machines] (according to Yuri Gurevich).}},
+% http://conal.net/blog/posts/can-functional-programming-be-liberated-from-the-von-neumann-paradigm/#comment-35342
+% A lambda calculus program does describe a computable function. However, LC is not a model of computation for we cannot calculate an upper
+% bound on resource consumption of its reduction steps without resorting to another model of computation, such as TMs (according to Yuri
+% Gurevich). But, models of computation don’t end there, either.
+par contre le langage mathémathique permet d'exprimer des fonctions non-calculables, des ensembles infinis, et tout un tas de choses
+obscures. Comme nos machines physiques actuelles sont une version bâtarde des machines de Turing (qui n'ont pas de limite sur la quantité de
+mémoire disponible, contrairement aux notres), il semble sage de laisser de côté le langage mathémathique (pour l'instant, lorsque le
+langage aura gagné en maturité, peut-être qu'il sera temps de l'ajouter).
 
 L'équivalence $\lambda$-calcul vs. Turing nous laisse le choix pour l'implémentation de notre première machine à partir de laquelle les autres seront définies, directement ou indirectement. Explorons donc la suite du problème avant de prendre une décision. À terme, le meilleur sera probablement d'implémenter les deux, comme base, et de les définir mutuellement l'une à partir de l'autre, pour avoir une vérification.
 
@@ -187,8 +233,46 @@ call-bloc prend en paramètre des fonctions permettant de calculer ses paramètr
 \item Pour une macro, on stocke juste les paramètres eux-mêmes (avec leur fonction d'évaluation, s'il y en a une).
 \end{itemize}
 
+\section{Implémentation}
+Pour l'implémentation, nous nous limiterons à un sous-ensemble purement fonctionnel du langage défini dans les sections suivantes.
+
 \appendix
 
+\section{notes}
+\begin{itemize}
+\item code bubbles
+\item dataflow
+\item world machine
+\item vidéo alan kay
+\item pas de conflits de nommage
+\item gruntnetwork.com
+\item Design patterns
+\item Domain Specific Language
+%% \item relire le sujet !!!
+\item DSL
+\item vue «libre»
+\item thèse sur la programmation par l'exemple
+\item Preuves
+\item Spécification fonctionnelle
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=10cm]{lisp-class-graph}
+  \caption{Graphe d'héritage des classes en Lisp avec McCLIM}
+  % On http://mcclim.cliki.net/Screenshot : http://jlr.freeshell.org/data/mcclim/screenshots/2007-03-27-listener-dark-classgraph-context-menu.png
+  % http://boinkor.net/lisp/porn/clim-debugger.png
+\label{fig:lisp-class-graph}
+\end{figure}
+\subsection{Historique}
+\begin{itemize}
+\item Control flow graphs
+\item alsa «composer»
+\item http://recherche.ircam.fr/equipes/repmus/RMPapers/CMJ98/
+\item Pourquoi dataflow peu utilisé ? (chest hair ?, http://therighttool.hammerprinciple.com/, contacter l'auteur pour qu'il ajoute des VPL)
+\end{itemize}
+
+\nocite{*}
 \bibliographystyle{plain}
 \bibliography{biblio}
 

@@ -1,28 +1,27 @@
-%% This BibTeX bibliography file was created using BibDesk.
-%% http://bibdesk.sourceforge.net/
+@preamble {
+"\def\myurl{\hfil\penalty 100 \hfilneg \hbox}"
+}
 
+% Note : Cette entrée (what-are-the-inputs) ne devrait pas figurer dans la bibliographie, seulement coders-at-work
+% (d'après http://www.bib.umontreal.ca/infosphere/sciences_humaines/module7/comment-citer.html#DejaCiter )
+@misc{what-are-the-inputs,
+	Author = {Citation d'un ami de Joe Armstrong},
+        note = {Cité dans \cite{coders-at-work}, page 217. Version électronique~:~\myurl{\url{http://is.gd/caFhh}}},
+	url = {http://is.gd/caFhh},
+        x-original-url = {http://books.google.fr/books?id=B_OQYipTYzsC&lpg=PP1&pg=PA217#v=onepage}}
 
-%% Created for Bertrand BRUN at 2010-05-12 03:32:13 +0200 
-
-
-%% Saved with string encoding Unicode (UTF-8) 
-
-
-
-@inbook{what-inputs,
-	Crossref = {what-inputs-book},
-	Date-Added = {2010-05-12 03:19:50 +0200},
-	Date-Modified = {2010-05-12 03:28:06 +0200},
-	Note = {Citation de Joe Armstrong},
-	Pages = {217},
-	Bdsk-Url-1 = {http://books.google.fr/books?id=B_OQYipTYzsC&lpg=PP1&pg=PA217#v=onepage}}
-
-@book{what-inputs-book,
+@book{coders-at-work,
 	Author = {Peter Seibel},
-	Date-Added = {2010-05-12 03:12:25 +0200},
-	Date-Modified = {2010-05-12 03:14:38 +0200},
-	Edition = {Broch{\'e}},
+        isbn = {978-1-4302-1948-4},
+	howpublished = {Broch{\'e}},
 	Publisher = {APress},
 	Title = {Coders at Work: Reflections on the Craft of Programming},
-	Year = {2009},
-	Bdsk-Url-1 = {http://www.codersatwork.com/}}
+	Year = 2009,
+	note = {\url{http://www.codersatwork.com/}},
+        keywords = {programmer, interview}}
+
+@misc{lambda-turing-equivalence,
+	author = {Koray Can},
+        note = {10\ieme commentaire sur \url{http://is.gd/cb7Ok}},
+        url = {\url{http://is.gd/cb7Ok}},
+        x-original-url = {\url{http://conal.net/blog/posts/can-functional-programming-be-liberated-from-the-von-neumann-paradigm/\#comment-35342}}}
