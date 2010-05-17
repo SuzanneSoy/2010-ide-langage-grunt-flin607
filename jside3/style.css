@@ -177,14 +177,22 @@ body {
     float: right;
 }
 
-.définitions.vContenusTabs {
+.définitions.vContenus {
     position: absolute;
-    top: 2.9em;
+    top: 1.5em;
     left: 0;
     right: 0;
     bottom: 0;
     background: white;
     padding-bottom: .1em;
+}
+
+.définitions.vContenusTabs {
+    position: absolute;
+    top: 0;
+    left: 20px;
+    right: 20px;
+    bottom: 0;
 }
 
 /* Définition */
@@ -196,7 +204,8 @@ body {
 }
 
 .définition.vTitre.active {
-    background-color: #eee;
+    background-color: #eef;
+    border: thin solid darkslategray;
     border-bottom: thin solid white;
 }
 
@@ -207,6 +216,40 @@ body {
 .définition.vCorps.vAucune-définition {
     text-align: center;
     padding-top: 1em;
+}
+
+/* Ports */
+.ports.vPorts {
+    position: absolute;
+    top: 0;
+    width: 20px;
+    bottom: 0;
+    text-align: center;
+}
+
+.ports.vPorts.vEntrée {
+    left: 0;
+}
+
+.ports.vPorts.vSortie {
+    right: 0;
+}
+
+/* Port */
+.port.vMain {
+    display: inline-block;
+    background-color: lightblue;
+    border: thin solid blue;
+    width: 10px;
+    height: 10px;
+}
+
+.port-placeholder {
+    display: inline-block;
+    background-color: lightgray;
+    border: thin solid gray;
+    width: 10px;
+    height: 10px;
 }
 
 /* Zone */

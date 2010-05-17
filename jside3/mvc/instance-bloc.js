@@ -17,19 +17,23 @@ function VInstanceBloc(vDéfinitionParente) {
             .jqote({})
             .appendTo(vDéfinitionParente)));
 
+    var that = this;
+    this.click(function() {
+        that.appendTo(vDéfinitionParente);
+    });
+    
     this.vBarreTitre = this.find('.instance-bloc.vBarre-titre');
     this.vTitre = this.find('.instance-bloc.vTitre');
     this.vVueTitre = this.find('.instance-bloc.vVue-titre');
     this.vÉditionTitre = this.find('.instance-bloc.vÉdition-titre');
     this.vChampTitre = this.find('.instance-bloc.vChamp-titre');
     this.vBoutonValiderTitre = this.find('.instance-bloc.vBoutonValiderTitre');
-    this.vDéfinitions_ = this.find('.instance-bloc.vDéfinitions'); // quick hack because otherwise tabs titles disapear (???)
+    this.vDéfinitionsFille = null;
     this.vDéfinitions = this.find('.instance-bloc.vDéfinitions');
     
-    var that = this;
     this.setVDéfinitions = function(vDéfinitions) {
-        this.vDéfinitions_.append(vDéfinitions); // quick hack because otherwise tabs titles disapear (???)
-        this.vDéfinitions = vDéfinitions;
+        this.vDéfinitions.append(vDéfinitions);
+        this.vDéfinitionsFille = vDéfinitions;
     }
     
     this.titre = function(val) {
@@ -54,6 +58,7 @@ function VInstanceBloc(vDéfinitionParente) {
     }
     
     this.ajusterBarreTitre = function() {
+        debug = that.vDéfinitions;
         that.vDéfinitions.css('top', that.vBarreTitre.outerHeight());
     }
     
@@ -61,7 +66,8 @@ function VInstanceBloc(vDéfinitionParente) {
     this.resizable({
         resize: function() {
             that.ajusterBarreTitre();
-            that.vDéfinitions.ajusterBarreTitres();
+            if (that.vDéfinitionsFille)
+                that.vDéfinitionsFille.ajusterBarreTitres();
         }
     });
     this.vÉditionTitre.hide();

@@ -9,10 +9,23 @@ function VDéfinitions(vInstanceBlocParente) {
     
     this.vTitresTabs = this.find('.définitions.vTitresTabs');
     this.vBoutonNouvelleDéfinition = this.find('.définitions.vNouvelle-définition');
+
+    this.vBoutonNouvelleDéfinition.draggable({
+        connectToSortable: '#mydiv',
+        cancel: '',
+        revert: 'invalid',
+        helper: function() {
+            return new VPort('body');
+        }
+    }).css('z-index', '1000');
     
+    this.vContenus = this.find('.définitions.vContenus');
     this.vContenusTabs = this.find('.définitions.vContenusTabs');
     this.vTitreAucuneDéfinition = this.find('.définition.vTitre.vAucune-définition');
     this.vCorpsAucuneDéfinition = this.find('.définition.vCorps.vAucune-définition');
+    
+    this.vPortsEntrée = this.find('.définitions.vPorts-entrée');
+    this.vPortsSortie = this.find('.définitions.vPorts-sortie');
     
     this.aucuneDéfinition = true;
     
@@ -39,9 +52,17 @@ function VDéfinitions(vInstanceBlocParente) {
         titreTab.addClass("active");
         contenuTab.show();
     };
+
+    this.setVPortsEntrée = function(vPortsEntrée) {
+        this.vPortsEntrée.replaceWith(vPortsEntrée);
+    };
+    
+    this.setVPortsSortie = function(vPortsSortie) {
+        this.vPortsSortie.replaceWith(vPortsSortie);
+    };
     
     this.ajusterBarreTitres = function() {
-        that.vContenusTabs.css('top', that.vTitresTabs.outerHeight());
+        that.vContenus.css('top', that.vTitresTabs.outerHeight());
     }
     
     this.ajusterBarreTitres();
@@ -63,4 +84,6 @@ function CDéfinitions(mInstanceBloc, vInstanceBlocParente) {
         that.modèle.bloc.monde.log.envoiMessage("Ajout de définition", définition);
         new CDéfinition(définition, that.vue);
     });
+    
+    new CPorts(this.modèle, this.vue);
 }

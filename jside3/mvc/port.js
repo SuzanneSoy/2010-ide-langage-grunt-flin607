@@ -2,7 +2,7 @@ function MPort(sens, blocParent) {
     $.extend(this, {
         uid: singleton.uid(),
         // Propriétés
-        sens: sens, /* entrée / sortie */
+        entrée: true, /* entrée / sortie */
         nom: '',
         description: '',
         // ?
@@ -12,4 +12,18 @@ function MPort(sens, blocParent) {
         // Enfants
         connexions: []
     });
+}
+
+function VPort(vPortsParente) {
+    $.extend(this, (
+        $('#vue-port')
+            .jqote({})
+            .toDom()));
+
+    this.appendTo(vPortsParente);
+}
+
+function CPort(mPort, vPortsParente) {
+    this.modèle = mPort;
+    this.vue = new VPort(vPortsParente);
 }

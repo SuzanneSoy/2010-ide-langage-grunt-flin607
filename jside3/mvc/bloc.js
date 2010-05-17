@@ -11,7 +11,7 @@ function MBloc() {
         
         // Enfants
         définitions: [],
-        portsEntree: [],
+        portsEntrée: [],
         portsSortie: [],
         
         // Instanciation
@@ -55,6 +55,28 @@ function MBloc() {
         cbAjoutDéfinition: [],
         onAjoutDéfinition: function(callback) {
             this.cbAjoutDéfinition.push(callback);
+        },
+        ajouterPortEntrée: function(p) {
+            p.bloc = this;
+            p.entrée = true;
+            this.portsEntrée.push(p);
+            faireCallbacks(this.cbAjoutPortEntrée, p);
+            faireCallbacks(this.cbModification, this);
+        },
+        cbAjoutPortEntrée: [],
+        onAjoutPortEntrée: function(callback) {
+            this.cbAjoutPortEntrée.push(callback);
+        },
+        ajouterPortSortie: function(p) {
+            p.bloc = this;
+            p.entrée = false;
+            this.portsSortie.push(p);
+            faireCallbacks(this.cbAjoutPortSortie, p);
+            faireCallbacks(this.cbModification, this);
+        },
+        cbAjoutPortSortie: [],
+        onAjoutPortSortie: function(callback) {
+            this.cbAjoutPortSortie.push(callback);
         },
         cbChangeNom: [],
         onChangeNom: function(callback) {

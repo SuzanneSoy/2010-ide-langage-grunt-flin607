@@ -48,10 +48,11 @@
     <script type="text/javascript" src="mvc/bloc.js"></script>
     <script type="text/javascript" src="mvc/instance-bloc.js"></script>
     <script type="text/javascript" src="mvc/definitions.js"></script>
+    <script type="text/javascript" src="mvc/ports.js"></script>
+    <script type="text/javascript" src="mvc/port.js"></script>
     
     <script type="text/javascript" src="mvc/definition.js"></script>
     <script type="text/javascript" src="mvc/connexion.js"></script>
-    <script type="text/javascript" src="mvc/port.js"></script>
     
     <!-- Test -->
     <script type="text/javascript" src="test.js"></script>
@@ -141,14 +142,36 @@
             <input type="button" class="définitions vNouvelle-définition" value="+"/>
             <div class="clearfloat"></div>
           </div>
-          <div class="définitions vContenusTabs">
-            <div class="définition vCorps vAucune-définition">
-              Aucune définition.
-              <br/>
-              Cliquez sur le + ci-dessus pour en créer une.
+          <div class="définitions vContenus">
+            <div class="définitions vPorts-entrée"></div>
+            <div class="définitions vPorts-sortie"></div>
+            <div class="définitions vContenusTabs">
+              <div class="définition vCorps vAucune-définition">
+                Aucune définition.
+                <br/>
+                Cliquez sur le + ci-dessus pour en créer une.
+              </div>
             </div>
           </div>
         </div>
+      ]]>
+    </script>
+    <script type="text/x-jqote-template" id="vue-ports-entrée">
+      <![CDATA[
+        <div class="ports vPorts vEntrée">
+        </div>
+      ]]>
+    </script>
+    <script type="text/x-jqote-template" id="vue-ports-sortie">
+      <![CDATA[
+        <div class="ports vPorts vSortie">
+        </div>
+      ]]>
+    </script>
+    <script type="text/x-jqote-template" id="vue-port">
+      <![CDATA[
+        <span class="port vMain">
+        </span>
       ]]>
     </script>
     <script type="text/x-jqote-template" id="vue-définition-titre">
