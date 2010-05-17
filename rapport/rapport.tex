@@ -14,8 +14,9 @@
 }
 
 \usepackage{graphicx}
-\graphicspath{images}
-\usepackage{subfigure}
+\graphicspath{{images/}}
+\usepackage{subfig}
+\usepackage{calc}
 
 \usepackage{pgffor}
 \usepackage{ifthen}
@@ -79,47 +80,115 @@ succès dans certains domaines, principalement des domaines intéressant les non
 
 \subsubsection{Graphisme}
 
-
-Certains logiciels de graphisme représentent des filtres graphiques par des boîtes. Pour enchaîner des filtres, on connecte la sortie d'un
-aux entrées des autres. Ainsi, Quartz Composer permet la création d'images vectorielles animées sous MacOS de manière grapq ;
-\item World Machine, un générateur de cartes de hauteurs (heightmaps) ;
-\end{itemize}
+Le logiciel Quartz Composer sous MacOS permet la création d'images vectorielles animées et interactives sous MacOS de manière graphique~: On
+applique des filtres graphiques, représentés par des boîtes, aux résultats d'autres filtres, en connectant les boîtes entre elles. Dans
+World Machine, ces filtres sont des actions physiques (érosion, soulèvement) et permettent de générer des cartes de hauteur (heightmaps),
+qui sont utilisées pour modéliser des terrains en 3D.
 
 \subsubsection{Musique}
 
 L'interface de certains logiciels de musique s'inspirent de l'architecture des synthétiseurs modulaires\cite{modular-synth} (ces grosses
 boîtes avec pleins de prises jack qu'on relie avec des câbles : chaque prise jack est une entrée ou une sortie d'un module, les câbles sont
-les connexions).
-\begin{itemize}
-\item Max/MSP, prédécesseur de PureData ;
-\item Alsa Modular Synth ; % TODO
-\end{itemize}
+les connexions). Un des premiers synthétiseurs virtuels, Max/MSP, utilisait cette analogie. D'autres logiciels similaires lui ont succédé :
+PureData (qui est aussi un langage de programmation généraliste), Alsa Modular Synth, \dots
 
-Traitement de signaux
-\begin{itemize}
-\item LabView
-\end{itemize}
+% http://recherche.ircam.fr/equipes/repmus/RMPapers/CMJ98/
 
-\begin{figure}[htp!]
-  \centering
-  %
-  %http://cafcom.free.fr/ams/ams1.png
-  \subfigure[Alsa Modular Synth\cite{alsa-modular-synth}]{\label{fig:alsa-modular-synth}\includegraphics[width=5cm]{alsa-modular-synth}}
-  %
-  % http://www.world-machine.com/images/ui1.jpg
-  \subfigure[World Machine\cite{world-machine}]{\label{fig:world-machine}\includegraphics[width=5cm]{world-machine}}
-  %
-  % http://upload.wikimedia.org/wikipedia/en/thumb/b/bc/QuartzComposerSnowLeopard.png/800px-QuartzComposerSnowLeopard.png
-  \subfigure[World Machine\cite{world-machine}]{\label{fig:world-machine}\includegraphics[width=5cm]{quartz-composer}}
-  %
+\subsubsection{Mesures scientifiques}
+
+LabView permet aux scientifiques de procéder à des traitements sur les signaux et les données acquises depuis un ordinateur, grâce à un
+langage de programmation graphique utilisant le paradigme du dataflow.
+
+\begin{figure}[ht] 
+  \setbox1=\hbox{\includegraphics[width=5cm]{alsa-modular-synth}}% The smaller image 
+  \setbox2=\hbox{\includegraphics[width=5cm]{world-machine}}% The larger image 
+  {\,}
+  \hfill 
+  \begin{minipage}{5cm}
+    \centering
+    % http://cafcom.free.fr/ams/ams1.png
+    \raisebox{0.5\ht2-0.5\ht1}{\includegraphics[width=5cm]{alsa-modular-synth}}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{5cm}
+    \centering
+    % http://www.world-machine.com/images/ui1.jpg
+    \includegraphics[width=5cm]{world-machine}
+  \end{minipage}
+  \hfill
+  {\,}
+  
+  %%%%%%%%%%
+  
+  {\,}
+  \hfill 
+  \begin{minipage}{5cm}
+    \centering
+    \caption{Alsa Modular Synth\cite{alsa-modular-synth}}
+    \label{fig:alsa-modular-synth}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{5cm}
+    \centering
+    \caption{World Machine\cite{world-machine}}
+    \label{fig:world-machine}
+  \end{minipage}
+  \hfill
+  {\,} 
+  
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  
+  \setbox1=\hbox{\includegraphics[width=5cm]{alsa-modular-synth}}% The smaller image 
+  \setbox2=\hbox{\includegraphics[width=5cm]{world-machine}}% The larger image 
+  {\,}
+  \hfill 
+  \begin{minipage}{5cm}
+    \centering
+    % http://upload.wikimedia.org/wikipedia/en/thumb/b/bc/QuartzComposerSnowLeopard.png/800px-QuartzComposerSnowLeopard.png
+    \raisebox{0.5\ht2-0.5\ht1}{\includegraphics[width=5cm]{quartz-composer}}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{5cm}
+    \centering
+    % http://zone.ni.com/cms/images/devzone/tut/binary_tree2.png
+    \includegraphics[width=5cm]{labview}
+  \end{minipage}
+  \hfill
+  {\,}
+  
+  %%%%%%%%%%
+  
+  {\,}
+  \hfill 
+  \begin{minipage}{5cm}
+    \centering
+    \caption{Quartz Composer\cite{quartz-composer}}
+    \label{fig:quartz-composer}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{5cm}
+    \centering
+    \caption{LabView\cite{labview}}
+  \end{minipage}
+  \hfill
+  {\,} 
   \caption{Captues d'écrans de quelques langages de programmation utilisant le paradigme du dataflow.}
-  \label{fig:config/demar}
+  \label{fig:screenshots}
 \end{figure}
 
-\begin{itemize}
-\item vidéo alan kay
-\item http://recherche.ircam.fr/equipes/repmus/RMPapers/CMJ98/
-\end{itemize}
+\subsubsection{Traitement de signaux}
+
+Force est de constater que tous les exemples cités ci-dessus sont des cas particuliers de traitement de signal (image, son, signaux
+provenant d'appareils de mesure). Le paradigme du dataflow devrait être tout aussi efficace pour construire des programmes conventionnels~:
+les signaux d'entrée sont les évènements provoqués par l'utilisateur (clic de souris, appui sur le clavier), ceux de sortie sont les retours
+(écran, haut-parleurs, \dots). Cependant, les langages graphiques n'ont eu que peu de succès auprès de la communauté des programmeurs, et
+les raisons de ce rejet méritent d'être étudiées.
+
+Récemment, un chercheur a mis en place un sondage auprès des programmeurs qui devrait à terme permettre de savoir quels langages
+correspondent le mieux à quelles affirmations, selon les programmeurs\cite{the-right-tool}. Ces affirmations sont du type «Ce langage est facile à utiliser» ou
+«Ce langage à une bonne communauté». Les affirmations qui obtiennent les moins bons scores pour un langage donné indiquent en général les
+défauts de ce langage. J'ai donc contacté l'auteur de ce sondage pour lui demander d'ajouter des langages de programmation visuels pendant
+que le sondage est encore ouvert.
 
 \subsection{Langages spécifiques à un domaine}
 
@@ -341,6 +410,7 @@ Pour l'implémentation, nous nous limiterons à un sous-ensemble purement foncti
 \begin{itemize}
 \item gruntnetwork.com
 \item La thèse sur la programmation par l'exemple
+\item vidéo alan kay
 \end{itemize}
 
 \subsection{Notes pour la suite\dots}
