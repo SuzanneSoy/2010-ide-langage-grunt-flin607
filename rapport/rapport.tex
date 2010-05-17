@@ -18,6 +18,8 @@
 \usepackage{subfig}
 \usepackage{calc}
 
+\usepackage{epigraph}
+
 \usepackage{pgffor}
 \usepackage{ifthen}
 \usepackage{tikz}
@@ -182,32 +184,108 @@ Force est de constater que tous les exemples cités ci-dessus sont des cas parti
 provenant d'appareils de mesure). Le paradigme du dataflow devrait être tout aussi efficace pour construire des programmes conventionnels~:
 les signaux d'entrée sont les évènements provoqués par l'utilisateur (clic de souris, appui sur le clavier), ceux de sortie sont les retours
 (écran, haut-parleurs, \dots). Cependant, les langages graphiques n'ont eu que peu de succès auprès de la communauté des programmeurs, et
-les raisons de ce rejet méritent d'être étudiées.
+les raisons de ce rejet méritent d'être étudiées\footnote{Peut-être que c'est simplement que les langages textuels, c'est pour les
+  programmeurs avec du poil sur le torse, et les langages graphiques sont pour les mauviettes…}.
 
 Récemment, un chercheur a mis en place un sondage auprès des programmeurs qui devrait à terme permettre de savoir quels langages
-correspondent le mieux à quelles affirmations, selon les programmeurs\cite{the-right-tool}. Ces affirmations sont du type «Ce langage est facile à utiliser» ou
-«Ce langage à une bonne communauté». Les affirmations qui obtiennent les moins bons scores pour un langage donné indiquent en général les
-défauts de ce langage. J'ai donc contacté l'auteur de ce sondage pour lui demander d'ajouter des langages de programmation visuels pendant
-que le sondage est encore ouvert.
+correspondent le mieux à quelles affirmations, selon les programmeurs\cite{the-right-tool}. Ces affirmations sont du type «Ce langage est
+facile à utiliser» ou «Ce langage à une bonne communauté». Les affirmations qui obtiennent les moins bons scores pour un langage donné
+indiquent en général les défauts de ce langage. J'ai donc contacté l'auteur de ce sondage pour lui demander d'ajouter des langages de
+programmation visuels pendant que le sondage est encore ouvert, afin de pouvoir étudier par la suite ces résultats.
 
 \subsection{Langages spécifiques à un domaine}
 
-DSL = bien mais pas bien. Langages existants : ajout au vocabulaire (fonctions, variables), mais pas à la grammaire (structure) (sauf
-macros, mais pas complètement). Nous on propose de permettre d'écrire de n'importe quelle manière (grammaire libre), tout en gardant la
-possibilité d'ajout au vocabulaire. Nous ne gardons que les barrières nécessaires à une certaine cohérence (des éléments graphiques
-connectés à d'autres). Les blocs peuvent être ronds, les traits annotés d'étiquettes, ou encore d'autres choses.
+Il est fréquent que des programmeurs créent des «langages spécifiques à un domaine» (DSL, Domain Specific Language) pour répondre au besoin
+d'exprimer facilement des instructions et notions très fortement liées à un certain domaine, sans être encombrés par la syntaxe rigide, le
+vocabulaire limité et le manque d'expressivité de leur langage habituel. Les fichiers de configuration sont en général écrits dans un DSL
+par exemple. Mais les DSL ont de grosses limitations : bien qu'ils soient adaptés à l'expression d'idées dans ce domaine, ces langages ne
+possèdent pas l'expressivité nécessaire à des opérations plus complexes~: souvent, ces DSL ne sont complets au sens de turing et n'ont pas
+accès aux bibliothèques de fonctions des autres langages.
+
+C'est pour ces raisons que les DSL sont de plus en plus laissés un peu de côté~: La configuration de GRUB 2 est toujours dans un DSL, mais
+elle est générée dynamiquement par des scripts shell\cite{config-grub}, la configuration du gestionnaire de fenêtres awesome est écrite en
+Lua\cite{config-awesome}, beaucoup de logiciels utilisent python comme langage de script, plutôt que de créer un langage de script
+spécifique à l'application.
+
+D'un autre côté, le problème des langages de programmation généralistes est qu'ils permettent d'augmenter le vocabulaire disponible, par
+l'ajout de fonctions et la création de variables, mais ils ne permettent pas de modifier la grammaire utilisé (la structure du code). En
+réalité, de nombreux langages permettent cela par le biais de macros, mais cette approche est assez limitée~: l'écriture de macros est en
+général fastidieuse -- beaucoup plus difficile que l'écriture de fonctions -- et l'utilisation de macros est néanmoins soumise à un grand
+nombre de contraintes syntaxiques du langage hôte (parenthèses, accolades, \dots). De plus le système de macros de certains langages, comme
+le C, n'a pas la puissance d'un vrai langage : pas de récursivité des macros, pas de structures conditionnelles à l'intérieur d'une macro.
+
+Il y a donc des avantages dans les deux approches, mais aucune ne permet de satisfaire complètement les besoins de facilité d'expression et
+de puissance du langage. Nous proposons une solution alternative~: permettre l'écriture d'un programme sous n'importe quelle forme visuelle
+(grammaire libre), dans un langage graphique orienté dataflow. Nous imposons quelques contraintes, afin de garder une certaine cohérence~:
+\begin{itemize}
+\item Les sous-programmes sont représentés par des éléments graphiques (blocs) ;
+\item Les paramètres d'entrées de ces sous-programmes sont des entités visuelles qu'on peut connecter entre elles (ports) ;
+\item Les valeurs de ces paramètres sont fournies à travers des liens qui relient les ports ;
+\end{itemize}
+Ces règles laissent toutefois une très grande liberté, les blocs peuvent être rectangulaires, ronds ou de n'importe quelle forme. Ils
+pourraient par exemple afficher les calculs mathémathiques qu'ils contiennent non pas sous l'apparence d'instructions mais d'une formule
+mathémathique. LabView utilise cette technique.
+% TODO screenshot en pgf pour la formule mathémathique.
+% TODO ref Intérêt des langages visuels, liste, item 4.
+
+Il est même possible que certains blocs aient une apparence invisible. Par exemple les opérations de conversion de types (cast) pourraient
+être masquées, et ne s'afficher que sur le lien entre la source du transtypage et sa destination.
+
+Avec ces règles, les ports n'ont pas besoin d'être affichés en permanence. Ils peuvent par exemple être dans une boîte de dialogue de
+configuration dui apparaît lorsqu'on double-clique sur le bloc correspondant (World Machine utilise cette approche, et laisse aussi les
+ports visibles en mode «réduit»).
+
+Les liens peuvent être annotés, regrouppés en bus, etc. Comme on peut l'imaginer, avec un minimum d'effort de cohérence, ces libertés sont
+suceptibles de rendre les programmes plus lisibles (non-affichage des éléments qui ne sont pas importants à la comprhéension du programme)
+et plus faciles à écrire (les instructions (blocs) spécialisées ont une interface d'utilisation adaptée).
 
 \subsection{Environnement de développement intégré}
 
-Espace à l'écran
-\begin{itemize}
-\item code bubbles
-\end{itemize}
+{
+  \setlength{\epigraphwidth}{0.85\linewidth}
+  \renewcommand{\textflush}{justify}
+  \renewcommand{\epigraphflush}{center}
+  \epigraph{
+    Clearly good design is as important for visual languages as for textual ones. Furthermore, the effectiveness of a visual language indeed
+    any precise language for specifying structures, depends to a large extent on the quality of the editor, browser, interpreter, debugger and
+    other tools supplied by the language implementation
+  }{Christopher C. Risley and Trevor J. Smedley \cite{the-editor-is-as-important-as-the-language}}
+}
+
+Les environnements de développement intégré jouent un rôle crucial pour les langages de programmation visuels. En effet, sans la possibilité
+de construire un programme par une séquence (obscure) de caractères, la convivialité du langage est directement liée aux outils que propose
+l'EDI. Ces EDI n'ont en général que peu en commun avec les ceux destinés aux langages textuels, et se présentent plus comme des logiciels de
+dessin vectoriel que comme des éditeurs de texte.
+
+Certaines questions sont récurrentes dans la conception d'EDI pour des langages visuels. Une des plus importante est la gestion de l'espace
+à l'écran~: les primitives graphiques sont décorées de bordures, et d'autres éléments visuels, qui occupent beaucoup d'espace à l'écran,
+réduisant ainsi la quantité d'informations affichées. Ce problème est plus communément connu sous le nom de «Deutsch
+Limit»\cite{deutsch-limit}~:
 \begin{quotation}
-  Clearly good design is as important for visual languages as for textual ones. Furthermore, the effectiveness of a visual language indeed
-  any precise language for specifying structures, depends to a large extent on the quality of the editor, browser, interpreter, debugger and
-  other tools supplied by the language implementation\cite{the-editor-is-as-important-as-the-language}
+  Well, this is all fine and well, but the problem with visual programming languages is that you can’t have more than 50 visual primitives
+  on the screen at the same time. How are you going to write an operating system?
 \end{quotation}
+
+Cependant, dans le cas d'un affichage textuel, le cerveau humain n'est pas capable d'ingurgiter en temps réel toute l'information à
+l'écran\footnote{Sur mon écran, on peut loger plus de 60 lignes de texte verticalement, et ce sur 2 colonnes. Allez donc analyser 120 lignes
+  de C d'un seul coup.}. L'affichage sous forme graphique permet au contraire de clarifier et de nettoyer les informations à l'écran, on
+peut donc supposer que le cerveau est capable d'analyser plus rapidement du «code» graphique que son équivalent textuel (un dessin vaut
+mille mots, dit-on).
+
+De plus les programmeurs passent beaucoup de temps à chercher tel ou tel morceau de code ou fonction. L'EDI Code Bubbles\cite{code-bubbles}
+apporte une solution à ce problème pour les langages textuels, en fournissant une interface dans laquelle le programmeur manipule un gand
+nombre de fragments de code assez court, et a la possibilité d'en ouvrir facilement de nouveaux de manière contextuelle (ouvrir la
+définition de cette fonction, ouvrir la documentation de celle-là). Nous avons repris ce principe pour les langages visuels~: Dans la
+définition d'un bloc, il est possible d'ouvrir sur place ou à côté les définitions des sous-blocs.
+
+Une autre solution consiste à utiliser une interface «fish-eye»~: les objets au centre de l'écran ont une taille normale, et sont de plus en
+plus petitsà mesure qu'ils approchent du bord. Une variante est l'interface «zoom», utilisée notamment dans certains jeux
+vidéos\cite{mutant-storm} pour permettre au joueur de focaliser son attention sur les ennemis les plus proches, ou bien avoir une vue
+d'ensemble, et dans le logiciel de prises de notes Project Cecily\cite{project-cecily}.
+
+Plusieurs recherches ont été menées concernant l'utilisation de l'espace à l'écran par les langages visuels, une bibliographie référencant
+plusieurs papiers sur ce sujet est disponible à \cite{biblio-vpl-a-screen-real-estate}.
+
 
 \subsection[Manque d'expressivité]{Manque d'expressivité des langages de programmation existants}
 \begin{itemize}
@@ -239,8 +317,9 @@ Espace à l'écran
 \begin{itemize}
 \item Control flow graphs.
 \item Taxonomie: étudier l'utilité des différentes catégories.
-\item pas de conflits de nommage.
-\item Une infinité de DSL à disposition. Par ex. on peut faire en sorte que dans un outil de conception d'interfaces utilisateur, les composants graphiques (fenêtre, bouton, etc.) ne soient pas de simples images, mais \emph{soient} les fonctions ou objets correspondants.
+\item pas de conflits de nommage (SCID Source Code In Database).
+\item Une infinité de DSL à disposition. Par ex. on peut faire en sorte que dans un outil de conception d'interfaces utilisateur, les
+  composants graphiques (fenêtre, bouton, etc.) ne soient pas de simples images, mais \emph{soient} les fonctions ou objets correspondants.
 \end{itemize}
 
 \begin{figure}[h!]
