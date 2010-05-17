@@ -71,7 +71,7 @@ interpréter.
 
 \section{Étude de l'existant}
 
-\subsection{FORTH}\footnote{Les bibliothèques universitaires de Montpellier n'ont aucun ouvrage concernant forth. Il faudrait peut-être suggérer quelques achats aux bibliothécaires.}
+\subsection{FORTH}\footnote{Les bibliothèques universitaires de Montpellier n'ont aucun ouvrage concernant FORTH. Il faudrait peut-être suggérer quelques achats aux bibliothécaires.}
 Le langage FORTH est basé sur le principe de l'expansion de macros~: lorsqu'on «appelle» une macro, elle s'expanse, ses sous-macros
 s'expansent, et ainsi de suite, jusqu'à ce que des macros de bas niveau lisent des valeurs sur la pile (pop), et en écrivent d'autres à la
 place.
@@ -80,7 +80,7 @@ Mon expérience personnelle, lorsque j'ai essayé par le passé d'implémenter d
 lequel est construit \LaTeX), m'a montré que cette approche a un défaut fondamental~: il est impossible de délimiter le rayon d'action d'une
 macro. Étant donné qu'elle travaille sur la pile (ou dans le cas de \TeX, sur les jetons qui suivent l'appel de macro), et qu'elle peut
 enlever ou ajouter autant d'éléments qu'elle veut sur la pile, il y a un risque assez grand pour qu'une macro dont on ne connaît pas bien le
-fonctionnement soit mal utilisée, et abîme la portion de pile qui appartient à d'autre macros.
+fonctionnement soit mal utilisée, et abîme la portion de pile qui appartient à d'autres macros.
 
 Vu que les macros peuvent être imbriquées autant qu'on veut, il est possible qu'une macro située très bas dans l'arbre fasse ce genre
 d'erreur. Le débogage nécessite alors de parcourir tout l'arbre d'appels de macros à la recherche de l'erreur.
@@ -99,7 +99,7 @@ Ce comportement est fortement souhaitable de la part d'un langage généraliste,
 jusqu'aux racines du langage et ainsi comprendre comment fonctionne les programmes, à tous les niveaux. Certains programmeurs pensent que
 c'est important de comprendre en profondeur comment fonctionne la machine et les programmes qui l'utilisent\cite{coders-at-work}.
 
-Cela confère aussi au langage une grande portabilité~: Forth a été porté sur plus d'une vingtaine de processeurs\cite{forth-history}. En définissant un ensemble
+Cela confère aussi au langage une grande portabilité~: FORTH a été porté sur plus d'une vingtaine de processeurs\cite{forth-history}. En définissant un ensemble
 de fonctions de haut niveau que chaque implémentation doit fournir, on peut s'assurer qu'un programme fonctionnant sur une implémentation du
 langage fonctionnera aussi sur une autre.
 
@@ -120,7 +120,7 @@ qui sont utilisées pour modéliser des terrains en 3D.
 L'interface de certains logiciels de musique s'inspirent de l'architecture des synthétiseurs modulaires\cite{modular-synth} (ces grosses
 boîtes avec pleins de prises jack qu'on relie avec des câbles : chaque prise jack est une entrée ou une sortie d'un module, les câbles sont
 les connexions). Un des premiers synthétiseurs virtuels, Max/MSP, utilisait cette analogie. D'autres logiciels similaires lui ont succédé :
-PureData (qui est aussi un langage de programmation généraliste), Alsa Modular Synth, \dots
+PureData (qui est aussi un langage de programmation généraliste), Alsa Modular Synth,~\dots
 
 % http://recherche.ircam.fr/equipes/repmus/RMPapers/CMJ98/
 
@@ -222,7 +222,7 @@ Les langages visuels n'ont eu que peu de succès auprès de la communauté des p
 
 Récemment, un chercheur a mis en place un sondage auprès des programmeurs qui devrait à terme permettre de savoir quels langages
 correspondent le mieux à quelles affirmations, selon les programmeurs\cite{the-right-tool}. Ces affirmations sont du type «Ce langage est
-facile à utiliser» ou «Ce langage à une bonne communauté». Les affirmations qui obtiennent les moins bons scores pour un langage donné
+facile à utiliser» ou «Ce langage a une bonne communauté». Les affirmations qui obtiennent les moins bons scores pour un langage donné
 indiquent en général les défauts de ce langage. J'ai donc contacté l'auteur de ce sondage pour lui demander d'ajouter des langages de
 programmation visuels pendant que le sondage est encore ouvert, afin de pouvoir étudier par la suite ces résultats.
 
@@ -234,7 +234,7 @@ flow diagram) sont aussi utilisés depuis longtemps.
 
 D'autres représentations visuelles sont utilisées dans certains systèmes. La figure \ref{fig:lisp-class-graph} montre un graphe d'héritage
 des classes en Lisp avec l'environnement McCLIM. On trouve aussi des graphes d'appels de fonctions, qui relient deux fonctions si l'une
-appelle (ou peut appeller) l'autre.
+appelle (ou peut appeler) l'autre.
 
 \begin{figure}[h!]
   \centering
@@ -252,7 +252,7 @@ Il est fréquent que des programmeurs créent des «langages spécifiques à un 
 d'exprimer facilement des instructions et notions très fortement liées à un certain domaine, sans être encombrés par la syntaxe rigide, le
 vocabulaire limité et le manque d'expressivité de leur langage habituel. Les fichiers de configuration sont en général écrits dans un DSL
 par exemple. Mais les DSL ont de grosses limitations : bien qu'ils soient adaptés à l'expression d'idées dans ce domaine, ces langages ne
-possèdent pas l'expressivité nécessaire à des opérations plus complexes~: souvent, ces DSL ne sont complets au sens de turing et n'ont pas
+possèdent pas l'expressivité nécessaire à des opérations plus complexes~: souvent, ces DSL ne sont complets au sens de Turing et n'ont pas
 accès aux bibliothèques de fonctions des autres langages.
 
 C'est pour ces raisons que les DSL sont de plus en plus laissés un peu de côté~: La configuration de GRUB 2 est toujours dans un DSL, mais
@@ -289,8 +289,8 @@ Avec ces règles, les ports n'ont pas besoin d'être affichés en permanence. Il
 configuration dui apparaît lorsqu'on double-clique sur le bloc correspondant (World Machine utilise cette approche, et laisse aussi les
 ports visibles en mode «réduit»).
 
-Les liens peuvent être annotés, regrouppés en bus, etc. Comme on peut l'imaginer, avec un minimum d'effort de cohérence, ces libertés sont
-suceptibles de rendre les programmes plus lisibles (non-affichage des éléments qui ne sont pas importants à la comprhéension du programme)
+Les liens peuvent être annotés, regroupés en bus, etc. Comme on peut l'imaginer, avec un minimum d'effort de cohérence, ces libertés sont
+susceptibles de rendre les programmes plus lisibles (non-affichage des éléments qui ne sont pas importants à la comprhéension du programme)
 et plus faciles à écrire (les instructions (blocs) spécialisées ont une interface d'utilisation adaptée).
 
 \subsection{Environnement de développement intégré}
@@ -333,7 +333,7 @@ définition de cette fonction, ouvrir la documentation de celle-là). Nous avons
 définition d'un bloc, il est possible d'ouvrir sur place ou à côté les définitions des sous-blocs.
 
 Une autre solution consiste à utiliser une interface «fish-eye»~: les objets au centre de l'écran ont une taille normale, et sont de plus en
-plus petitsà mesure qu'ils approchent du bord. Une variante est l'interface «zoom», utilisée notamment dans certains jeux
+plus petits à mesure qu'ils approchent du bord. Une variante est l'interface «zoom», utilisée notamment dans certains jeux
 vidéos\cite{mutant-storm} pour permettre au joueur de focaliser son attention sur les ennemis les plus proches, ou bien avoir une vue
 d'ensemble, et dans le logiciel de prises de notes Project Cecily\cite{project-cecily}.
 
@@ -344,7 +344,7 @@ plusieurs papiers sur ce sujet est disponible à \cite{biblio-vpl-a-screen-real-
 \subsection[Manque d'expressivité]{Manque d'expressivité des langages de programmation existants}
 
 L'utilisation fréquente de «design patterns» ou partons de conception dans les langages de programmation existants peut être considérée
-comme un indicateur de défauts dans ces langages\cite{design-patterns-failure}~: s'il y a besoin d'utitliser le design pattern $x$, c'est
+comme un indicateur de défauts dans ces langages\cite{design-patterns-failure}~: s'il y a besoin d'utiliser le design pattern $x$, c'est
 que le langage ne permet pas d'utiliser les concepts vehiculés par $x$ de manière plus élégante, c'est donc un manque d'expressivité sur ce
 point. En général, la manière la plus élégante d'utiliser un concept, c'est quand il est de «première classe».
 
@@ -372,7 +372,7 @@ connexions.
 Ce principe de composants isolés communiquant au travers d'interfaces pré-définies se retrouve aussi dans l'architecture Unix. Un des
 principes de la philosophie unix est «Do one thing, and do it well», ainsi sous Unix, plein de petis programmes différents font chacun une
 action bien précise, simple. Des actions plus complexes sont réalisées en connectant la sortie de certains programmes à l'entrée d'autres,
-en général avec un «pipe» (tuyeau).
+en général avec un «pipe» (tuyau).
 
 Ce principe a même été poussé jusqu'à faire un navigateur modulaire, suivant la philosophie Unix, dont la partie chargée d'afficher les
 pages web est complètement dissociée de la partie qui gère les autres fonctionnalités (historique, boutons de navigation, \dots).
@@ -383,7 +383,7 @@ données. Cela pose des problèmes d'encapsulation (au sens des protocoles de co
 d'échappement, et généralement de sérialisation des données -- alors qu'on transfère des données d'un programme à l'autre, sur le même
 système.
 
-Le paradigme du dataflow résoudw ces problèmes en permettant de faire transiter à travers les connexions entre blocs des flux typés, plutôt
+Le paradigme du dataflow résoud ces problèmes en permettant de faire transiter à travers les connexions entre blocs des flux typés, plutôt
 que de simples octets. De plus, chaque bloc possède plusieurs ports de sortie, ce qui permet de sélectionner la donnée voulue. Sous Unix,
 pour récupérer la date de modification d'un fichier, il faut découper la sortie de la commande \texttt{ls -l} avec d'autres outils, comme
 \texttt{cut}. En dataflow, il suffit de faire une connexion uniquement avec le port de sortie intitulé «taille du fichier».
@@ -403,7 +403,7 @@ pour récupérer la date de modification d'un fichier, il faut découper la sort
 \subsubsection{Conflits de nommage}
 Les conflits de nommage sont une grosse source de souci dans les langages de programmation textuels conventionnels. Certains utilisent des
 espaces de nommage pour réduire les risques de conflits, d'autres utilisent les clôtures pour limiter la portée des noms (c'est ce qui est
-couremment utilisé en JavaScript, par exemple).
+couramment utilisé en JavaScript, par exemple).
 
 Nous proposons une approche différente, qui consiste à stocker avec chaque fonction définie un identifiant unique, comme si le code était
 stocké dans une base de données. Les appels de fonction font alors référence (de manière cachée) à l'identifiant unique, et non pas au «nom
@@ -412,7 +412,7 @@ fonction. D'autres personnes ont proposé de stocker du code Java dans une base 
 
 \section{Formalisation du langage}
 
-Dans cette section, nous allons essayer de trouver quelle est la nature, l'essence d'un programme, de manière à 
+%Dans cette section, nous allons essayer de trouver quelle est la nature, l'essence d'un programme, de manière à 
 
 \subsection{Programme en dataflow}
 
@@ -530,7 +530,7 @@ Le lambda-calcul et la machine de Turing sont
 % Gurevich). But, models of computation don’t end there, either.
 par contre le langage mathémathique permet d'exprimer des fonctions non-calculables, des ensembles infinis, et tout un tas de choses
 obscures. Comme nos machines physiques actuelles sont une version bâtarde des machines de Turing (qui n'ont pas de limite sur la quantité de
-mémoire disponible, contrairement aux notres), il semble sage de laisser de côté le langage mathémathique (pour l'instant, lorsque le
+mémoire disponible, contrairement aux nôtres), il semble sage de laisser de côté le langage mathémathique (pour l'instant, lorsque le
 langage aura gagné en maturité, peut-être qu'il sera temps de l'ajouter).
 
 L'équivalence $\lambda$-calcul vs. Turing nous laisse le choix pour l'implémentation de notre première machine à partir de laquelle les autres seront définies, directement ou indirectement. Explorons donc la suite du problème avant de prendre une décision. À terme, le meilleur sera probablement d'implémenter les deux, comme base, et de les définir mutuellement l'une à partir de l'autre, pour avoir une vérification.
@@ -608,6 +608,8 @@ call-bloc prend en paramètre des fonctions permettant de calculer ses paramètr
 \item En évaluation «eager», on évalue les paramètres au début de l'appel du bloc, et on stocke leur valeur pour une future utilisation (ou non).
 \item Pour une macro, on stocke juste les paramètres eux-mêmes (avec leur fonction d'évaluation, s'il y en a une).
 \end{itemize}
+
+TODO première ligne de \section{Formalisation du langage}
 }
 
 \end{document}
