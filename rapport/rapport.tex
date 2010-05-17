@@ -14,6 +14,8 @@
 }
 
 \usepackage{graphicx}
+\graphicspath{images}
+\usepackage{subfigure}
 
 \usepackage{pgffor}
 \usepackage{ifthen}
@@ -34,9 +36,9 @@
 \tableofcontents
 \newpage
 
-\section{Objectif}
+\part{Objectif}
 
-\subsection{Sujet}
+\section[Sujet]{Sujet: Etude d'un paradigme de programmation : les langages graphiques à Dataflow}
 Il y a environ 20 ans, le langage et le système d'exploitation FORTH avaient été mis au point, avec pour but de créer un environnement
 totalement personnalisé pour chaque utilisateur. La particularité de FORTH était qu'il ne possédait pas de mots-clés, ou instructions
 figées, et que chaque utilisateur était en mesure de définir lui-même ses propres primitives, voire redéfinir ses primitives... à
@@ -56,27 +58,148 @@ L'idée de ce projet est de proposer une première architecture de compilateur o
 paradigme, et tenter d'en évaluer les propriétés. Ce projet nécessite un excellent niveau en programmation et un goût prononcé pour
 l'écriture de compilateurs.
 
-\subsection{…}
-%TODO IDE fait partie du langage
+\section{…}
 Le but de ce projet sera donc dans un premier temps de définir un langage de programmation visuel utilisant le paradigme du
 dataflow\footnote{\url{http://en.wikipedia.org/wiki/Dataflow}}, et n'ayant pas de primitives fixes. Dans un second temps, nous
-implémenterons un EDI\footnote{Éditeur de Développement Intégré} permettant de créer des programmes dans ce langage, et de les interpréter.
+implémenterons un EDI\footnote{Environnement de Développement Intégré} permettant de créer des programmes dans ce langage, et de les
+interpréter.
 
-% TODO : fragment !!!
-% Référecne perdue :(
-Des recherches ont montré que dans le cadre des langages de programmation visuels, l'éditeur jouait un rôle aussi important que le langage
-lui-même.
+\part{Définition du langage}
+
+\section{Étude de l'existant}
+
+\subsection{FORTH}
+\begin{itemize}
+\item macro-expansion
+\end{itemize}
+\subsection{Dataflow}
+
+Le paradigme du dataflow (flux de données) est connu des concepteurs de langages de programmation depuis longtemps. Il a été utilisé avec
+succès dans certains domaines, principalement des domaines intéressant les non-programmeurs.
+
+\subsubsection{Graphisme}
+
+
+Certains logiciels de graphisme représentent des filtres graphiques par des boîtes. Pour enchaîner des filtres, on connecte la sortie d'un
+aux entrées des autres. Ainsi, Quartz Composer permet la création d'images vectorielles animées sous MacOS de manière grapq ;
+\item World Machine, un générateur de cartes de hauteurs (heightmaps) ;
+\end{itemize}
+
+\subsubsection{Musique}
+
+L'interface de certains logiciels de musique s'inspirent de l'architecture des synthétiseurs modulaires\cite{modular-synth} (ces grosses
+boîtes avec pleins de prises jack qu'on relie avec des câbles : chaque prise jack est une entrée ou une sortie d'un module, les câbles sont
+les connexions).
+\begin{itemize}
+\item Max/MSP, prédécesseur de PureData ;
+\item Alsa Modular Synth ; % TODO
+\end{itemize}
+
+Traitement de signaux
+\begin{itemize}
+\item LabView
+\end{itemize}
+
+\begin{figure}[htp!]
+  \centering
+  %
+  %http://cafcom.free.fr/ams/ams1.png
+  \subfigure[Alsa Modular Synth\cite{alsa-modular-synth}]{\label{fig:alsa-modular-synth}\includegraphics[width=5cm]{alsa-modular-synth}}
+  %
+  % http://www.world-machine.com/images/ui1.jpg
+  \subfigure[World Machine\cite{world-machine}]{\label{fig:world-machine}\includegraphics[width=5cm]{world-machine}}
+  %
+  % http://upload.wikimedia.org/wikipedia/en/thumb/b/bc/QuartzComposerSnowLeopard.png/800px-QuartzComposerSnowLeopard.png
+  \subfigure[World Machine\cite{world-machine}]{\label{fig:world-machine}\includegraphics[width=5cm]{quartz-composer}}
+  %
+  \caption{Captues d'écrans de quelques langages de programmation utilisant le paradigme du dataflow.}
+  \label{fig:config/demar}
+\end{figure}
+
+\begin{itemize}
+\item vidéo alan kay
+\item http://recherche.ircam.fr/equipes/repmus/RMPapers/CMJ98/
+\end{itemize}
+
+\subsection{Langages spécifiques à un domaine}
 
 DSL = bien mais pas bien. Langages existants : ajout au vocabulaire (fonctions, variables), mais pas à la grammaire (structure) (sauf
 macros, mais pas complètement). Nous on propose de permettre d'écrire de n'importe quelle manière (grammaire libre), tout en gardant la
 possibilité d'ajout au vocabulaire. Nous ne gardons que les barrières nécessaires à une certaine cohérence (des éléments graphiques
 connectés à d'autres). Les blocs peuvent être ronds, les traits annotés d'étiquettes, ou encore d'autres choses.
 
-Graphes avec noeuds étiquetés et arcs éiquetés à chaque extrémité (et sur l'arc lui-même) => graphes généralisés.
+\subsection{Environnement de développement intégré}
 
-Preuve de complétude de Turing : un graphe = des noeuds connectés par des arcs, un noeud = l'arc NULL ou qqch du genre. // $\lambda(\lambda(\dots))$.
+Espace à l'écran
+\begin{itemize}
+\item code bubbles
+\end{itemize}
+\begin{quotation}
+  Clearly good design is as important for visual languages as for textual ones. Furthermore, the effectiveness of a visual language indeed
+  any precise language for specifying structures, depends to a large extent on the quality of the editor, browser, interpreter, debugger and
+  other tools supplied by the language implementation\cite{the-editor-is-as-important-as-the-language}
+\end{quotation}
+
+\subsection[Manque d'expressivité]{Manque d'expressivité des langages de programmation existants}
+\begin{itemize}
+\item Design patterns
+\item Domain Specific Language
+\end{itemize}
+
+\subsection{Réutilisabilité}
+
+\begin{itemize}
+\item qqch en commun avec prog par composants.
+\item unix pipes
+\item navigateur web unix pipes
+\item Mais cette approche est très limitée, car le seul type de données qu'on peut échanger, c'est un flux d'octets augmenté d'un marqueur
+  de fin (EOF). Pas de communication hors-bande, pas de structuration des données. -> pbs d'encapsulation (au sens des protocoles de
+  communication), d'échappement (abstraction / niveaux méta, dark tower of meta levels)
+\item Héritage partiel (cf. tiddlywiki)
+\end{itemize}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[height=7cm]{dark-tower-of-meta-levels}
+  \caption{Aziz faces the Dark Tower of Meta-levels}%\footnote{http://www.phyast.pitt.edu/~micheles/scheme/scheme22.html}
+  % On http://www.phyast.pitt.edu/~micheles/scheme/scheme22.html
+\label{fig:dark-tower-meta-levels}
+\end{figure}
+
+\subsection{Intérêt des langages visuels}
+\begin{itemize}
+\item Control flow graphs.
+\item Taxonomie: étudier l'utilité des différentes catégories.
+\item pas de conflits de nommage.
+\item Une infinité de DSL à disposition. Par ex. on peut faire en sorte que dans un outil de conception d'interfaces utilisateur, les composants graphiques (fenêtre, bouton, etc.) ne soient pas de simples images, mais \emph{soient} les fonctions ou objets correspondants.
+\end{itemize}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm]{lisp-class-graph}
+  \caption{Graphe d'héritage des classes en Lisp avec McCLIM}
+  % On http://mcclim.cliki.net/Screenshot : http://jlr.freeshell.org/data/mcclim/screenshots/2007-03-27-listener-dark-classgraph-context-menu.png
+  % http://boinkor.net/lisp/porn/clim-debugger.png
+\label{fig:lisp-class-graph}
+\end{figure}
+
+\subsection{divers…}
+Pourquoi dataflow peu utilisé ? (chest hair ?, http://therighttool.hammerprinciple.com/, contacter l'auteur pour qu'il ajoute des VPL)
+
+% TODO : fragment !!!
+% Référecne perdue :(
+Des recherches ont montré que dans le cadre des langages de programmation visuels, l'éditeur jouait un rôle aussi important que le langage
+lui-même.
+
+Graphes avec noeuds étiquetés et arcs éiquetés à chaque extrémité (et sur l'arc lui-même) => graphes généralisés.
+Le programme choisit son affichage.
+
+Preuve de complétude de Turing : un graphe = des noeuds connectés par des arcs, un noeud = l'arc NULL ou qqch du
+genre. //~$\lambda(\lambda(\dots))$.
 
 L'interface utilisateur devient alors la même chose (fenêtres = blocs avec un affichage particulier).
+
+Preuves
 
 \section{Formalisation du langage}
 
@@ -132,7 +255,7 @@ La question à se poser maintenant est ~:
   Qu'est-ce qui définit ce programme ?
 \end{figure}
 
-Ou, comme le disait un des collègues de Joe~Armstrong~\cite{what-are-the-inputs}~:
+Ou, comme le disait un des collègues de Joe~Armstrong~\cite{what-are-the-inputs}\nocite{coders-at-work}~:
 
 \begin{figure}[h!]
   \centering
@@ -203,7 +326,24 @@ langage aura gagné en maturité, peut-être qu'il sera temps de l'ajouter).
 
 L'équivalence $\lambda$-calcul vs. Turing nous laisse le choix pour l'implémentation de notre première machine à partir de laquelle les autres seront définies, directement ou indirectement. Explorons donc la suite du problème avant de prendre une décision. À terme, le meilleur sera probablement d'implémenter les deux, comme base, et de les définir mutuellement l'une à partir de l'autre, pour avoir une vérification.
 
-\section{Notes pour la suite\dots}
+\part{Implémentation}
+Pour l'implémentation, nous nous limiterons à un sous-ensemble purement fonctionnel du langage défini dans les sections précédentes.
+
+\section{Spécification fonctionnelle}
+
+
+
+\appendix
+
+\part{Annexes}
+\section{Notes}
+\subsection{notes}
+\begin{itemize}
+\item gruntnetwork.com
+\item La thèse sur la programmation par l'exemple
+\end{itemize}
+
+\subsection{Notes pour la suite\dots}
 
 % Suite
 %Partir d'un plus haut niveau pour se faciliter la tâche : une VM simple en JahvaScript
@@ -233,47 +373,9 @@ call-bloc prend en paramètre des fonctions permettant de calculer ses paramètr
 \item Pour une macro, on stocke juste les paramètres eux-mêmes (avec leur fonction d'évaluation, s'il y en a une).
 \end{itemize}
 
-\section{Implémentation}
-Pour l'implémentation, nous nous limiterons à un sous-ensemble purement fonctionnel du langage défini dans les sections suivantes.
-
-\appendix
-
-\section{notes}
-\begin{itemize}
-\item code bubbles
-\item dataflow
-\item world machine
-\item vidéo alan kay
-\item pas de conflits de nommage
-\item gruntnetwork.com
-\item Design patterns
-\item Domain Specific Language
-%% \item relire le sujet !!!
-\item DSL
-\item vue «libre»
-\item thèse sur la programmation par l'exemple
-\item Preuves
-\item Spécification fonctionnelle
-\end{itemize}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=10cm]{lisp-class-graph}
-  \caption{Graphe d'héritage des classes en Lisp avec McCLIM}
-  % On http://mcclim.cliki.net/Screenshot : http://jlr.freeshell.org/data/mcclim/screenshots/2007-03-27-listener-dark-classgraph-context-menu.png
-  % http://boinkor.net/lisp/porn/clim-debugger.png
-\label{fig:lisp-class-graph}
-\end{figure}
-\subsection{Historique}
-\begin{itemize}
-\item Control flow graphs
-\item alsa «composer»
-\item http://recherche.ircam.fr/equipes/repmus/RMPapers/CMJ98/
-\item Pourquoi dataflow peu utilisé ? (chest hair ?, http://therighttool.hammerprinciple.com/, contacter l'auteur pour qu'il ajoute des VPL)
-\end{itemize}
 
 \nocite{*}
-\bibliographystyle{plain}
+\bibliographystyle{unsrt}
 \bibliography{biblio}
 
 \end{document}
