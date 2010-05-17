@@ -61,7 +61,7 @@ L'idée de ce projet est de proposer une première architecture de compilateur o
 paradigme, et tenter d'en évaluer les propriétés. Ce projet nécessite un excellent niveau en programmation et un goût prononcé pour
 l'écriture de compilateurs.
 
-\section{…}
+\section{But du projet}
 Le but de ce projet sera donc dans un premier temps de définir un langage de programmation visuel utilisant le paradigme du
 dataflow\footnote{\url{http://en.wikipedia.org/wiki/Dataflow}}, et n'ayant pas de primitives fixes. Dans un second temps, nous
 implémenterons un EDI\footnote{Environnement de Développement Intégré} permettant de créer des programmes dans ce langage, et de les
@@ -71,13 +71,41 @@ interpréter.
 
 \section{Étude de l'existant}
 
-\subsection{FORTH}
-\begin{itemize}
-\item macro-expansion
-\end{itemize}
+\subsection{FORTH}\footnote{Les bibliothèques universitaires de Montpellier n'ont aucun ouvrage concernant forth. Il faudrait peut-être suggérer quelques achats aux bibliothécaires.}
+Le langage FORTH est basé sur le principe de l'expansion de macros~: lorsqu'on «appelle» une macro, elle s'expanse, ses sous-macros
+s'expansent, et ainsi de suite, jusqu'à ce que des macros de bas niveau lisent des valeurs sur la pile (pop), et en écrivent d'autres à la
+place.
+
+Mon expérience personnelle, lorsque j'ai essayé par le passé d'implémenter des algorithmes un peu complexes en \TeX (le langage sur
+lequel est construit \LaTeX), m'a montré que cette approche a un défaut fondamental~: il est impossible de délimiter le rayon d'action d'une
+macro. Étant donné qu'elle travaille sur la pile (ou dans le cas de \TeX, sur les jetons qui suivent l'appel de macro), et qu'elle peut
+enlever ou ajouter autant d'éléments qu'elle veut sur la pile, il y a un risque assez grand pour qu'une macro dont on ne connaît pas bien le
+fonctionnement soit mal utilisée, et abîme la portion de pile qui appartient à d'autre macros.
+
+Vu que les macros peuvent être imbriquées autant qu'on veut, il est possible qu'une macro située très bas dans l'arbre fasse ce genre
+d'erreur. Le débogage nécessite alors de parcourir tout l'arbre d'appels de macros à la recherche de l'erreur.
+
+Une représentation graphique permet d'indiquer explicitement quelles sont les données fournies à une fonction ou une macro, et il devient
+alors possible de mettre en place des mécanismes de contrôle de l'utilisation de la pile, au moins pour le débogage. Sans cette approche, il
+n'y a aucun moyen de savoir quels sont les données passées en paramètre et quelles données doivent rester sur la pile, du point de vue de la
+macro appellante.
+
+Dans le cas de FORTH, il n'y a pas de primitives dans le langage. Cela signifie que si on regarde récursivement le code des macros, il n'y a
+pas un moment où on va tomber sur une macro qui n'a pas de définition, mais est implémentée par le compilateur ou l'interpréteur (définition
+dans un autre langage, et probablement inaccessible pour peu qu'on n'ait pas le code source du compilateur). À la place, aux feuilles de
+l'arbre d'expansion des macros, on trouvera des instructions du langage machine.
+
+Ce comportement est fortement souhaitable de la part d'un langage généraliste, du point de vue éducatif~: les curieux peuvent farfouiller
+jusqu'aux racines du langage et ainsi comprendre comment fonctionne les programmes, à tous les niveaux. Certains programmeurs pensent que
+c'est important de comprendre en profondeur comment fonctionne la machine et les programmes qui l'utilisent\cite{coders-at-work}.
+
+Cela confère aussi au langage une grande portabilité~: Forth a été porté sur plus d'une vingtaine de processeurs\cite{forth-history}. En définissant un ensemble
+de fonctions de haut niveau que chaque implémentation doit fournir, on peut s'assurer qu'un programme fonctionnant sur une implémentation du
+langage fonctionnera aussi sur une autre.
+
 \subsection{Dataflow}
 
-Le paradigme du dataflow (flux de données) est connu des concepteurs de langages de programmation depuis longtemps. Il a été utilisé avec
+Le paradigme du dataflow\cite{vanroy-paradigms} (flux de données) est connu des concepteurs de langages de programmation depuis longtemps. Il a été utilisé avec
 succès dans certains domaines, principalement des domaines intéressant les non-programmeurs.
 
 \subsubsection{Graphisme}
@@ -183,9 +211,14 @@ langage de programmation graphique utilisant le paradigme du dataflow.
 Force est de constater que tous les exemples cités ci-dessus sont des cas particuliers de traitement de signal (image, son, signaux
 provenant d'appareils de mesure). Le paradigme du dataflow devrait être tout aussi efficace pour construire des programmes conventionnels~:
 les signaux d'entrée sont les évènements provoqués par l'utilisateur (clic de souris, appui sur le clavier), ceux de sortie sont les retours
-(écran, haut-parleurs, \dots). Cependant, les langages graphiques n'ont eu que peu de succès auprès de la communauté des programmeurs, et
-les raisons de ce rejet méritent d'être étudiées\footnote{Peut-être que c'est simplement que les langages textuels, c'est pour les
-  programmeurs avec du poil sur le torse, et les langages graphiques sont pour les mauviettes…}.
+(écran, haut-parleurs, \dots).
+
+\subsection{langages visuels}
+
+\subsubsection[Acceptation par les programmeurs]{Acceptation des langages visuels par les programmeurs}
+Les langages visuels n'ont eu que peu de succès auprès de la communauté des programmeurs, et les raisons de ce rejet méritent d'être
+étudiées\footnote{Peut-être que c'est simplement que les langages textuels, c'est pour les programmeurs avec du poil sur le torse, et les
+  langages graphiques sont pour les mauviettes…}.
 
 Récemment, un chercheur a mis en place un sondage auprès des programmeurs qui devrait à terme permettre de savoir quels langages
 correspondent le mieux à quelles affirmations, selon les programmeurs\cite{the-right-tool}. Ces affirmations sont du type «Ce langage est
@@ -193,7 +226,27 @@ facile à utiliser» ou «Ce langage à une bonne communauté». Les affirmation
 indiquent en général les défauts de ce langage. J'ai donc contacté l'auteur de ce sondage pour lui demander d'ajouter des langages de
 programmation visuels pendant que le sondage est encore ouvert, afin de pouvoir étudier par la suite ces résultats.
 
+\subsubsection{Historique}
+On a toutefois de noubreux cas d'utilisation de représentations visuelles dans la programmation~: Les langages suivant le paradigme du
+dataflow, dont nous avons parlé ci-dessus, mais aussi l'utilisation d'un formalisme graphique pour la représentation principale des
+diagrammes UML\footnote{Il existe aussi une représentation textuelle d'UML\cite{htun-spec}}. Les organigrammes de programmation (control
+flow diagram) sont aussi utilisés depuis longtemps.
+
+D'autres représentations visuelles sont utilisées dans certains systèmes. La figure \ref{fig:lisp-class-graph} montre un graphe d'héritage
+des classes en Lisp avec l'environnement McCLIM. On trouve aussi des graphes d'appels de fonctions, qui relient deux fonctions si l'une
+appelle (ou peut appeller) l'autre.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=10cm]{lisp-class-graph}
+  \caption{Graphe d'héritage des classes en Lisp avec McCLIM}
+  % On http://mcclim.cliki.net/Screenshot : http://jlr.freeshell.org/data/mcclim/screenshots/2007-03-27-listener-dark-classgraph-context-menu.png
+  % http://boinkor.net/lisp/porn/clim-debugger.png
+\label{fig:lisp-class-graph}
+\end{figure}
+
 \subsection{Langages spécifiques à un domaine}
+\label{sec:dsl}
 
 Il est fréquent que des programmeurs créent des «langages spécifiques à un domaine» (DSL, Domain Specific Language) pour répondre au besoin
 d'exprimer facilement des instructions et notions très fortement liées à un certain domaine, sans être encombrés par la syntaxe rigide, le
@@ -224,9 +277,10 @@ de puissance du langage. Nous proposons une solution alternative~: permettre l'�
 \end{itemize}
 Ces règles laissent toutefois une très grande liberté, les blocs peuvent être rectangulaires, ronds ou de n'importe quelle forme. Ils
 pourraient par exemple afficher les calculs mathémathiques qu'ils contiennent non pas sous l'apparence d'instructions mais d'une formule
-mathémathique. LabView utilise cette technique.
+mathémathique. On peut aussi faire en sorte que dans un outil de conception d'interfaces utilisateur, les composants graphiques (fenêtre,
+bouton, etc.) ne soient pas de simples images, mais \emph{soient} les fonctions ou objets correspondants. Dans le logiciel LabView, les
+«blocs» peuvent revêtir différentes apparences.
 % TODO screenshot en pgf pour la formule mathémathique.
-% TODO ref Intérêt des langages visuels, liste, item 4.
 
 Il est même possible que certains blocs aient une apparence invisible. Par exemple les opérations de conversion de types (cast) pourraient
 être masquées, et ne s'afficher que sur le lien entre la source du transtypage et sa destination.
@@ -288,66 +342,73 @@ plusieurs papiers sur ce sujet est disponible à \cite{biblio-vpl-a-screen-real-
 
 
 \subsection[Manque d'expressivité]{Manque d'expressivité des langages de programmation existants}
-\begin{itemize}
-\item Design patterns
-\item Domain Specific Language
-\end{itemize}
+
+L'utilisation fréquente de «design patterns» ou partons de conception dans les langages de programmation existants peut être considérée
+comme un indicateur de défauts dans ces langages\cite{design-patterns-failure}~: s'il y a besoin d'utitliser le design pattern $x$, c'est
+que le langage ne permet pas d'utiliser les concepts vehiculés par $x$ de manière plus élégante, c'est donc un manque d'expressivité sur ce
+point. En général, la manière la plus élégante d'utiliser un concept, c'est quand il est de «première classe».
+
+La solution que nous proposons pour un autre problème d'expressivité, celui des Langages Spécifiques à un Domaine (Section \ref{sec:dsl},
+page \pageref{sec:dsl}), qui était de permettre aux blocs de revêtir n'importe quelle apparence, est aussi une solution aux problèmes
+soulignés par les Design Patterns. En effet, pour peu que le langage propose de l'introspection et que les éléments de base du langage
+soient (réellement) de première classe, à savoir les blocs, les ports et les connexions, il est possible de transformer un grand nombre de
+concepts en concepts de (pseudo-)première classe.
+
+Par exemple, si l'on souhaite implémenter le concept des singletons, on rajoutera par introspection à chaque bloc utilisant ce concept un
+faux port d'entrée qui représentera directement le singleton. Ou bien on encapsulera tous les blocs représentant des variables qui doivent
+être uniques, avec une structure qui s'assurera que tout accès à ces blocs se fera sur une unique instance.
 
 \subsection{Réutilisabilité}
 
-\begin{itemize}
-\item qqch en commun avec prog par composants.
-\item unix pipes
-\item navigateur web unix pipes
-\item Mais cette approche est très limitée, car le seul type de données qu'on peut échanger, c'est un flux d'octets augmenté d'un marqueur
-  de fin (EOF). Pas de communication hors-bande, pas de structuration des données. -> pbs d'encapsulation (au sens des protocoles de
-  communication), d'échappement (abstraction / niveaux méta, dark tower of meta levels)
-\item Héritage partiel (cf. tiddlywiki)
-\end{itemize}
+\subsubsection{Programmation par composants}
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[height=7cm]{dark-tower-of-meta-levels}
-  \caption{Aziz faces the Dark Tower of Meta-levels}%\footnote{http://www.phyast.pitt.edu/~micheles/scheme/scheme22.html}
-  % On http://www.phyast.pitt.edu/~micheles/scheme/scheme22.html
-\label{fig:dark-tower-meta-levels}
-\end{figure}
+Le paradigme du dataflow partage de nombreux points communs avec le paradigme de la programmation orientée composants. Cette approche vise à
+augmenter la ré-utilisabilité du code en le structurant sous forme de composants qui communiquent entre eux. Dans le paradigme du dataflow,
+les composants sont clairement visibles~: ce sont les blocs, et ils communiquent entre eux à travers leurs ports, par le biais de
+connexions.
 
-\subsection{Intérêt des langages visuels}
-\begin{itemize}
-\item Control flow graphs.
-\item Taxonomie: étudier l'utilité des différentes catégories.
-\item pas de conflits de nommage (SCID Source Code In Database).
-\item Une infinité de DSL à disposition. Par ex. on peut faire en sorte que dans un outil de conception d'interfaces utilisateur, les
-  composants graphiques (fenêtre, bouton, etc.) ne soient pas de simples images, mais \emph{soient} les fonctions ou objets correspondants.
-\end{itemize}
+\subsubsection{Commandes Unix}
 
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=10cm]{lisp-class-graph}
-  \caption{Graphe d'héritage des classes en Lisp avec McCLIM}
-  % On http://mcclim.cliki.net/Screenshot : http://jlr.freeshell.org/data/mcclim/screenshots/2007-03-27-listener-dark-classgraph-context-menu.png
-  % http://boinkor.net/lisp/porn/clim-debugger.png
-\label{fig:lisp-class-graph}
-\end{figure}
+Ce principe de composants isolés communiquant au travers d'interfaces pré-définies se retrouve aussi dans l'architecture Unix. Un des
+principes de la philosophie unix est «Do one thing, and do it well», ainsi sous Unix, plein de petis programmes différents font chacun une
+action bien précise, simple. Des actions plus complexes sont réalisées en connectant la sortie de certains programmes à l'entrée d'autres,
+en général avec un «pipe» (tuyeau).
 
-\subsection{divers…}
-Pourquoi dataflow peu utilisé ? (chest hair ?, http://therighttool.hammerprinciple.com/, contacter l'auteur pour qu'il ajoute des VPL)
+Ce principe a même été poussé jusqu'à faire un navigateur modulaire, suivant la philosophie Unix, dont la partie chargée d'afficher les
+pages web est complètement dissociée de la partie qui gère les autres fonctionnalités (historique, boutons de navigation, \dots).
 
-% TODO : fragment !!!
-% Référecne perdue :(
-Des recherches ont montré que dans le cadre des langages de programmation visuels, l'éditeur jouait un rôle aussi important que le langage
-lui-même.
+Cependant, cette approche est très limitée, car le seul type de données que des programmes peuvent échanger au travers de pipes ou de
+sockets, c'est un flux d'octets augmenté d'un marqueur de fin (EOF). Il n'y a pas de communication hors-bande, pas de structuration des
+données. Cela pose des problèmes d'encapsulation (au sens des protocoles de communication~: comment envoyer plusieurs flux en parallèle?),
+d'échappement, et généralement de sérialisation des données -- alors qu'on transfère des données d'un programme à l'autre, sur le même
+système.
 
-Graphes avec noeuds étiquetés et arcs éiquetés à chaque extrémité (et sur l'arc lui-même) => graphes généralisés.
-Le programme choisit son affichage.
+Le paradigme du dataflow résoudw ces problèmes en permettant de faire transiter à travers les connexions entre blocs des flux typés, plutôt
+que de simples octets. De plus, chaque bloc possède plusieurs ports de sortie, ce qui permet de sélectionner la donnée voulue. Sous Unix,
+pour récupérer la date de modification d'un fichier, il faut découper la sortie de la commande \texttt{ls -l} avec d'autres outils, comme
+\texttt{cut}. En dataflow, il suffit de faire une connexion uniquement avec le port de sortie intitulé «taille du fichier».
 
-Preuve de complétude de Turing : un graphe = des noeuds connectés par des arcs, un noeud = l'arc NULL ou qqch du
-genre. //~$\lambda(\lambda(\dots))$.
+%\begin{itemize}
+%\item Héritage partiel (cf. tiddlywiki)
+%\end{itemize}
 
-L'interface utilisateur devient alors la même chose (fenêtres = blocs avec un affichage particulier).
+%\begin{figure}[htbp]
+%  \centering
+%  \includegraphics[height=7cm]{dark-tower-of-meta-levels}
+%  \caption{Aziz faces the Dark Tower of Meta-levels}%\footnote{http://www.phyast.pitt.edu/~micheles/scheme/scheme22.html}
+%  % On http://www.phyast.pitt.edu/~micheles/scheme/scheme22.html
+%\label{fig:dark-tower-meta-levels}
+%\end{figure}
 
-Preuves
+\subsubsection{Conflits de nommage}
+Les conflits de nommage sont une grosse source de souci dans les langages de programmation textuels conventionnels. Certains utilisent des
+espaces de nommage pour réduire les risques de conflits, d'autres utilisent les clôtures pour limiter la portée des noms (c'est ce qui est
+couremment utilisé en JavaScript, par exemple).
+
+Nous proposons une approche différente, qui consiste à stocker avec chaque fonction définie un identifiant unique, comme si le code était
+stocké dans une base de données. Les appels de fonction font alors référence (de manière cachée) à l'identifiant unique, et non pas au «nom
+usuel» de la fonction. Cela rend le langage insensible aux conflits de nommage, et robuste aux changements des noms de variables ou de
+fonction. D'autres personnes ont proposé de stocker du code Java dans une base de données\cite{scid}.
 
 \section{Formalisation du langage}
 
@@ -459,7 +520,7 @@ Nous voilà bien avancés\dots\ Un programme est un programme. C'est donc une d�
 \end{itemize}
 
 Le lambda-calcul et la machine de Turing sont
-équivalents\footnote{\url{http://en.wikipedia.org/wiki/Lambda_calculus\#Computable_functions_and_lambda_calculus}}$\vphantom{X}^{,}$\footnote{Bien qu'ils ne
+équivalents\cite{lambda-calculus-wikipedia}$\vphantom{X}^{,}$\footnote{Bien qu'ils ne
   semblent pas être totalement équivalents\cite{lambda-turing-equivalence}~: \quote{However, [Lambda Calculus] is not a model of computation for we
     cannot calculate an upper bound on resource consumption of its reduction steps without resorting to another model of computation, such
     as [Turing Machines] (according to Yuri Gurevich).}},
@@ -474,8 +535,17 @@ langage aura gagné en maturité, peut-être qu'il sera temps de l'ajouter).
 
 L'équivalence $\lambda$-calcul vs. Turing nous laisse le choix pour l'implémentation de notre première machine à partir de laquelle les autres seront définies, directement ou indirectement. Explorons donc la suite du problème avant de prendre une décision. À terme, le meilleur sera probablement d'implémenter les deux, comme base, et de les définir mutuellement l'une à partir de l'autre, pour avoir une vérification.
 
+\subsection{Graphe}
+Du point de vue de notre langage, on peut dire qu'un programme est un graphe dont les noeuds sont étiquetés (les noms ou identifiants des blocs), et dont les arcs sont étiquetés à chaque extrémité (les noms des deux ports auxquels le lien est connecté). Les programmes sont donc des graphes généralisés.
+
+% TODO !!!!!!!!!!!!
+% Schéma PGF
+
+% Preuve de complétude de Turing : un graphe = des noeuds connectés par des arcs, un noeud = l'arc NULL ou qqch du genre. <=> $\lambda(\lambda(\dots))$.
+
+
 \part{Implémentation}
-Pour l'implémentation, nous nous limiterons à un sous-ensemble purement fonctionnel du langage défini dans les sections précédentes.
+%Pour l'implémentation, nous nous limiterons à un sous-ensemble purement fonctionnel du langage défini dans les sections précédentes.
 
 \section{Spécification fonctionnelle}
 
@@ -483,16 +553,33 @@ Pour l'implémentation, nous nous limiterons à un sous-ensemble purement foncti
 
 \appendix
 
+\nocite{*}
+\bibliographystyle{unsrt}
+\bibliography{biblio}
+
+%%%%%%%%%%
+
+\long\def\commentaire#1{}
+
+\commentaire{
 \part{Annexes}
-\section{Notes}
-\subsection{notes}
-\begin{itemize}
-\item gruntnetwork.com
-\item La thèse sur la programmation par l'exemple
-\item vidéo alan kay
-\end{itemize}
+%\section{Notes}
+%\subsection{notes}
+%\begin{itemize}
+%\item gruntnetwork.com
+%\item La thèse sur la programmation par l'exemple
+%\item vidéo alan kay
+%\end{itemize}
+
+%\section{Étude de l'existant}
+%Preuves
+
+% Taxonomie (vltax.pdf): étudier l'utilité des différentes catégories.
+
 
 \subsection{Notes pour la suite\dots}
+
+Cette section est à supprimer
 
 % Suite
 %Partir d'un plus haut niveau pour se faciliter la tâche : une VM simple en JahvaScript
@@ -521,10 +608,6 @@ call-bloc prend en paramètre des fonctions permettant de calculer ses paramètr
 \item En évaluation «eager», on évalue les paramètres au début de l'appel du bloc, et on stocke leur valeur pour une future utilisation (ou non).
 \item Pour une macro, on stocke juste les paramètres eux-mêmes (avec leur fonction d'évaluation, s'il y en a une).
 \end{itemize}
-
-
-\nocite{*}
-\bibliographystyle{unsrt}
-\bibliography{biblio}
+}
 
 \end{document}
