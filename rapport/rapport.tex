@@ -13,10 +13,13 @@
   urlcolor=black%
 }
 
+\newenvironment{void}{}{}
+
 \usepackage{graphicx}
 \graphicspath{{images/}}
-\usepackage{subfig}
 \usepackage{calc}
+
+\usepackage[center]{caption}
 
 \usepackage{epigraph}
 
@@ -105,6 +108,49 @@ langage fonctionnera aussi sur une autre.
 
 \subsection{Dataflow}
 
+\begin{figure}[h!]
+  \centering
+  \pgfdeclarelayer{background layer}
+  \pgfsetlayers{background layer,main}
+  \begin{tikzpicture}
+    \bloc[t]{mul/a*b}{ab}{c}
+    \node[coordinate] (between-a-b) at ($ .5*(mul-in-a) + .5*(mul-in-b) $) {};
+    
+    \node at (mul.north) [above=.25em,color=green!50!black,inner sep=0pt] (nom) {$x^2$};
+    \node at (nom.north) [above=.25em,coordinate] (nom-plus) {};
+    
+    \tikzset{ex/.style={fill=white,left of=between-a-b,matrix anchor=ex-out-val.center,input-bloc}}
+    \bloc[t]{ex/x}{}{{val/}}
+    \node[coordinate] (connect-ex-a-b) at ($ .5*(between-a-b) + .5*(ex-out-val) $) {};
+    
+    \tikzset{ox2/.style={fill=white,right of=mul-out-c,matrix anchor=ox2-in-val.center,input-bloc}}
+    \bloc[t]{ox2/x^2}{{val/}}{}
+    
+    \draw (ex-out-val) -- (connect-ex-a-b);
+    \draw (connect-ex-a-b) |- (mul-in-a);
+    \draw (connect-ex-a-b) |- (mul-in-b);
+    \draw (mul-out-c) |- (ox2-in-val);
+    \node[coordinate] (rightmost) at (ox2-label) {};
+    \node[coordinate] (leftmost) at (ex-label) {};
+    
+    \shorthandoff{:}
+    \draw[->] (ox2) -- ++(1,0) node[coordinate,label=above:\tiny$x^2$] {};
+    \shorthandon{:}
+    \begin{pgfonlayer}{background layer}
+      \node[bloc,fit=(rightmost)(mul)(nom-plus)(leftmost),inner xsep=0pt,inner ysep=.333em] (bloc) {};
+    \end{pgfonlayer}
+    
+    
+    \path[<-,thick,draw=gray] (bloc.north east) -- ++(1,1)   node[fill=white] (LB)  {Bloc};
+    \path[<-,thick,draw=gray] (nom.north)       -- (nom.north |- LB) node[fill=white] (LNB) {Nom du bloc};
+    \path[<-,thick,draw=gray] (ex.south west)   -- ++(-1,-1) node[fill=white] (LPE) {Port d'entrée};
+    \path[<-,thick,draw=gray] (ox2.south east)  -- ++(1,-1)  node[fill=white] (LPS) {Port de sortie};
+    \path[<-,thick,draw=gray] (connect-ex-a-b |- mul-in-a) ++ (-.04,.04) -- (LPE |- LB) node[fill=white] (LC) {Connexion};
+  \end{tikzpicture}
+  \caption{Les parties d'un programme en dataflow.}
+\label{fig:parties-dataflow}
+\end{figure}
+
 Le paradigme du dataflow\cite{vanroy-paradigms} (flux de données) est connu des concepteurs de langages de programmation depuis longtemps. Il a été utilisé avec
 succès dans certains domaines, principalement des domaines intéressant les non-programmeurs.
 
@@ -120,9 +166,8 @@ qui sont utilisées pour modéliser des terrains en 3D.
 L'interface de certains logiciels de musique s'inspirent de l'architecture des synthétiseurs modulaires\cite{modular-synth} (ces grosses
 boîtes avec pleins de prises jack qu'on relie avec des câbles : chaque prise jack est une entrée ou une sortie d'un module, les câbles sont
 les connexions). Un des premiers synthétiseurs virtuels, Max/MSP, utilisait cette analogie. D'autres logiciels similaires lui ont succédé :
-PureData (qui est aussi un langage de programmation généraliste), Alsa Modular Synth,~\dots
-
-% http://recherche.ircam.fr/equipes/repmus/RMPapers/CMJ98/
+PureData (qui est aussi un langage de programmation généraliste), Alsa Modular Synth, ansi qu'une série de logiciels créé par une équipe de
+recherche de l'ICAM\cite{musique-ircam}.
 
 \subsubsection{Mesures scientifiques}
 
@@ -201,8 +246,17 @@ langage de programmation graphique utilisant le paradigme du dataflow.
     \caption{LabView\cite{labview}}
   \end{minipage}
   \hfill
-  {\,} 
-  \caption{Captues d'écrans de quelques langages de programmation utilisant le paradigme du dataflow.}
+  {\,}
+  
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  
+  {\,}
+  \hfill
+  \begin{minipage}{10cm}
+    \caption{Captues d'écrans de quelques langages de programmation utilisant le paradigme du dataflow.}
+  \end{minipage}
+  \hfill
+  {\,}
   \label{fig:screenshots}
 \end{figure}
 
@@ -213,7 +267,7 @@ provenant d'appareils de mesure). Le paradigme du dataflow devrait être tout au
 les signaux d'entrée sont les évènements provoqués par l'utilisateur (clic de souris, appui sur le clavier), ceux de sortie sont les retours
 (écran, haut-parleurs, \dots).
 
-\subsection{langages visuels}
+\subsection{Langages visuels}
 
 \subsubsection[Acceptation par les programmeurs]{Acceptation des langages visuels par les programmeurs}
 Les langages visuels n'ont eu que peu de succès auprès de la communauté des programmeurs, et les raisons de ce rejet méritent d'être
@@ -233,15 +287,13 @@ diagrammes UML\footnote{Il existe aussi une représentation textuelle d'UML\cite
 flow diagram) sont aussi utilisés depuis longtemps.
 
 D'autres représentations visuelles sont utilisées dans certains systèmes. La figure \ref{fig:lisp-class-graph} montre un graphe d'héritage
-des classes en Lisp avec l'environnement McCLIM. On trouve aussi des graphes d'appels de fonctions, qui relient deux fonctions si l'une
+des classes en Lisp avec l'environnement McCLIM. On trouve aussi des graphes d'appels de fonctions\cite{lisp-func-graph}, qui relient deux fonctions si l'une
 appelle (ou peut appeler) l'autre.
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=10cm]{lisp-class-graph}
-  \caption{Graphe d'héritage des classes en Lisp avec McCLIM}
-  % On http://mcclim.cliki.net/Screenshot : http://jlr.freeshell.org/data/mcclim/screenshots/2007-03-27-listener-dark-classgraph-context-menu.png
-  % http://boinkor.net/lisp/porn/clim-debugger.png
+  \includegraphics[height=5cm]{lisp-class-graph}
+  \caption{Graphe d'héritage des classes en Lisp avec McCLIM\cite{lisp-class-graph}}
 \label{fig:lisp-class-graph}
 \end{figure}
 
@@ -278,9 +330,44 @@ de puissance du langage. Nous proposons une solution alternative~: permettre l'�
 Ces règles laissent toutefois une très grande liberté, les blocs peuvent être rectangulaires, ronds ou de n'importe quelle forme. Ils
 pourraient par exemple afficher les calculs mathémathiques qu'ils contiennent non pas sous l'apparence d'instructions mais d'une formule
 mathémathique. On peut aussi faire en sorte que dans un outil de conception d'interfaces utilisateur, les composants graphiques (fenêtre,
-bouton, etc.) ne soient pas de simples images, mais \emph{soient} les fonctions ou objets correspondants. Dans le logiciel LabView, les
-«blocs» peuvent revêtir différentes apparences.
-% TODO screenshot en pgf pour la formule mathémathique.
+bouton, etc.) ne soient pas de simples images, mais \emph{soient} les blocs correspondants. Dans le logiciel LabView, les «blocs» peuvent
+revêtir différentes apparences.
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}
+    \bloc[t]{mul/c = \left(\frac{a*b}{2}\right)^2}{ab}{c}
+  \end{tikzpicture}
+  \caption{Avec affichage choisi par le bloc}
+  \label{fig:affichage-math-oui}
+\end{figure}
+\begin{figure}[h!]
+  \centering
+  \begin{tikzpicture}
+    \bloc[t]{mul/a*b}{ab}{c}
+    
+    \tikzset{deux/.style={below of=mul-out-c,matrix anchor=deux-out-val.center}}
+    \bloc[t]{deux/2}{}{{val/}}
+    
+    \tikzset{div/.style={right of=mul-out-c,matrix anchor=div-in-a.center}}
+    \bloc[t]{div/\frac{a}{b}}{ab}{c}
+    
+    \tikzset{sqr/.style={right of=div-out-c,matrix anchor=sqr-in-a.center}}
+    \bloc[t]{sqr/a^2}{a}{b}
+    
+    \node[coordinate] (between-deux-div) at ($ .5*(deux-out-val) + .5*(div-in-b) $) {};
+    
+    \draw (deux-out-val) -| (between-deux-div);
+    \draw (between-deux-div) |- (div-in-b);
+    \draw (mul-out-c) |- (div-in-a);
+    \draw (div-out-c) |- (sqr-in-a);
+    
+    \shorthandoff{:}
+    \draw[->] (sqr-out-b) -- ++(1,0) node[coordinate,label=above:\tiny$\left(\frac{a*b}{2}\right)^2$] {};
+    \shorthandon{:}
+  \end{tikzpicture}
+  \caption{Sans affichage choisi par le bloc}
+  \label{fig:affichage-math-non}
+\end{figure}
 
 Il est même possible que certains blocs aient une apparence invisible. Par exemple les opérations de conversion de types (cast) pourraient
 être masquées, et ne s'afficher que sur le lien entre la source du transtypage et sa destination.
@@ -297,7 +384,7 @@ et plus faciles à écrire (les instructions (blocs) spécialisées ont une inte
 
 {
   \setlength{\epigraphwidth}{0.85\linewidth}
-  \renewcommand{\textflush}{justify}
+  \renewcommand{\textflush}{void}
   \renewcommand{\epigraphflush}{center}
   \epigraph{
     Clearly good design is as important for visual languages as for textual ones. Furthermore, the effectiveness of a visual language indeed
@@ -412,7 +499,9 @@ fonction. D'autres personnes ont proposé de stocker du code Java dans une base 
 
 \section{Formalisation du langage}
 
-%Dans cette section, nous allons essayer de trouver quelle est la nature, l'essence d'un programme, de manière à 
+Dans cette section, nous allons essayer de trouver quelle est la nature, l'essence d'un programme, de manière à pouvoir définir plus
+formellement quelle est la nature mathémathique des programmes de notre langage, qui sont composés de blocs polymorphes à l'affichage, de
+ports appartennant à ces blocs, et de liens entre ces blocs.
 
 \subsection{Programme en dataflow}
 
@@ -424,8 +513,8 @@ Examinons un programme simple exprimé dans le paradigme du dataflow~:
     \bloc[t]{+1/a+b}{ab}{c}
     \tikzset{+2/.style={below of=+1,matrix anchor=north}}
     \bloc[t]{+2/a+b}{ab}{c}
-% \tikzset{b2/.style={right of=b1-out-d,matrix anchor=b2-in-x.center}}
-%    \bloc[t]{b2/\frac{x\times y}{z}}{{x}{y}{z}}{{t}}
+    % \tikzset{b2/.style={right of=b1-out-d,matrix anchor=b2-in-x.center}}
+    % \bloc[t]{b2/\frac{x\times y}{z}}{{x}{y}{z}}{{t}}
     
     \tikzset{e1/.style={left of=+1-in-a,matrix anchor=e1-out-val.center,input-bloc}}
     \bloc[t]{e1/e_1}{}{{val/}}
@@ -539,15 +628,9 @@ L'équivalence $\lambda$-calcul vs. Turing nous laisse le choix pour l'implémen
 Du point de vue de notre langage, on peut dire qu'un programme est un graphe dont les noeuds sont étiquetés (les noms ou identifiants des blocs), et dont les arcs sont étiquetés à chaque extrémité (les noms des deux ports auxquels le lien est connecté). Les programmes sont donc des graphes généralisés.
 
 % TODO !!!!!!!!!!!!
-% Schéma PGF
+% Schéma PGF (Quel schéma ???)
 
 % Preuve de complétude de Turing : un graphe = des noeuds connectés par des arcs, un noeud = l'arc NULL ou qqch du genre. <=> $\lambda(\lambda(\dots))$.
-
-
-\part{Implémentation}
-%Pour l'implémentation, nous nous limiterons à un sous-ensemble purement fonctionnel du langage défini dans les sections précédentes.
-
-\section{Spécification fonctionnelle}
 
 
 
@@ -562,6 +645,11 @@ Du point de vue de notre langage, on peut dire qu'un programme est un graphe don
 \long\def\commentaire#1{}
 
 \commentaire{
+\part{Implémentation}
+%Pour l'implémentation, nous nous limiterons à un sous-ensemble purement fonctionnel du langage défini dans les sections précédentes.
+
+\section{Spécification fonctionnelle}
+
 \part{Annexes}
 %\section{Notes}
 %\subsection{notes}

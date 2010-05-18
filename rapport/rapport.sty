@@ -1,3 +1,22 @@
+\def\@maketitle{%
+  \newpage
+  %\null
+  \vskip -12em%
+  \begin{center}%
+  \let \footnote \thanks
+    {\LARGE \@title \par}%
+    \vskip 1.5em%
+    {\large
+      \lineskip .5em%
+      \begin{tabular}[t]{c}%
+        \@author
+      \end{tabular}\par}%
+    \vskip 1em%
+    {\large \@date}%
+  \end{center}%
+  \par
+  \vskip 1.5em}
+
 \tikzset{
   bloc/.style={
     rectangle,
