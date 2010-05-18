@@ -9,15 +9,6 @@ function VDéfinitions(vInstanceBlocParente) {
     
     this.vTitresTabs = this.find('.définitions.vTitresTabs');
     this.vBoutonNouvelleDéfinition = this.find('.définitions.vNouvelle-définition');
-
-    this.vBoutonNouvelleDéfinition.draggable({
-        connectToSortable: '#mydiv',
-        cancel: '',
-        revert: 'invalid',
-        helper: function() {
-            return new VPort('body');
-        }
-    }).css('z-index', '1000');
     
     this.vContenus = this.find('.définitions.vContenus');
     this.vContenusTabs = this.find('.définitions.vContenusTabs');
@@ -29,7 +20,23 @@ function VDéfinitions(vInstanceBlocParente) {
     
     this.aucuneDéfinition = true;
     
+    
     var that = this;
+    jQuery.event.special.drag.not = ''; // accept drag on all elements.
+    this.vBoutonNouvelleDéfinition.bind('dragstart', function(event){
+        $.dropManage({ mode:'intersect', filter:'.port.target' });
+        return $('#vue-port-drag').jqote({}).appendTo('body');
+    });
+    
+    this.vBoutonNouvelleDéfinition.bind('drag', function(event){
+        $(event.dragProxy).position({my: 'center', at: 'center', of: event});
+        return true;
+    });
+    
+    this.vBoutonNouvelleDéfinition.bind('dragend', function(event){
+        $(event.dragProxy).fadeOut();
+    });
+    
     this.ajoutVDéfinition = function(vTitreDéfinition, vCorpsDéfinition) {
         if (this.aucuneDéfinition) {
             this.vTitreAucuneDéfinition.hide();
@@ -53,12 +60,11 @@ function VDéfinitions(vInstanceBlocParente) {
         contenuTab.show();
     };
 
-    this.setVPortsEntrée = function(vPortsEntrée) {
-        this.vPortsEntrée.replaceWith(vPortsEntrée);
-    };
-    
-    this.setVPortsSortie = function(vPortsSortie) {
-        this.vPortsSortie.replaceWith(vPortsSortie);
+    this.setVPorts = function(vPorts, sens) {
+        if (sens == 'entrée')
+            this.vPortsEntrée.replaceWith(vPorts);
+        else
+            this.vPortsSortie.replaceWith(vPorts);
     };
     
     this.ajusterBarreTitres = function() {

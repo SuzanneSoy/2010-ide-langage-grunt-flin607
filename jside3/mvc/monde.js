@@ -86,7 +86,7 @@ function MMonde(nom) {
     };
     
     /* Outils */
-    this.outilZone = this.actionAucune;
+    this.outilZone = this.actionNouveauBloc;
     
     /* Scratch */
     this.mBlocScratch = new MBloc();

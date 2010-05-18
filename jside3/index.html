@@ -11,6 +11,8 @@
     <script type="text/javascript" src="jquery/jquery.scrollTo.js"></script>
     <script type="text/javascript" src="jquery/jquery.jqote2.js"></script>
     <script type="text/javascript" src="jquery/jquery.my.enumerable.js"></script>
+    <script type="text/javascript" src="jquery/jquery.event.drag-1.5.js"></script>
+    <script type="text/javascript" src="jquery/jquery.event.drop-1.2.js"></script>
     
     <!-- jQuery UI -->
     <link rel="stylesheet" type="text/css" href="jquery/themes/custom-theme/jquery.ui.all.css" />
@@ -18,10 +20,10 @@
     <script type="text/javascript" src="jquery/ui/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="jquery/ui/jquery.ui.mouse.js"></script>
     <script type="text/javascript" src="jquery/ui/jquery.ui.draggable.js"></script>
-    <script type="text/javascript" src="jquery/ui/jquery.ui.droppable.js"></script>
+<!--    <script type="text/javascript" src="jquery/ui/jquery.ui.droppable.js"></script>-->
     <script type="text/javascript" src="jquery/ui/jquery.ui.resizable.js"></script>
-    <script type="text/javascript" src="jquery/ui/jquery.ui.sortable.js"></script>
-    <script type="text/javascript" src="jquery/ui/jquery.ui.selectable.js"></script>
+<!--    <script type="text/javascript" src="jquery/ui/jquery.ui.sortable.js"></script>-->
+<!--    <script type="text/javascript" src="jquery/ui/jquery.ui.selectable.js"></script>-->
     <script type="text/javascript" src="jquery/ui/jquery.ui.position.js"></script>
     <script type="text/javascript" src="jquery/ui/jquery.effects.core.js"></script>
     <script type="text/javascript" src="jquery/jquery.layout.js"></script>
@@ -49,6 +51,7 @@
     <script type="text/javascript" src="mvc/instance-bloc.js"></script>
     <script type="text/javascript" src="mvc/definitions.js"></script>
     <script type="text/javascript" src="mvc/ports.js"></script>
+    <script type="text/javascript" src="mvc/port-in-ports.js"></script>
     <script type="text/javascript" src="mvc/port.js"></script>
     
     <script type="text/javascript" src="mvc/definition.js"></script>
@@ -143,8 +146,8 @@
             <div class="clearfloat"></div>
           </div>
           <div class="définitions vContenus">
-            <div class="définitions vPorts-entrée"></div>
-            <div class="définitions vPorts-sortie"></div>
+            <table class="définitions vPorts-entrée"></table>
+            <table class="définitions vPorts-sortie"></table>
             <div class="définitions vContenusTabs">
               <div class="définition vCorps vAucune-définition">
                 Aucune définition.
@@ -158,20 +161,44 @@
     </script>
     <script type="text/x-jqote-template" id="vue-ports-entrée">
       <![CDATA[
-        <div class="ports vPorts vEntrée">
-        </div>
+        <table class="ports vPorts vEntrée">
+        </table>
       ]]>
     </script>
     <script type="text/x-jqote-template" id="vue-ports-sortie">
       <![CDATA[
-        <div class="ports vPorts vSortie">
-        </div>
+        <table class="ports vPorts vSortie">
+        </table>
       ]]>
     </script>
     <script type="text/x-jqote-template" id="vue-port">
       <![CDATA[
-        <span class="port vMain">
+        <span class="port vBox vMain">
         </span>
+      ]]>
+    </script>
+    <script type="text/x-jqote-template" id="vue-port-drag">
+      <![CDATA[
+        <span class="port vBox vMain drag">
+        </span>
+      ]]>
+    </script>
+    <script type="text/x-jqote-template" id="vue-port-in-ports">
+      <![CDATA[
+        <tr>
+          <td class="port target">
+          </td>
+        </tr>
+      ]]>
+    </script>
+    <script type="text/x-jqote-template" id="vue-port-placeholder">
+      <![CDATA[
+        <tr class="port placeholder vTr vMain">
+          <td class="port placeholder vTd">
+            <span class="port placeholder vBox">
+            </span>
+          </td>
+        </tr>
       ]]>
     </script>
     <script type="text/x-jqote-template" id="vue-définition-titre">

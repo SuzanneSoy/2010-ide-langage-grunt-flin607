@@ -223,7 +223,7 @@ body {
     position: absolute;
     top: 0;
     width: 20px;
-    bottom: 0;
+    height: 100%;
     text-align: center;
 }
 
@@ -236,7 +236,7 @@ body {
 }
 
 /* Port */
-.port.vMain {
+.port.vBox {
     display: inline-block;
     background-color: lightblue;
     border: thin solid blue;
@@ -244,12 +244,22 @@ body {
     height: 10px;
 }
 
-.port-placeholder {
-    display: inline-block;
+.port.vBox.drag {
+    position: absolute;
+}
+
+.port.vBox.placeholder {
     background-color: lightgray;
     border: thin solid gray;
-    width: 10px;
-    height: 10px;
+}
+
+.port.vBox.active {
+    background-color: lightgreen;
+    border: thin solid green;
+}
+
+.port.placeholder.vTd {
+    background-color: #eee;
 }
 
 /* Zone */

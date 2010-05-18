@@ -14,16 +14,34 @@ function MPort(sens, blocParent) {
     });
 }
 
-function VPort(vPortsParente) {
+function VPort(vPortsParente, modèle) {
     $.extend(this, (
         $('#vue-port')
             .jqote({})
             .toDom()));
+    
+    this.bind('dragstart', function(event){
+        $.dropManage({ mode:'intersect', filter:'.port.target' });
+        return $('#vue-port-drag').jqote({}).appendTo('body');
+    });
+    
+    this.bind('drag', function(event){
+        $(event.dragProxy).position({my: 'center', at: 'center', of: event});
+        return true;
+    });
+    
+    this.bind('dragend', function(event){
+        $(event.dragProxy).fadeOut();
+    });
 
-    this.appendTo(vPortsParente);
+    vPortsParente.addVPort(this, modèle);
 }
 
 function CPort(mPort, vPortsParente) {
     this.modèle = mPort;
-    this.vue = new VPort(vPortsParente);
+    this.vue = new VPort(vPortsParente, this.modèle);
+    
+    this.vue[0].droppedOn = function(destination, insertBefore) { // unsing this.vue[0] is a bit of a hack…
+        console.log("dropped on", destination, insertBefore);
+    };
 }

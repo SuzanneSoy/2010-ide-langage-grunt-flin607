@@ -305,5 +305,45 @@ jQuery.fn.extend({
         
         // Start first blink
         elem.dequeue("blink");
+    },
+    stepAnimateClass: function(from, to) {
+        var el = $(this[0]); // TODO : faire un foreach.
+        var actions = {};
+        var props = ['backgroundColor', 'borderBottomColor', 'borderLeftColor', 'borderRightColor', 'borderTopColor', 'color', 'outlineColor'];
+
+        // Get the end
+        var end = {};
+        var oldstyle = el.attr('style');
+        var oldclasses = el.attr('className');
+        el.addClass(to);
+        $.each(props, function(i, attr) {
+            end[attr] = el.css(attr);
+        });
+        el.attr('className', oldclasses);
+        el.addClass(from);
+
+        // Prepare animations
+        $.each(props, function(i, attr) {
+            actions[attr] = {
+                elem: el[0],
+                end: end[attr],
+                pos: 0
+            };
+            $.fx.step[attr](actions[attr]);
+        });
+        el.attr('style', '');
+        el.attr('style', oldstyle);
+        el.attr('className', oldclasses);
+        
+        return function(pos) {
+            if (pos === undefined) {
+                el.attr('style', '');
+                el.attr('style', oldstyle);
+            }
+            for (i in actions) {
+                actions[i].pos = pos;
+                $.fx.step[i](actions[i]);
+            }
+        }
     }
 });
