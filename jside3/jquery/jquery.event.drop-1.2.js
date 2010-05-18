@@ -126,8 +126,9 @@ drop = $special.drop = {
 // set event type to custom value, and handle it
 function hijack ( event, type, elem ){
 	event.type = type; // force the event type
-	try { var result = $event.handle.call( elem, event );
-		} catch ( ex ){ /* catch IE error with async event handling */ }	 
+	//try {
+            var result = $event.handle.call( elem, event );
+	//	} catch ( ex ){ /* catch IE error with async event handling */ }	 
 	return result===false ? false : result || event.result;
 	};
 	

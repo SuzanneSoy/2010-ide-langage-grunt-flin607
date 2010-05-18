@@ -24,7 +24,7 @@ function VDéfinitions(vInstanceBlocParente) {
     var that = this;
     jQuery.event.special.drag.not = ''; // accept drag on all elements.
     this.vBoutonNouvelleDéfinition.bind('dragstart', function(event){
-        $.dropManage({ mode:'intersect', filter:'.port.target' });
+        $.dropManage({ mode:'intersect', filter:'.port-target' });
         return $('#vue-port-drag').jqote({}).appendTo('body');
     });
     
@@ -36,7 +36,7 @@ function VDéfinitions(vInstanceBlocParente) {
     this.vBoutonNouvelleDéfinition.bind('dragend', function(event){
         $(event.dragProxy).fadeOut();
     });
-    
+
     this.ajoutVDéfinition = function(vTitreDéfinition, vCorpsDéfinition) {
         if (this.aucuneDéfinition) {
             this.vTitreAucuneDéfinition.hide();
@@ -90,6 +90,14 @@ function CDéfinitions(mInstanceBloc, vInstanceBlocParente) {
         that.modèle.bloc.monde.log.envoiMessage("Ajout de définition", définition);
         new CDéfinition(définition, that.vue);
     });
+
+    var that = this;
+    this.vue.vBoutonNouvelleDéfinition[0].droppedOn = function(destination, position) { // Using [0] is a bit of a hack
+        if (destination.entrée)
+            destination.bloc.mPortsEntrée.ajouterPort(new MPort(true, destination.bloc.mPortsEntrée));
+        else
+            destination.bloc.mPortsSortie.ajouterPort(new MPort(true, destination.bloc.mPortsSortie));
+    }
     
     new CPorts(this.modèle, this.vue);
 }

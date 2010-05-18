@@ -11,8 +11,8 @@ function MBloc() {
         
         // Enfants
         définitions: [],
-        portsEntrée: [],
-        portsSortie: [],
+        mPortsEntrée: null,
+        mPortsSortie: null,
         
         // Instanciation
         instances: [],
@@ -28,23 +28,6 @@ function MBloc() {
             faireCallbacks(this.cbChangeNom, this);
             faireCallbacks(this.cbModification, this);
         },
-        
-        /*déplacerDéfinition: function(def, position) {
-            var pos = définitions.remove(def);
-            if (pos < position) position--;
-            définitions.insert(def,position);
-        },
-        déplacerPortEntree: function(port, position) {
-            var pos = portsEntree.remove(port);
-            if (pos < position) position--;
-            portsEntree.insert(port,position);
-        },
-        déplacerPortSortie: function(port, position) {
-            var pos = portsSortie.remove(port);
-            if (pos < position) position--;
-            portsSortie.insert(port,position);
-        },*/
-        
         // Ajout
         ajouterDéfinition: function(d) {
             d.bloc = this;
@@ -56,28 +39,6 @@ function MBloc() {
         onAjoutDéfinition: function(callback) {
             this.cbAjoutDéfinition.push(callback);
         },
-        ajouterPortEntrée: function(p) {
-            p.bloc = this;
-            p.entrée = true;
-            this.portsEntrée.push(p);
-            faireCallbacks(this.cbAjoutPortEntrée, p);
-            faireCallbacks(this.cbModification, this);
-        },
-        cbAjoutPortEntrée: [],
-        onAjoutPortEntrée: function(callback) {
-            this.cbAjoutPortEntrée.push(callback);
-        },
-        ajouterPortSortie: function(p) {
-            p.bloc = this;
-            p.entrée = false;
-            this.portsSortie.push(p);
-            faireCallbacks(this.cbAjoutPortSortie, p);
-            faireCallbacks(this.cbModification, this);
-        },
-        cbAjoutPortSortie: [],
-        onAjoutPortSortie: function(callback) {
-            this.cbAjoutPortSortie.push(callback);
-        },
         cbChangeNom: [],
         onChangeNom: function(callback) {
             this.cbChangeNom.push(callback);
@@ -87,4 +48,6 @@ function MBloc() {
             this.cbModification.push(callback);
         },
     });
+    this.mPortsEntrée = new MPorts(this, true);
+    this.mPortsSortie = new MPorts(this, false);
 }

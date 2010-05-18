@@ -58,7 +58,6 @@ function VInstanceBloc(vDéfinitionParente) {
     }
     
     this.ajusterBarreTitre = function() {
-        debug = that.vDéfinitions;
         that.vDéfinitions.css('top', that.vBarreTitre.outerHeight());
     }
     

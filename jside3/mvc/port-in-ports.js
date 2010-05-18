@@ -7,9 +7,9 @@ function VPortInPorts(vPortsParente, vPortFille, modèle) {
     this.ph1 = ph1;
     this.ph2 = ph2;
     
-    vPortsParente.append(this.ph1).append(this.pip).append(this.ph2);
+    vPortsParente.vPorts.append(this.ph1).append(this.pip).append(this.ph2);
     
-    this.pip.target = this.pip.find('.port.target');
+    this.pip.target = this.pip.find('.port-target');
     this.ph1.box = ph1.find('.port.placeholder.vBox');
     this.ph2.box = ph2.find('.port.placeholder.vBox');
     this.ph1.td = ph1.find('.port.placeholder.vTd');
@@ -21,7 +21,7 @@ function VPortInPorts(vPortsParente, vPortFille, modèle) {
     
     var a1 = ph1.box.stepAnimateClass('active', '');
     var a2 = ph2.box.stepAnimateClass('active', '');
-    var animProxy = function() {};
+    //var animProxy = function() {};
     var targetMiddle = 0;
     var insertBefore = false;
     var dragProxy = null;
@@ -62,7 +62,7 @@ function VPortInPorts(vPortsParente, vPortFille, modèle) {
         upOrDown(e);
     }); 
     this.pip.target.bind('drop', function(e) {
-        e.dragTarget.droppedOn(modèle, insertBefore);
+        e.dragTarget.droppedOn(modèle, 1); // il faut mettre la vraie position (utiliser insertBefore)
     });
     this.pip.target.bind('dropend', function(e) {
         that.ph1.hide();

@@ -1,4 +1,4 @@
-function MPort(sens, blocParent) {
+function MPort(estEntrée, mPortsParent) {
     $.extend(this, {
         uid: singleton.uid(),
         // Propriétés
@@ -6,22 +6,22 @@ function MPort(sens, blocParent) {
         nom: '',
         description: '',
         // ?
-        instances: [],
+        //instances: [],
         // Parents
-        bloc: blocParent,
+        mPorts: mPortsParent,
         // Enfants
-        connexions: []
+        //connexions: []
     });
 }
 
-function VPort(vPortsParente, modèle) {
+function VPort(vPortsParente, mPorts) {
     $.extend(this, (
         $('#vue-port')
             .jqote({})
             .toDom()));
     
     this.bind('dragstart', function(event){
-        $.dropManage({ mode:'intersect', filter:'.port.target' });
+        $.dropManage({ mode:'intersect', filter:'.port-target' });
         return $('#vue-port-drag').jqote({}).appendTo('body');
     });
     
@@ -34,12 +34,12 @@ function VPort(vPortsParente, modèle) {
         $(event.dragProxy).fadeOut();
     });
 
-    vPortsParente.addVPort(this, modèle);
+    vPortsParente.addVPort(this, mPorts);
 }
 
 function CPort(mPort, vPortsParente) {
     this.modèle = mPort;
-    this.vue = new VPort(vPortsParente, this.modèle);
+    this.vue = new VPort(vPortsParente, this.modèle.mPorts);
     
     this.vue[0].droppedOn = function(destination, insertBefore) { // unsing this.vue[0] is a bit of a hack…
         console.log("dropped on", destination, insertBefore);

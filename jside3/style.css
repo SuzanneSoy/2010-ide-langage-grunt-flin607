@@ -219,6 +219,12 @@ body {
 }
 
 /* Ports */
+.ports.vVerticalBar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+}
 .ports.vPorts {
     position: absolute;
     top: 0;
@@ -227,11 +233,11 @@ body {
     text-align: center;
 }
 
-.ports.vPorts.vEntrée {
+.ports.vVerticalBar.vEntrée {
     left: 0;
 }
 
-.ports.vPorts.vSortie {
+.ports.vVerticalBar.vSortie {
     right: 0;
 }
 
