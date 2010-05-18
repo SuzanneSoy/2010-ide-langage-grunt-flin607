@@ -1,0 +1,306 @@
+/* Pour les redimensionnements trop petits */
+.ui-resizable {
+    overflow: hidden;
+}
+
+.clearfloat {
+    clear: both;
+}
+
+body {
+    cursor: default;
+    position:absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+/* Monde */
+.monde {
+    position:absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+/* Barre d'outils */
+.barre-outils.fenetre {
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    
+    border: thin solid blue;
+    background-color: white;
+}
+
+/* Recherche */
+.recherche.fenetre {
+    position: absolute;
+    bottom: 250px;
+    right: 100px;
+    width: 15em;
+    min-width: 4em;
+    min-height: 3em;
+    height: 8em;
+    
+    border: thin solid blue;
+    background-color: white;
+}
+
+.recherche.résultats {
+    position: absolute;
+    top: 1.4em;
+    bottom: 0;
+    width: 100%;
+    overflow: auto;
+}
+
+.recherche.termes {
+    float: right;
+}
+
+/* Résultat-recherche */
+.résultat-recherche:hover {
+    /* Doit être plus important que les flashouillages
+     * rouges et verts */
+    background-color: #eee !important;
+}
+
+.résultat-recherche.sélectionné {
+    background-color: lightgray; !important;
+}
+
+.résultat-recherche.ajout {
+    background-color: lightgreen;
+}
+
+.résultat-recherche.suppression {
+    background-color: pink;
+    overflow: hidden;
+}
+
+.résultat-recherche.vUid {
+    display: block;
+    font-size: small;
+    color: gray;
+    padding-right: 0.2em;
+    float: right;
+}
+
+.résultat-recherche .occurence {
+    color: green;
+    font-weight: bold;
+}
+
+.résultat-recherche .superposée {
+    color: orange;
+    font-weight: bold;
+}
+
+.résultat-recherche .superposition {
+    /* Yeah, sorry, that character is overlapped by
+       two or more matches. Want some chocolate ?   */
+    color: chocolate;
+    font-weight: bold;
+}
+
+/* Log */
+.log.fenetre {
+    position: absolute;
+    bottom: 100px;
+    right: 100px;
+    width: 15em;
+    min-width: 4em;
+    min-height: 3em;
+    height: 8em;
+    
+    border: thin solid blue;
+    background-color: lightblue;
+}
+
+.log.messages {
+    position: absolute;
+    top: 1.4em;
+    bottom: 0;
+    width: 100%;
+    overflow: auto;
+}
+
+.log.pause {
+    float: right;
+}
+
+.log.play {
+    float: right;
+}
+
+/* Instance-bloc */
+.instance-bloc.vMain {
+    position: absolute;
+    top: 2%;
+    left: 3%;
+    width: 20%;
+    min-width: 4em;
+    min-height: 3em;
+    height: 20%;
+    
+    border: medium solid gray;
+    background-color: white;
+}
+
+.instance-bloc.vBarre-titre {
+    background-color: lightgray;
+    border: medium solid white;
+    border-bottom: none;
+}
+
+.instance-bloc.vDéfinitions {
+    position: absolute;
+    top: 1.4em;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+/* Définitions (Tabs) */
+.définitions.vTitresTabs {
+    background: lightgray;
+    padding-bottom: 0;
+    
+    border: medium solid white;
+    border-style: none solid none solid;
+}
+
+.définitions.vNouvelle-définition {
+    float: right;
+}
+
+.définitions.vContenus {
+    position: absolute;
+    top: 1.5em;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    padding-bottom: .1em;
+}
+
+.définitions.vContenusTabs {
+    position: absolute;
+    top: 0;
+    left: 20px;
+    right: 20px;
+    bottom: 0;
+}
+
+/* Définition */
+.définition.vTitre {
+    background-color: white;
+    border: thin solid gray;
+    margin: 0.1em 0.1em 0 0;
+    float: left;
+}
+
+.définition.vTitre.active {
+    background-color: #eef;
+    border: thin solid darkslategray;
+    border-bottom: thin solid white;
+}
+
+.définition.vCorps {
+    height: 100%;
+}
+
+.définition.vCorps.vAucune-définition {
+    text-align: center;
+    padding-top: 1em;
+}
+
+/* Ports */
+.ports.vVerticalBar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+}
+.ports.vPorts {
+    position: absolute;
+    top: 0;
+    width: 20px;
+    height: 100%;
+    text-align: center;
+}
+
+.ports.vVerticalBar.vEntrée {
+    left: 0;
+}
+
+.ports.vVerticalBar.vSortie {
+    right: 0;
+}
+
+/* Port */
+.port.vBox {
+    display: inline-block;
+    background-color: lightblue;
+    border: thin solid blue;
+    width: 10px;
+    height: 10px;
+}
+
+.port.vBox.drag {
+    position: absolute;
+}
+
+.port.vBox.placeholder {
+    background-color: lightgray;
+    border: thin solid gray;
+}
+
+.port.vBox.active {
+    background-color: lightgreen;
+    border: thin solid green;
+}
+
+.port.placeholder.vTd {
+    background-color: #eee;
+}
+
+/* Zone */
+.vZone {
+    position: absolute;
+    border: thin solid blue;
+    background-color: lightblue;
+    opacity: 0.5;
+}
+
+/* Fenêtres */
+.barre-titre,
+.vBarre-titre{
+    background-color: #eef;
+    border-bottom: thin solid blue;
+    padding: .1em;
+    font-size: 100%;
+    text-align: center;
+}
+
+h2.titre,
+h2.vTitre {
+    font-size: 100%;
+    margin: 0;
+}
+
+input {
+    background-color: white;
+    border: thin solid black;
+}
+
+input:hover {
+    border-color: slategray;
+}
+
+input[type=button]:hover {
+    color: slategray;
+}
