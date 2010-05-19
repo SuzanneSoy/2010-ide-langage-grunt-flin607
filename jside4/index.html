@@ -20,10 +20,7 @@
     <script type="text/javascript" src="jquery/ui/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="jquery/ui/jquery.ui.mouse.js"></script>
     <script type="text/javascript" src="jquery/ui/jquery.ui.draggable.js"></script>
-<!--    <script type="text/javascript" src="jquery/ui/jquery.ui.droppable.js"></script>-->
     <script type="text/javascript" src="jquery/ui/jquery.ui.resizable.js"></script>
-<!--    <script type="text/javascript" src="jquery/ui/jquery.ui.sortable.js"></script>-->
-<!--    <script type="text/javascript" src="jquery/ui/jquery.ui.selectable.js"></script>-->
     <script type="text/javascript" src="jquery/ui/jquery.ui.position.js"></script>
     <script type="text/javascript" src="jquery/ui/jquery.effects.core.js"></script>
     <script type="text/javascript" src="jquery/jquery.layout.js"></script>
@@ -31,203 +28,92 @@
     <!-- jQuery - mes extensions -->
     <script type="text/javascript" src="extensions-jQuery.js"></script>
 
-    <!-- Modèle / Vue - fonctions utilitaires et explications -->
-    <script type="text/javascript" src="modele.js"></script>
-    <script type="text/javascript" src="vue.js"></script>
+    <!-- Fonctions utilitaires -->
+    <script type="text/javascript" src="callbacks.js"></script>
+    <script type="text/javascript" src="singleton.js"></script>
+    <script type="text/javascript" src="vues.js"></script>
     
     <!-- MVC -->
     <script type="text/javascript" src="mvc/monde.js"></script>
-    
-    <script type="text/javascript" src="mvc/barre-outils.js"></script>
-    
-    <script type="text/javascript" src="mvc/log.js"></script>
-    <script type="text/javascript" src="mvc/instance-log.js"></script>
-    
-    <script type="text/javascript" src="mvc/recherche.js"></script>
-    <script type="text/javascript" src="mvc/instance-recherche.js"></script>
-    <script type="text/javascript" src="mvc/resultat-recherche.js"></script>
-    
     <script type="text/javascript" src="mvc/bloc.js"></script>
-    <script type="text/javascript" src="mvc/instance-bloc.js"></script>
-    <script type="text/javascript" src="mvc/definitions.js"></script>
-    <script type="text/javascript" src="mvc/ports.js"></script>
-    <script type="text/javascript" src="mvc/port-in-ports.js"></script>
+    <script type="text/javascript" src="mvc/liste-ports.js"></script>
+    <script type="text/javascript" src="mvc/titre-bloc.js"></script>
+    <script type="text/javascript" src="mvc/liste-définitions.js"></script>
     <script type="text/javascript" src="mvc/port.js"></script>
-    
-    <script type="text/javascript" src="mvc/definition.js"></script>
+    <script type="text/javascript" src="mvc/tabs-définitions.js"></script>
+    <script type="text/javascript" src="mvc/définition.js"></script>
+    <script type="text/javascript" src="mvc/titre-définition.js"></script>
+    <script type="text/javascript" src="mvc/instance-bloc.js"></script>
     <script type="text/javascript" src="mvc/connexion.js"></script>
+    <script type="text/javascript" src="mvc/instance-connexion.js"></script>
     
     <!-- Test -->
     <script type="text/javascript" src="test.js"></script>
 
     <!-- Apparence -->
     <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" type="text/css" href="style2.css" />
   </head>
   <body style="position: absolute;" id="editeur">
-    <script type="text/x-jqote-template" id="vue-monde">
-      <![CDATA[
-        <div class="monde">
-          <div class="scratch"></div>
+    <div id="éditeur">
+    </div>
+    <div id="vues" style="display: none;">
+      <div class="vInstanceBloc instance-bloc main">
+        <div class="vBloc instance-bloc contenu"></div>
+      </div>
+      <div class="vBloc main">
+        <div class="vTitreBloc"></div>
+        <div class="vListePortsEntrée"></div>
+        <div class="vListePortsSortie"></div>
+        <div class="vTitresTabsDéfinitions"></div>
+        <div class="vContenusTabsDéfinitions"></div>
+      </div>
+      <div class="vTitreBloc">
+        <h2 class="vTitre"></h2>
+        <form action="#" class="vÉdition">
+          <input type="text" class="vTexte" value=""/>
+          <input type="submit" class="vSubmit" value="Ok"/>
+          <input type="button" class="vCancel" value="Anuler"/>
+        </form>
+      </div>
+      <div class="vListePorts">
+        <div class="vPorts"></div>
+        <input type="button" class="vNouveauPort" value="+"/>
+      </div>
+      <div class="vPort port">
+      </div>
+      <div class="vTitresTabsDéfinitions">
+        <div class="vTitresTabs">
+          <h3 class="vTitreAucuneDéfinition">Aucune définition</h3>
         </div>
-      ]]>
-    </script>
-    <script type="text/x-jqote-template" id="vue-barre-outils">
-      <![CDATA[
-        <div class="barre-outils fenetre">
-          <!--<div class="log barre-titre">-->
-          <h2 class="barre-outils barre-titre titre">Barre d'outils</h2>
-          <!--</div>-->
-          <input type="button" value="Nouveau bloc" class="barre-outils nouveau-bloc"/>
-          <input type="button" value="Recherche" class="barre-outils recherche"/>
-          <input type="button" value="Log" class="barre-outils log"/>
-        </div>
-      ]]>
-    </script>
-    <script type="text/x-jqote-template" id="vue-log">
-      <![CDATA[
-        <div class="log fenetre">
-          <div class="log barre-titre">
-            <input type="button" class="log pause" value="▌▌" style="padding-right: 0.2em;" />
-            <input type="button" class="log play" value="▶"/>
-            <h2 class="titre">Log</h2>
-            <div class="clearfloat"></div>
-          </div>
-          <div class="log messages">
-            <div><!-- Il faut au moins un message (vide). --></div>
-          </div>
-        </div>
-      ]]>
-    </script>
-    <script type="text/x-jqote-template" id="vue-recherche">
-      <![CDATA[
-        <div class="recherche fenetre">
-          <div class="recherche barre-titre">
-            <input type="text" class="recherche termes" value="Recherche…"/>
-            <h2 class="titre">Recherche</h2>
-            <div class="clearfloat"></div>
-          </div>
-          <div class="recherche résultats">
+        <input type="button" class="vNouvelleDéfinition" value="+"/>
+      </div>
+      <div class="vContenusTabsDéfinitions">
+        <div class="vContenusTabs">
+          <div class="vContenuAucuneDéfinition">
+            <h4>Aucune définition.</h4>
+            <p>Cliquez sur le + ci-dessus pour en créer une.</p>
           </div>
         </div>
-      ]]>
-    </script>
-    <script type="text/x-jqote-template" id="vue-résultat-recherche">
-      <![CDATA[
-        <div class="résultat-recherche vMain">
-          <span class="résultat-recherche vUid">
-          </span>
-          <span class="résultat-recherche vTexte">
-          </span>
+      </div>
+      <div class="vTitreDéfinition">
+        <h3 class="vTitre"></h3>
+        <form action="#" class="vÉdition">
+          <input type="text" class="vTexte" value=""/>
+          <input type="submit" class="vSubmit" value="Ok"/>
+          <input type="button" class="vCancel" value="Anuler"/>
+        </form>
+      </div>
+      <div class="vDéfinition">
+        <div class="vContenu">
+          42.
         </div>
-      ]]>
-    </script>
-      <script type="text/x-jqote-template" id="vue-instance-bloc">
-      <![CDATA[
-        <div class="instance-bloc vMain fenetre">
-          <div class="instance-bloc vBarre-titre">
-            <h2 class="instance-bloc vTitre vVue-titre">Nom du bloc</h2>
-            <form action="#" class="instance-bloc vÉdition-titre">
-              <input type="text" class="instance-bloc vChamp-titre" value=""/>
-              <input type="submit" class="instance-bloc vBouton-valider-titre" value="ok"/>
-            </form>
-            <div class="clearfloat"></div>
-          </div>
-          <div class="instance-bloc vDéfinitions">
-          </div>
-        </div>
-      ]]>
-    </script>
-    <script type="text/x-jqote-template" id="vue-définitions">
-      <![CDATA[
-        <div class="définitions vMain">
-          <div class="définitions vTitresTabs">
-            <h3 class="définition vTitre vAucune-définition">Aucune définition</h3>
-            <input type="button" class="définitions vNouvelle-définition" value="+"/>
-            <div class="clearfloat"></div>
-          </div>
-          <div class="définitions vContenus">
-            <table class="définitions vPorts-entrée"></table>
-            <table class="définitions vPorts-sortie"></table>
-            <div class="définitions vContenusTabs">
-              <div class="définition vCorps vAucune-définition">
-                Aucune définition.
-                <br/>
-                Cliquez sur le + ci-dessus pour en créer une.
-              </div>
-            </div>
-          </div>
-        </div>
-      ]]>
-    </script>
-    <script type="text/x-jqote-template" id="vue-ports-entrée">
-      <![CDATA[
-        <div class="ports vVerticalBar vEntrée">
-          <table class="ports vPorts vEntrée">
-          </table>
-        </div>
-      ]]>
-    </script>
-    <script type="text/x-jqote-template" id="vue-ports-sortie">
-      <![CDATA[
-        <div class="ports vVerticalBar vSortie">
-          <table class="ports vPorts vSortie">
-          </table>
-        </div>
-      ]]>
-    </script>
-    <script type="text/x-jqote-template" id="vue-port">
-      <![CDATA[
-        <span class="port vBox vMain">
-        </span>
-      ]]>
-    </script>
-    <script type="text/x-jqote-template" id="vue-port-drag">
-      <![CDATA[
-        <span class="port vBox vMain drag">
-        </span>
-      ]]>
-    </script>
-    <script type="text/x-jqote-template" id="vue-port-in-ports">
-      <![CDATA[
-        <tr>
-          <td class="port port-target">
-          </td>
-        </tr>
-      ]]>
-    </script>
-    <script type="text/x-jqote-template" id="vue-port-placeholder">
-      <![CDATA[
-        <tr class="port placeholder vTr vMain">
-          <td class="port placeholder vTd">
-            <span class="port placeholder vBox">
-            </span>
-          </td>
-        </tr>
-      ]]>
-    </script>
-    <script type="text/x-jqote-template" id="vue-définition-titre">
-      <![CDATA[
-        <h3 class="définition vTitre">Nom de la définition</h3>
-      ]]>
-    </script>
-    <script type="text/x-jqote-template" id="vue-définition">
-      <![CDATA[
-        <div class="définition vCorps">
-        </div>
-      ]]>
-    </script>
-    <script type="text/x-jqote-template" id="vue-zone">
-      <![CDATA[
-        <div class="vZone">
-        </div>
-      ]]>
-    </script>
-    <script type="x-exemple-local-storage">
-      if (!localStorage[window.location.href]) {
-          localStorage[window.location.href] = 0;
-      }
-      localStorage[window.location.href] = parseInt(localStorage[window.location.href]) + 1;
-      document.getElementById('count').textContent = localStorage[window.location.href];
-    </script>
+      </div>
+      <div class="vConnexion">
+        <div class="vSegment1 lien horizontal"></div>
+        <div class="vSegment2 lien vertical"></div>
+        <div class="vSegment3 lien horizontal"></div>
+      </div>
+    </div>
   </body>
 </html>

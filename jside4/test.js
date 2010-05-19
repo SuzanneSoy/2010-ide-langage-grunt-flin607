@@ -1,10 +1,19 @@
-function testlog(m, count) {
-    m.log.envoiMessage('Coucou !');
-    var fdemo = function() {
-        m.log.envoiMessage('Pioute !');
-        if (--count > 0)
-            window.setTimeout(fdemo, 100);
-    }
-    window.setTimeout(fdemo, 1000);
-}
+$(function() {
+    var mFibo = new MBloc();
+    var iFibo = new MInstanceBloc(mFibo);
+    var vFibo = new VInstanceBloc(iFibo, $('#éditeur'));
 
+    var mDéfinitionFibo = new MDéfinition();
+    mFibo.mListeDéfinitions().addDéfinitions(mDéfinitionFibo);
+    
+    var mMoinsUn = new MBloc();
+    mDéfinitionFibo.addInstancesBlocs(new MInstanceBloc(mMoinsUn));
+
+    var mUn = new MBloc();
+    mDéfinitionFibo.addInstancesBlocs(new MInstanceBloc(mUn));
+
+    window.setTimeout(function() {
+        /*var mvic = new MVInstanceConnexion(null, vib.vue, vib2.vue); */
+        /*new VInstanceConnexion(mvic, $('#éditeur')); */
+    }, 2000);
+});

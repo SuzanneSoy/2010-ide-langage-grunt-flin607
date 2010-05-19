@@ -1,0 +1,12 @@
+singleton = (function() {
+    var s = { uid: 0 };
+    return {
+        uid: function () {
+            return s.uid++;
+        }
+    };
+})();
+
+function makeUid(obj) {
+    obj.uid = singleton.uid();
+}

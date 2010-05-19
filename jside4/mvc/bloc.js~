@@ -1,0 +1,19 @@
+function MBloc() {
+    makeUid(this);
+    makeField(this, 'mTitreBloc', new MTitreBloc());
+    makeField(this, 'mListePortsEntrée', new MListePorts(true));
+    makeField(this, 'mListePortsSortie', new MListePorts(false));
+    makeField(this, 'mListeDéfinitions', new MListeDéfinitions());
+}
+
+function VBloc(mBloc, emplacement) {
+    makeView(this, 'vBloc', emplacement, 'vTitreBloc', 'vListePortsEntrée', 'vListePortsSortie', 'vTitresTabsDéfinitions', 'vContenusTabsDéfinitions');
+    new VTitreBloc(mBloc.mTitreBloc(), this.parties.vTitreBloc);
+    new VListePorts(mBloc.mListePortsEntrée(), this.parties.vListePortsEntrée);
+    new VListePorts(mBloc.mListePortsSortie(), this.parties.vListePortsSortie);
+    
+    this.mvTabsDéfinitions = new MVTabsDéfinitions(mBloc.mListeDéfinitions());
+    
+    new VTitresTabsDéfinitions(this.mvTabsDéfinitions, this.parties.vTitresTabsDéfinitions);
+    new VContenusTabsDéfinitions(this.mvTabsDéfinitions, this.parties.vContenusTabsDéfinitions);
+}

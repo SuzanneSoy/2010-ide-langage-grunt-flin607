@@ -1,0 +1,34 @@
+function MListePorts(estEntrée) {
+    makeUid(this);
+    this.estEntrée = estEntrée;
+    makeCollection(this, 'ports');
+}
+
+function VListePorts(mListePorts, emplacement) {
+    makeView(this, 'vListePorts', emplacement, 'vPorts', 'vNouveauPort');
+    
+    var that = this;
+    
+    // Actions
+    this.actionNouveauPort = function() {
+        mListePorts.addPorts(new MPort());
+    };
+    
+    this.ajoutPort = function(mListePorts, mPort) {
+        new VPort(mPort, that.parties.vPorts);
+    };
+    
+    this.vueNormale = function() {
+    }
+    
+    // Binding
+    mListePorts.onAddPorts(this.ajoutPort);
+    for (var i = 0; i < mListePorts.ports.length; i++) {
+        this.ajoutPort(mListePorts, mListePorts.ports[i]);
+    }
+
+    this.parties.vNouveauPort.click(this.actionNouveauPort);
+    
+    // Défauts
+    this.vueNormale();
+}

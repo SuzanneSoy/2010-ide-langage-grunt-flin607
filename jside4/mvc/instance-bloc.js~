@@ -1,0 +1,11 @@
+function MInstanceBloc(mBloc) {
+    makeUid(this);
+    makeField(this, 'mBloc', mBloc);
+}
+
+function VInstanceBloc(mInstanceBloc, emplacement) {
+    makeView(this, 'vInstanceBloc', emplacement, 'vBloc');
+    new VBloc(mInstanceBloc.mBloc(), this.parties.vBloc, mInstanceBloc);
+
+    this.vue.draggable().resizable();
+}

@@ -1,33 +1,19 @@
-TODO :
-- modèle ports
-~ Ajout de ports à un bloc
-#
-X ré-organisation des ports
-#
-Connexions - vue
-Connexions - modèle
-#
-Connexions - déplacement du port
-Connexions autorisées et ports autorisés.
-#
-types de définitions - interface
-#
-types de définitions - modèle
-#
-#.
-fenêtres "debug" (avec un pseudo-port qui va "piquer" sur un port, une connexion, …
-->interface
-#
-#
-"exécution" (pour les fenêtres debug)
-#
-#
-suppression de blocs, etc. remplissage des vues à la création
-(Lors de la création de la vue d'une instance-bloc, les définitions existantes ne sont pas encore ajoutées.)
-#
-annulation
-#
-#
-enregistrement
-#
-#
+Être moins bête. !important
+
+Renomer les onAddXyz() en xyz.onAdd()
+
+TODO:
+Afficher les connexions
+- Chercher la vue du port d'entrée
+- Chercher la vue du port de sortie
+- Connecter
+
+Types de définitions
+- Afficher 2 boutons
+- ajouter un champ texte
+- toggle sur le champ texte
+
+Eval
+- chercher la connexion qui va sur le port
+- chercher d'où elle vient
+- faire des eval quelque part (?)

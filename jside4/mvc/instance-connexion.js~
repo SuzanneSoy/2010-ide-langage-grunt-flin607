@@ -1,0 +1,16 @@
+function VInstanceConnexion(mConnexion, emplacement) {
+    makeView(this, 'vConnexion', emplacement, 'vSegment1', 'vSegment2', 'vSegment3');
+    
+    var that = this;
+    
+    // Actions
+    this.vueNormale = function() {
+        
+    }
+    
+    // Binding
+    // onMove (dePort, versPort) 
+    
+    // Défauts
+    this.vueNormale();
+}

@@ -1,0 +1,9 @@
+function MPort() {
+    makeUid(this);
+}
+
+function VPort(mPort, emplacement) {
+    makeView(this, 'vPort', emplacement);
+    
+    var that = this;
+}

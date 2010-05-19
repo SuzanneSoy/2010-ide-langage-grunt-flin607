@@ -1,0 +1,37 @@
+.active {
+    color: gray;
+}
+
+.instance-bloc.main {
+    position: absolute;
+    top: 30%;
+    left: 40%;
+    width: 30%;
+    height: 40%;
+    border: thin solid blue;
+}
+
+.instance-bloc.contenu {
+    height: 100%;
+    width: 100%;
+}
+
+.vBloc.main {
+    width:100%;
+    height:100%;
+}
+
+.port {
+    display: inline-block;
+    background-color: lightblue;
+    border: thin solid blue;
+    width: 10px;
+    height: 10px;
+}
+
+.lien {
+    background-color: lightblue;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+}

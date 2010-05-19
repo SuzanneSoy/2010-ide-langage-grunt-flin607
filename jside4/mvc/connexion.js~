@@ -1,0 +1,15 @@
+function MConnexion(deBloc, deMInstanceBloc, deMPort, versBloc, versMInstanceBloc, versMPort) {
+    makeUid(this);
+    makeField(this, 'deBloc', deBloc);
+    makeField(this, 'deMInstanceBloc', deMInstanceBloc);
+    makeField(this, 'deMPort', deMPort);
+    this.getDeMBloc = function() {
+        this.deBloc ? this.deMInstanceBloc : this.deMInstanceBloc.mBloc();
+    }
+    makeField(this, 'versBloc', versBloc);
+    makeField(this, 'versMInstanceBloc', versMInstanceBloc);
+    makeField(this, 'versMPort', versMPort);
+    this.getVersMBloc = function() {
+        this.versBloc ? this.versMInstanceBloc : this.versMInstanceBloc.mBloc();
+    }
+}
