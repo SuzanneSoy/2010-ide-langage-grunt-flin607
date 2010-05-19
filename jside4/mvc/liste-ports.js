@@ -8,6 +8,7 @@ function VListePorts(mListePorts, emplacement) {
     makeView(this, 'vListePorts', emplacement, 'vPorts', 'vNouveauPort');
     
     this.cbClickPort = [];
+    this.vPortsFilles = [];
     var that = this;
     
     // Actions
@@ -22,6 +23,7 @@ function VListePorts(mListePorts, emplacement) {
     
     this.ajoutPort = function(mListePorts, mPort) {
         var vp = new VPort(mPort, that.parties.vPorts);
+        that.vPortsFilles.push(vp);
         vp.onClick(that.clickPort);
     };
     

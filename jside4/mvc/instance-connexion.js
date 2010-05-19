@@ -46,7 +46,8 @@ function VInstanceConnexion(mvInstanceConnexion, emplacement) {
     }
     
     // Binding
-    // onMove (dePort, versPort) 
+    // onMove (dePort, versPort);
+    window.setInterval(this.vueNormale, 1000);
     
     // Défauts
     this.vueNormale();

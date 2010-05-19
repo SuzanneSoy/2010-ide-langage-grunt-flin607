@@ -2,16 +2,18 @@
 
 Renomer les onAddXyz() en xyz.onAdd()
 
-TODO:
-Afficher les connexions
-- Chercher la vue du port d'entrée
-- Chercher la vue du port de sortie
-- Connecter
+Plein de bugs depuis que j'ai mis ces *** connexions
 
-Types de définitions
-- Afficher 2 boutons
-- ajouter un champ texte
-- toggle sur le champ texte
+TODO:
+ok Afficher les connexions
+ok - Chercher la vue du port d'entrée
+ok - Chercher la vue du port de sortie
+ok - Connecter
+
+ok Types de définitions
+ok - Afficher 2 boutons
+ok - ajouter un champ texte
+ok - toggle sur le champ texte
 
 Eval
 - chercher la connexion qui va sur le port

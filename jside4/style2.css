@@ -32,8 +32,8 @@
 .lien {
     background-color: lightblue;
     position: absolute;
-    top: -10px;
-    left: -10px;
+    top: 10px;
+    left: 10px;
     width: 5px;
     height: 5px;
 }

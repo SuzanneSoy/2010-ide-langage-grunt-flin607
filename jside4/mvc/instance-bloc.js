@@ -6,7 +6,7 @@ function MInstanceBloc(mBloc) {
 
 function VInstanceBloc(mInstanceBloc, emplacement) {
     makeView(this, 'vInstanceBloc', emplacement, 'vBloc');
-    this.vBloc = new VBloc(mInstanceBloc.mBloc(), this.parties.vBloc, mInstanceBloc);
+    this.vBloc = new VBloc(mInstanceBloc.mBloc(), this.parties.vBloc, mInstanceBloc, this);
 
     this.vue.draggable().resizable();
 }

@@ -54,7 +54,7 @@
     <link rel="stylesheet" type="text/css" href="style.css" />
     <link rel="stylesheet" type="text/css" href="style2.css" />
   </head>
-  <body style="position: absolute;" id="editeur">
+  <body style="position: absolute;">
     <div id="éditeur">
     </div>
     <div id="vues" style="display: none;">
@@ -105,9 +105,15 @@
         </form>
       </div>
       <div class="vDéfinition">
-        <div class="vContenu">
-          42.
+        <input type="button" class="vTypeJs" value="JavaScript"/>
+        <input type="button" class="vTypeD" value="Dataflow"/>
+        <div class="vContenuJs">
+          <textarea class="vCodeJs">function() {
+  return [];
+}
+</textarea>
         </div>
+        <div class="vContenu"></div>
       </div>
       <div class="vConnexion">
         <div class="vSegment1 lien horizontal"></div>

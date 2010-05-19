@@ -4,7 +4,6 @@ function MVTabsDéfinitions(mListeDéfinitions) { // Modèle ou vue ???
     makeField(this, 'définitionActive', 0);
 }
 
-debugctr = 0;
 function VTitresTabsDéfinitions(mvTabsDéfinitions, emplacement) {
     makeView(this, 'vTitresTabsDéfinitions', emplacement, 'vTitresTabs', 'vTitreAucuneDéfinition', 'vNouvelleDéfinition');
     
@@ -55,7 +54,7 @@ function VTitresTabsDéfinitions(mvTabsDéfinitions, emplacement) {
     this.vueNormale();
 }
 
-function VContenusTabsDéfinitions(mvTabsDéfinitions, emplacement) {
+function VContenusTabsDéfinitions(mvTabsDéfinitions, emplacement, vInstanceBlocParente) {
     makeView(this, 'vContenusTabsDéfinitions', emplacement, 'vContenusTabs', 'vContenuAucuneDéfinition');
     
     var listeVues = {};
@@ -63,7 +62,7 @@ function VContenusTabsDéfinitions(mvTabsDéfinitions, emplacement) {
     
     // Actions
     this.ajoutDéfinition = function(mListeDéfinitions, mDéfinition) {
-        var vd = new VDéfinition(mDéfinition, that.parties.vContenusTabs);
+        var vd = new VDéfinition(mDéfinition, that.parties.vContenusTabs, vInstanceBlocParente);
         listeVues[mDéfinition.uid] = vd;
         that.vueNormale();
     };

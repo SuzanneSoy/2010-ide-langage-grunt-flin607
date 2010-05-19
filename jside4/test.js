@@ -7,9 +7,11 @@ $(function() {
     mFibo.mListeDéfinitions().addDéfinitions(mDéfinitionFibo);
     
     var mMoinsUn = new MBloc();
+    mMoinsUn.mTitreBloc().titre('x - 1');
     mDéfinitionFibo.addInstancesBlocs(new MInstanceBloc(mMoinsUn));
 
     var mUn = new MBloc();
+    mUn.mTitreBloc().titre('1');
     mDéfinitionFibo.addInstancesBlocs(new MInstanceBloc(mUn));
 
     window.setTimeout(function() {

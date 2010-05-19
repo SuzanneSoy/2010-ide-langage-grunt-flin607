@@ -1,5 +1,6 @@
 function MPort(mListePorts) {
     makeUid(this);
+    makeField(this, 'mListePorts', mListePorts);
     //makeField(this, 'connexionEntrante', null); // Oui mais… quand on a plusieurs définitions
     //makeCollection(this, 'connexionsSortantes');
 }
@@ -7,6 +8,7 @@ function MPort(mListePorts) {
 function VPort(mPort, emplacement) {
     makeView(this, 'vPort', emplacement);
     
+    this.mPort = mPort;
     var that = this;
     
     this.cbClick = [];

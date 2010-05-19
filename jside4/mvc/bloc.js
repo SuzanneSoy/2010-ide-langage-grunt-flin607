@@ -6,16 +6,18 @@ function MBloc() {
     makeField(this, 'mListeDéfinitions', new MListeDéfinitions());
 }
 
-function VBloc(mBloc, emplacement, mInstanceBloc_portClick) {
+function VBloc(mBloc, emplacement, mInstanceBloc_portClick, vInstanceBlocParente) {
     makeView(this, 'vBloc', emplacement, 'vTitreBloc', 'vListePortsEntrée', 'vListePortsSortie', 'vTitresTabsDéfinitions', 'vContenusTabsDéfinitions');
     new VTitreBloc(mBloc.mTitreBloc(), this.parties.vTitreBloc);
     var vpe = new VListePorts(mBloc.mListePortsEntrée(), this.parties.vListePortsEntrée);
     var vps = new VListePorts(mBloc.mListePortsSortie(), this.parties.vListePortsSortie);
+    this.vpe = vpe;
+    this.vps = vps;
     
     this.mvTabsDéfinitions = new MVTabsDéfinitions(mBloc.mListeDéfinitions());
     
-    new VTitresTabsDéfinitions(this.mvTabsDéfinitions, this.parties.vTitresTabsDéfinitions);
-    new VContenusTabsDéfinitions(this.mvTabsDéfinitions, this.parties.vContenusTabsDéfinitions);
+    new VTitresTabsDéfinitions(this.mvTabsDéfinitions, this.parties.vTitresTabsDéfinitions, vInstanceBlocParente);
+    new VContenusTabsDéfinitions(this.mvTabsDéfinitions, this.parties.vContenusTabsDéfinitions, vInstanceBlocParente);
     
     var that = this;
     var clicsPorts = function(mPort) {
@@ -30,6 +32,7 @@ function VBloc(mBloc, emplacement, mInstanceBloc_portClick) {
             var b = singleton.portClickB;
             if (a.mPort == b.mPort) {
                 // Double clic, afficher la valeur du port
+                showEvalPort(a.mPort);
             } else {
                 //console.log(singleton.portClickA, singleton.portClickB);
                 if (a.mDéfinition.uid == b.mInstanceBloc.dansDéfinition.uid) { // a parent de b
@@ -52,9 +55,7 @@ function VBloc(mBloc, emplacement, mInstanceBloc_portClick) {
                             new MConnexion(false, b.mInstanceBloc, b.mPort, true, a.mInstanceBloc, a.mPort)
                         );
                     }
-                }
-                
-                if (a.mInstanceBloc.dansDéfinition.uid == b.mInstanceBloc.dansDéfinition.uid) { // a et b même parent
+                } else if (a.mInstanceBloc.dansDéfinition.uid == b.mInstanceBloc.dansDéfinition.uid) { // a et b même parent
                     if (a.mListePorts.estEntrée) {
                         a.mInstanceBloc.dansDéfinition.addConnexions(
                             new MConnexion(false, b.mInstanceBloc, b.mPort, false, a.mInstanceBloc, a.mPort)
@@ -73,4 +74,8 @@ function VBloc(mBloc, emplacement, mInstanceBloc_portClick) {
     
     vpe.onClickPort(clicsPorts);
     vps.onClickPort(clicsPorts);
+}
+
+function showEvalPort(mPort) {
+    console.log(mPort.mListePorts);
 }
