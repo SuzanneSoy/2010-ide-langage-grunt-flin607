@@ -1,0 +1,7 @@
+Ce projet est un IDE pour un langage de programmation graphique utilisant le paradigme du dataflow.
+
+Il a été réalisé dans le cadre de mon UE FLIN607, nommée "Projet Informatique", à l'Université Montpellier II. Le rapport de ce projet est inclus dans le dépôt.
+
+L'IDE n'est à l'heure actuelle pas fonctionnel et donne juste une idée de l'apparence possible d'un véritable IDE.
+
+Suite à une mauvaise conception :( le projet a été recommencé "de zéro" plusieurs fois.
